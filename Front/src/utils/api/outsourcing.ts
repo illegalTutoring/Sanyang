@@ -2,9 +2,6 @@ import axios, { AxiosResponse } from 'axios'
 
 const SERVER_URL = process.env.SERVER_URL
 
-// TODO: redux에서 값을 가져오도록 수정할 것.
-let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
-
 export async function getOutsourcingList(year: number, month: number) {
     /**
      * 월별 외주 리스트를 반환한다.
