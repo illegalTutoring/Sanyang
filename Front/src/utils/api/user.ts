@@ -64,7 +64,6 @@ export async function getUserInfo() {
     /**
      * 입력한 비밀번호가 올바르다면, 외주 상세 정보를 반환한다.
      *
-     * @param token - 로그인 된 사용자의 token
      * @returns 서버 응답 메시지
      *
      * @beta
@@ -88,7 +87,6 @@ export async function updateUserInfo(
     /**
      * 회원 정보 수정
      *
-     * @param token - 로그인 된 사용자의 token
      * @param userPw - 변경하고자 하는 사용자 비밀번호
      * @param userName - 변경하고자 하는 사용자 이름
      * @returns 서버 응답 메시지
