@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
-const server_url = process.env.SERVER_URL
+const SERVER_URL = process.env.SERVER_URL
 
 export async function getOutsourcingList(year: number, month: number) {
     /**
@@ -13,9 +13,9 @@ export async function getOutsourcingList(year: number, month: number) {
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/outsourcing/${year}/${month}`,
+    //     url: `${SERVER_URL}/outsourcing/${year}/${month}`,
     // })
     // return response.data
 
@@ -56,11 +56,11 @@ export async function insertOutsourcingPassword(
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'POST',
-    //     url: `${server_url}/outsourcing/${outsourcing_id}`,
+    //     url: `${SERVER_URL}/outsourcing/${outsourcing_id}`,
     //     data: {
-    //         password: password,
+    //         password,
     //     },
     // })
     // return response.data
@@ -98,9 +98,9 @@ export async function searchOutsourcingByName(keyword: string) {
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/outsourcing/search/${keyword}`,
+    //     url: `${SERVER_URL}/outsourcing/search/${keyword}`,
     // })
     // return response.data
 

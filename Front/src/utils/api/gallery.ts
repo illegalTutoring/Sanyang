@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
-const server_url = process.env.SERVER_URL
+const SERVER_URL = process.env.SERVER_URL
 
 export async function getGalleryList() {
     /**
@@ -11,9 +11,9 @@ export async function getGalleryList() {
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/gallery`
+    //     url: `${SERVER_URL}/gallery`
     // })
     // return response.data
 
@@ -61,9 +61,9 @@ export async function getGalleryListByTag(tagList: Array<string>) {
     // // 마지막 comma 제거
     // tagString = tagString.substring(0, tagString.length - 2)
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/gallery/${tagString}`
+    //     url: `${SERVER_URL}/gallery/${tagString}`
     // })
     // return response.data
 
