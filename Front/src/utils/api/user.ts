@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const server_url = process.env.SERVER_URL
+const SERVER_URL = process.env.SERVER_URL
+
+// TODO: redux에서 값을 가져오도록 수정할 것.
+let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
 
 export async function login(userId: string, userPw: string) {
     /**
@@ -15,7 +18,7 @@ export async function login(userId: string, userPw: string) {
 
     const response = await axios({
         method: 'POST',
-        url: `${server_url}/user/login`,
+        url: `${SERVER_URL}/user/login`,
         data: {
             userId,
             userPw,
@@ -24,10 +27,10 @@ export async function login(userId: string, userPw: string) {
     return response.data
 }
 
-export async function logout(token: string) {
+export async function logout() {
     const response = await axios({
         method: 'GET',
-        url: `${server_url}/user/logout`,
+        url: `${SERVER_URL}/user/logout`,
         headers: {
             Authorization: token,
         },
@@ -48,7 +51,7 @@ export async function signin(userId: string, userPw: string, userName: string) {
 
     const response = await axios({
         method: 'POST',
-        url: `${server_url}/user/signin`,
+        url: `${SERVER_URL}/user/signin`,
         data: {
             userId,
             userPw,
@@ -57,7 +60,7 @@ export async function signin(userId: string, userPw: string, userName: string) {
     })
 }
 
-export async function getUserInfo(token: string) {
+export async function getUserInfo() {
     /**
      * 입력한 비밀번호가 올바르다면, 외주 상세 정보를 반환한다.
      *
@@ -69,7 +72,7 @@ export async function getUserInfo(token: string) {
 
     const response = await axios({
         method: 'GET',
-        url: `${server_url}/user`,
+        url: `${SERVER_URL}/user`,
         headers: {
             Authorization: token,
         },
@@ -95,7 +98,7 @@ export async function updateUserInfo(
 
     const response = await axios({
         method: 'PUT',
-        url: `${server_url}/user`,
+        url: `${SERVER_URL}/user`,
         data: {
             userPw,
             userName,

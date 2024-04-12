@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const server_url = process.env.SERVER_URL
+const SERVER_URL = process.env.SERVER_URL
+
+// TODO: redux에서 값을 가져오도록 수정할 것.
+let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
 
 export async function getGalleryList() {
     /**
@@ -13,7 +16,7 @@ export async function getGalleryList() {
 
     // const response = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/gallery`
+    //     url: `${SERVER_URL}/gallery`
     // })
     // return response.data
 
@@ -63,7 +66,7 @@ export async function getGalleryListByTag(tagList: Array<string>) {
 
     // const response = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/gallery/${tagString}`
+    //     url: `${SERVER_URL}/gallery/${tagString}`
     // })
     // return response.data
 

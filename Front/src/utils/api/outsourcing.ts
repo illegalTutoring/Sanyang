@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const server_url = process.env.SERVER_URL
+const SERVER_URL = process.env.SERVER_URL
+
+// TODO: redux에서 값을 가져오도록 수정할 것.
+let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
 
 export async function getOutsourcingList(year: number, month: number) {
     /**
@@ -15,7 +18,7 @@ export async function getOutsourcingList(year: number, month: number) {
 
     // const response = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/outsourcing/${year}/${month}`,
+    //     url: `${SERVER_URL}/outsourcing/${year}/${month}`,
     // })
     // return response.data
 
@@ -58,7 +61,7 @@ export async function insertOutsourcingPassword(
 
     // const response = await axios({
     //     method: 'POST',
-    //     url: `${server_url}/outsourcing/${outsourcing_id}`,
+    //     url: `${SERVER_URL}/outsourcing/${outsourcing_id}`,
     //     data: {
     //         password,
     //     },
@@ -100,7 +103,7 @@ export async function searchOutsourcingByName(keyword: string) {
 
     // const response = await axios({
     //     method: 'GET',
-    //     url: `${server_url}/outsourcing/search/${keyword}`,
+    //     url: `${SERVER_URL}/outsourcing/search/${keyword}`,
     // })
     // return response.data
 
