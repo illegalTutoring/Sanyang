@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 const SERVER_URL = process.env.SERVER_URL
 
@@ -16,7 +16,7 @@ export async function getOutsourcingList(year: number, month: number) {
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
     //     url: `${SERVER_URL}/outsourcing/${year}/${month}`,
     // })
@@ -59,7 +59,7 @@ export async function insertOutsourcingPassword(
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'POST',
     //     url: `${SERVER_URL}/outsourcing/${outsourcing_id}`,
     //     data: {
@@ -101,7 +101,7 @@ export async function searchOutsourcingByName(keyword: string) {
      * @beta
      */
 
-    // const response = await axios({
+    // const response: AxiosResponse<JSON> = await axios({
     //     method: 'GET',
     //     url: `${SERVER_URL}/outsourcing/search/${keyword}`,
     // })

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 const SERVER_URL = process.env.SERVER_URL
 
@@ -16,7 +16,7 @@ export async function login(userId: string, userPw: string) {
      * @beta
      */
 
-    const response = await axios({
+    const response: AxiosResponse<JSON> = await axios({
         method: 'POST',
         url: `${SERVER_URL}/user/login`,
         data: {
@@ -28,7 +28,7 @@ export async function login(userId: string, userPw: string) {
 }
 
 export async function logout() {
-    const response = await axios({
+    const response: AxiosResponse<JSON> = await axios({
         method: 'GET',
         url: `${SERVER_URL}/user/logout`,
         headers: {
@@ -49,7 +49,7 @@ export async function signin(userId: string, userPw: string, userName: string) {
      * @beta
      */
 
-    const response = await axios({
+    const response: AxiosResponse<JSON> = await axios({
         method: 'POST',
         url: `${SERVER_URL}/user/signin`,
         data: {
@@ -69,7 +69,7 @@ export async function getUserInfo() {
      * @beta
      */
 
-    const response = await axios({
+    const response: AxiosResponse<JSON> = await axios({
         method: 'GET',
         url: `${SERVER_URL}/user`,
         headers: {
@@ -94,7 +94,7 @@ export async function updateUserInfo(
      * @beta
      */
 
-    const response = await axios({
+    const response: AxiosResponse<JSON> = await axios({
         method: 'PUT',
         url: `${SERVER_URL}/user`,
         data: {
