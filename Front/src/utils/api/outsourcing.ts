@@ -60,7 +60,7 @@ export async function insertOutsourcingPassword(
     //     method: 'POST',
     //     url: `${server_url}/outsourcing/${outsourcing_id}`,
     //     data: {
-    //         password: password,
+    //         password,
     //     },
     // })
     // return response.data
