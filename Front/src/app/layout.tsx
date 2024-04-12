@@ -16,8 +16,8 @@ export default function RootLayout({
     return (
         <html lang="ko">
             <body>
-                <Header />
-                <div className={styles.layoutContainer}>
+                <div className={styles.layout}>
+                    <Header />
                     <Sidebar />
                     <main className={styles.content}>{children}</main>
                 </div>

@@ -1,8 +1,9 @@
 .header {
-    height: 60px;
+    grid-area: header;
     background-color: #333;
     color: white;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 20px;
 }
