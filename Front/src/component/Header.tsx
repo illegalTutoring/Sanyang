@@ -1,7 +1,9 @@
-import styles from './Header.module.css'
-
 const Header: React.FC = () => {
-    return <header className={styles.header}>헤더 영역</header>
+    return (
+        <header>
+            <h2>CanvaEarth</h2>
+        </header>
+    )
 }
 
 export default Header

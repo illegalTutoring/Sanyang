@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import styles from './Sidebar.module.css'
+import styles from './Sidebar.module.scss'
 import Link from 'next/link'
 
 const Sidebar: React.FC = () => {
