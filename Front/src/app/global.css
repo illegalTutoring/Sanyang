@@ -3,3 +3,27 @@
     padding: 0;
     margin: 0;
 }
+
+body {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-areas:
+        'sidebar header'
+        'sidebar content'
+        'sidebar footer';
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 60px auto 60px;
+}
+
+@media (max-width: 768px) {
+    body {
+        grid-template-areas:
+            'header'
+            'content'
+            'footer';
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 60px;
+    }
+}
