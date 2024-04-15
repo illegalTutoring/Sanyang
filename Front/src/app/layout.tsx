@@ -1,4 +1,4 @@
-import './global.css'
+import './global.scss'
 import Header from '@/component/Header'
 import Sidebar from '@/component/Sidebar'
 import Footer from '@/component/Footer'
@@ -24,8 +24,10 @@ export default function RootLayout({
             <body>
                 <Header />
                 <Sidebar />
-                <main>{children}</main>
-                <Footer />
+                <main>
+                    <article>{children}</article>
+                    <Footer />
+                </main>
             </body>
         </html>
     )
