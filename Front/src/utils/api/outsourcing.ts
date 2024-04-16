@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { axiosRequestHandler } from './error'
+import { axiosRequestHandler } from './interceptor'
 
 const SERVER_URL = process.env.SERVER_URL
 
