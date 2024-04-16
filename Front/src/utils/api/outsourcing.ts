@@ -212,3 +212,83 @@ export async function searchOutsourcingByName(keyword: string) {
     }
     // END- DUMMY DATA
 }
+
+export async function getOutsourcingDetail(outsourcing_id: string) {
+    /**
+     * 외주 상세 정보를 반환한다.
+     *
+     * @beta
+     * @todo
+     * 테스트
+     * 
+     * @param outsourcing_id - 조회하고자 하는 외주의 id
+     * @returns 
+     * {
+            message: string,
+            outsourcingInfo: [
+                {
+                    outsourcingId: int,
+                    userId: string,
+                    client: string,
+                    title: string,
+                    content: string,
+                    images: [
+                        {
+                            imagePath: string,
+                        },
+                        {
+                            imagePath: string,
+                        }
+                    ],
+                },
+                ...
+            ],
+        }
+     */
+
+    // return axiosRequestHandler(async (outsourcing_id: string) => {
+    //     const response: AxiosResponse<any, any> = await axios({
+    //             method: 'GET',
+    //             url: `${SERVER_URL}/outsourcing/detail/${outsourcing_id}`
+    //         })
+    //         return response.data
+    // }, [outsourcing_id])
+
+    // START - DUMMY DATA
+    return {
+        message: '외주 상세페이지 조회 완료',
+        outsourcingInfo: [
+            {
+                outsourcingId: 2,
+                userId: 'sanyang',
+                client: 'D&F',
+                title: 'D&F 신규 캐릭터 일러스트 작업',
+                content: '작업 내용 (Contents)',
+                images: [
+                    {
+                        imagePath: '/s3/...',
+                    },
+                    {
+                        imagePath: '/s3/...',
+                    },
+                ],
+            },
+            {
+                outsourcingId: 3,
+                userId: 'sanyang',
+                client: 'D&F',
+                title: 'D&F 신규 업데이트 일러스트 작업',
+                content: '작업 내용 (Contents)',
+                images: [
+                    {
+                        imagePath: '/s3/...',
+                    },
+                    {
+                        imagePath: '/s3/...',
+                    },
+                ],
+            },
+        ],
+    }
+    // END - DUMMY DATA
+}
