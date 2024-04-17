@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-type RequestFunction = (...params: any[]) => Promise<AxiosResponse>
+type RequestFunction = (...params: any[]) => any
 
 export async function axiosRequestHandler(
     request: RequestFunction,
