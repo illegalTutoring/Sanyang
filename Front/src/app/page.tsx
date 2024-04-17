@@ -3,6 +3,9 @@
 import style from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
+import List from '@/component/TagList'
+
+import { getOutsourcingList } from '@/utils/api/outsourcing'
 
 const HomePage = () => {
     return (
@@ -18,7 +21,7 @@ const HomePage = () => {
                 height="350px"
             />
             <div className={style.container_col}>
-                <div>
+                <div className={style.link_container}>
                     <Profile
                         src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/Vector-Instagram-icon-PNG.png"
                         size={70}
@@ -49,7 +52,17 @@ const HomePage = () => {
                     />
                 </div>
                 <div>
-                    <h1>겔러리</h1>
+                    <List
+                        width="100%"
+                        height="40vh"
+                        pageSize={10}
+                        columns={['userId', 'client', 'title']}
+                        tagActions={{
+                            All: () => getOutsourcingList(2024, 4),
+                            Active: () => getOutsourcingList(2024, 4),
+                            Completed: () => getOutsourcingList(2024, 4),
+                        }}
+                    />
                 </div>
             </div>
 
