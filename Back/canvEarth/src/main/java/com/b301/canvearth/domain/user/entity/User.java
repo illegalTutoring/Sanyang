@@ -14,7 +14,7 @@ public class User {
     // 정수형 ID 일때 사용하는 전략
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
-    private String user_name;
-    private String user_password;
+    private String userName;
+    private String userPassword;
     private String role;
 }
