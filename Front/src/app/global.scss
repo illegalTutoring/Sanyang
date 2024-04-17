@@ -17,11 +17,6 @@ body {
 
 header {
     grid-area: header;
-
-    display: grid;
-    align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 main {
@@ -30,6 +25,19 @@ main {
     display: grid;
     grid-template-rows: 1fr auto;
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: rgb(143, 143, 143);
+        border-radius: 4px;
+    }
+
+    overflow: overlay;
 }
 
 @media (max-width: 768px) {
