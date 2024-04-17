@@ -52,7 +52,7 @@ public class GalleryController {
         tag.add("아따맘마");
         if(imageId == 1){
             responseBody.put(MESSAGE, "이미지 상세 정보");
-            ImageDetailResponseGetDto dto = ImageDetailResponseGetDto.builder().imageId(imageId).galleryId(1)
+            ImageDetailResponseGetDto dto = ImageDetailResponseGetDto.builder().imageId(imageId)
                     .userId("canvEarth").imageName("은찬이엥영").imagePath(path+"eunchan1.png")
                     .uploadDate("2024-04-12 12:12:12").createDate("2024").tag(tag)
                     .thumbnailPath(path+"eunchan2.png").watermarkPath(path+"shisa.png").build();

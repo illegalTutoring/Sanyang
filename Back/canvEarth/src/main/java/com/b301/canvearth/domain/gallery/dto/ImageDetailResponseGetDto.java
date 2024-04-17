@@ -21,9 +21,8 @@ public class ImageDetailResponseGetDto {
 
 
     @Builder
-    public ImageDetailResponseGetDto(int imageId, int galleryId, String userId, String imageName, String imagePath, String uploadDate, String createDate, List<String> tag, String thumbnailPath, String watermarkPath) {
+    public ImageDetailResponseGetDto(int imageId, String userId, String imageName, String imagePath, String uploadDate, String createDate, List<String> tag, String thumbnailPath, String watermarkPath) {
         this.imageId = imageId;
-        this.galleryId = galleryId;
         this.userId = userId;
         this.imageName = imageName;
         this.imagePath = imagePath;
