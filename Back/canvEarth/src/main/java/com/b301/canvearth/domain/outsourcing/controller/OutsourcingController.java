@@ -1,16 +1,16 @@
 package com.b301.canvearth.domain.outsourcing.controller;
 
+import com.b301.canvearth.domain.outsourcing.dto.OutsourcingRequestPostDto;
 import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponseGetDto;
+import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponsePostDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,4 +61,39 @@ public class OutsourcingController {
         responseBody.put("outsourcingInfo", list);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
+    @Operation(summary = "REQ-OUTSOURCING-02", description = "외주 비밀번호 입력")
+    @ApiResponse(responseCode = "200", description = "외주 비밀번호 일치")
+    @ApiResponse(responseCode = "400", description = "잘못된 비밀번호 입니다. 비밀번호는 관리자에게 문의해주세요")
+    @ApiResponse(responseCode = "500", description = "서버 에러!")
+    @PostMapping("/{outsourcingId}")
+    public ResponseEntity<Object> insertOutsourcingPassword(@PathVariable("outsourcingId") int outsourcingId,
+                                                            @RequestBody OutsourcingRequestPostDto receivedata) {
+        log.info("===== [OutsourcingController] insertOutsourcingPassword start");
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        // 암호화 되어있다면 복호화 진행
+
+        // outsourcingPassword 검사
+        if(ObjectUtils.isEmpty(receivedata.getOutsourcingPassword())) {
+            String errMsg = "oustsourcingPassword가 비어있습니다.";
+            log.error(errMsg);
+            responseBody.put(MESSAGE, errMsg);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
+
+        // DB 조회 후 일치 검사
+
+        if(!receivedata.getOutsourcingPassword().equals("ABC123DEF456GHI7")) {
+            String errMsg = "잘못된 비밀번호 입니다. 비밀번호는 관리자에게 문의해주세요";
+            log.error(errMsg);
+            responseBody.put(MESSAGE, errMsg);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
+
+        responseBody.put(MESSAGE, "외주 비밀번호 일치");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
 }
