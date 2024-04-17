@@ -3,6 +3,7 @@ package com.b301.canvearth.domain.outsourcing.controller;
 import com.b301.canvearth.domain.outsourcing.dto.OutsourcingRequestPostDto;
 import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponseGetDto;
 import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponsePostDto;
+import com.b301.canvearth.domain.outsourcing.dto.OutsourcingSearchResponseGetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +69,7 @@ public class OutsourcingController {
     @ApiResponse(responseCode = "500", description = "서버 에러!")
     @PostMapping("/{outsourcingId}")
     public ResponseEntity<Object> insertOutsourcingPassword(@PathVariable("outsourcingId") int outsourcingId,
-                                                            @RequestBody OutsourcingRequestPostDto receivedata) {
+                                                            @RequestBody OutsourcingRequestPostDto receiveData) {
         log.info("===== [OutsourcingController] insertOutsourcingPassword start");
 
         Map<String, Object> responseBody = new HashMap<>();
@@ -76,7 +77,7 @@ public class OutsourcingController {
         // 암호화 되어있다면 복호화 진행
 
         // outsourcingPassword 검사
-        if(ObjectUtils.isEmpty(receivedata.getOutsourcingPassword())) {
+        if(ObjectUtils.isEmpty(receiveData.getOutsourcingPassword())) {
             String errMsg = "oustsourcingPassword가 비어있습니다.";
             log.error(errMsg);
             responseBody.put(MESSAGE, errMsg);
@@ -85,7 +86,7 @@ public class OutsourcingController {
 
         // DB 조회 후 일치 검사
 
-        if(!receivedata.getOutsourcingPassword().equals("ABC123DEF456GHI7")) {
+        if(!receiveData.getOutsourcingPassword().equals("ABC123DEF456GHI7")) {
             String errMsg = "잘못된 비밀번호 입니다. 비밀번호는 관리자에게 문의해주세요";
             log.error(errMsg);
             responseBody.put(MESSAGE, errMsg);
@@ -93,6 +94,27 @@ public class OutsourcingController {
         }
 
         responseBody.put(MESSAGE, "외주 비밀번호 일치");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<Object> searchOutsourcingByName(@PathVariable("name") String searchName) {
+        log.info("===== [OutsourcingController] searchOutsourcingByName start");
+        log.debug("searchName: {}", searchName);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        List<OutsourcingSearchResponseGetDto> list = new ArrayList<>();
+        for(int i=0; i<5; i++) {
+            OutsourcingSearchResponseGetDto dto = OutsourcingSearchResponseGetDto.builder().outsourcingId((i+1))
+                    .userId("sanyang").client("d&f")
+                    .title("목업 작업중" + (i+1)).startDate("2024-04-17").endDate("2024-04-18").build();
+            list.add(dto);
+        }
+
+        log.info("outsourcingSearchList: {}", list);
+        responseBody.put(MESSAGE, String.format("'%s' 이름으로 검색된 결과입니다.", searchName));
+        responseBody.put("outsourcingSearchList", list);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
