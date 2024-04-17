@@ -22,13 +22,16 @@ public class UserService {
         String username = signinDto.getUsername();
         String password = signinDto.getPassword();
 
-        Boolean isExist = userRepository.existsByUserName(username);
+//        Boolean isExist = userRepository.existsByUserName(username);
+
+        Boolean isExist = userRepository.existsById(username);
 
         if(isExist){
             return;
         }
 
         User data = new User();
+        data.setId(username);
         data.setUserName(username);
         data.setUserPassword(bCryptPasswordEncoder.encode(password));
         data.setRole("ROLE_ADMIN");
