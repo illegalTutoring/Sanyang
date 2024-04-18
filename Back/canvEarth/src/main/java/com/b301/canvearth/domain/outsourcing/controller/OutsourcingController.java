@@ -29,10 +29,10 @@ public class OutsourcingController {
     @GetMapping("/{year}/{month}")
     public ResponseEntity<Object> getOutsourcingList(@PathVariable("year") int year, @PathVariable("month") int month) {
         log.info("===== [OutsourcingController] getOutsourcingList start");
+        log.info("[requestData] year: {}, month: {}", year, month);
 
         Map<String, Object> responseBody = new HashMap<>();
 
-        log.info("[input] year: {}, month: {}", year, month);
         List<OutsourcingResponseGetDto> list = new ArrayList<>();
         for(int i=0; i<50; i++) {
             int randYear = (int) (Math.random() * (3)) + 2022;
@@ -54,9 +54,9 @@ public class OutsourcingController {
             }
         }
 
-        log.info("outsourcingInfo: {}", list);
         responseBody.put(MESSAGE, String.format("%s년 %s월 외주 목록입니다.", year, month));
         responseBody.put("outsourcingInfo", list);
+        log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
@@ -68,6 +68,7 @@ public class OutsourcingController {
     public ResponseEntity<Object> insertOutsourcingPassword(@PathVariable("outsourcingId") int outsourcingId,
                                                             @RequestBody OutsourcingRequestPostDto receiveData) {
         log.info("===== [OutsourcingController] insertOutsourcingPassword start");
+        log.info("[requestData] outsourcingId: {}, receiveData: {}", outsourcingId, receiveData);
 
         Map<String, Object> responseBody = new HashMap<>();
 
@@ -75,7 +76,7 @@ public class OutsourcingController {
 
         // outsourcingPassword 검사
         if(ObjectUtils.isEmpty(receiveData.getOutsourcingPassword())) {
-            String errMsg = "oustsourcingPassword가 비어있습니다.";
+            String errMsg = "outsourcingPassword가 비어있습니다.";
             log.error(errMsg);
             responseBody.put(MESSAGE, errMsg);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
@@ -103,13 +104,14 @@ public class OutsourcingController {
 
         responseBody.put(MESSAGE, "외주 비밀번호 일치");
         responseBody.put("outsourcingInfo", outsourcingInfo);
+        log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @GetMapping("/search/{name}")
     public ResponseEntity<Object> searchOutsourcingByName(@PathVariable("name") String searchName) {
         log.info("===== [OutsourcingController] searchOutsourcingByName start");
-        log.debug("searchName: {}", searchName);
+        log.info("searchName: {}", searchName);
 
         Map<String, Object> responseBody = new HashMap<>();
 
