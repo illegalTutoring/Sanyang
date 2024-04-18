@@ -65,7 +65,10 @@ export function getOutsourcingList(year: number, month: number) {
     // END - DUMMY DATA
 }
 
-export function insertOutsourcingPassword(password: string) {
+export function insertOutsourcingPassword(
+    outsourcing_id: number,
+    password: string,
+) {
     /**
      * 입력한 비밀번호가 올바르다면, 외주 상세 정보를 반환한다.
      *
@@ -106,7 +109,7 @@ export function insertOutsourcingPassword(password: string) {
                 outsourcingInfo: response.data.outsourcingInfo,
             }
         },
-        [password],
+        [outsourcing_id, password],
     )
 
     // START - DUMMY DATA

@@ -24,7 +24,7 @@ export function getGalleryList() {
         })
         return {
             message: response.data.message,
-            galleryList: response.data.galleryList,
+            imageList: response.data.imageList,
         }
     }, [])
 
@@ -83,7 +83,7 @@ export function getGalleryListByTag(tagList: Array<string>) {
             })
             return {
                 message: response.data.message,
-                galleryList: response.data.galleryList,
+                imageList: response.data.imageList,
             }
         },
         [tagString],
