@@ -1,6 +1,8 @@
 package com.b301.canvearth.global.config;
 
-import com.b301.canvearth.global.jwt.LoginFilter;
+import com.b301.canvearth.global.jwt.JWTFilter;
+import com.b301.canvearth.global.jwt.JWTUtil;
+import com.b301.canvearth.global.jwt.LogInFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,9 +21,12 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    private final JWTUtil jwtUtil;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -54,14 +59,24 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/api/user/*").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/",
+                                "/api/user", "/api/user/*",
+                                "/api/outsourcing/*",
+                                "/api/gallery","/api/gallery/*",
+                                "/api/email",
+                                "/api/notice", "/api/notice/*",
+                                "/api/banner"
+
+                        ).permitAll()
+                        .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
                         .anyRequest().authenticated());
-
-        //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
+        // JWTFilter
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LogInFilter.class);
 
+        // LoginFilter
+        http
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http
