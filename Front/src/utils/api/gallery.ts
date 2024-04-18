@@ -9,11 +9,21 @@ export function getGalleryList() {
     /**
      * 갤러리 이미지 정보 리스트를 반환한다.
      *
-     * @beta
-     * @todo
-     * 테스트
-     *
-     * @returns galleryResponseGetDto 객체
+     * @returns 
+       {
+            message: string,
+            imageList: [
+                {
+                 userId: string,
+                 title: string,
+                 upload_date: string,
+                 image: {
+                     s3Path: '/s3/.../',
+                 },
+              },
+                ...
+            ]
+       }
      *
      */
 
@@ -57,12 +67,23 @@ export function getGalleryListByTag(tagList: Array<string>) {
     /**
      * 태그에 해당하는 갤러리 이미지 정보 리스트를 반환한다.
      *
-     * @beta
-     * @todo
-     * 테스트
-     *
      * @param tagList - tag들이 담긴 Array
-     * @returns galleryResponseGetDto 객체
+     * @returns 
+       {
+            message: string,
+            imageList: [
+                {
+                 userId: string,
+                 title: string,
+                 upload_date: string,
+                 image: {
+                     s3Path: '/s3/.../',
+                 },
+              },
+                ...
+            ]
+       }
+     *
      *
      */
 
@@ -102,6 +123,68 @@ export function getGalleryListByTag(tagList: Array<string>) {
     //             },
     //         },
     //     ],
+    // }
+    // END - DUMMY DATA
+}
+
+export function getGalleryDetail(image_id: number) {
+    /**
+     * 태그에 해당하는 갤러리 이미지 정보 리스트를 반환한다.
+     *
+     * @param imageId - 검색하는 갤러리 이미지의 id값
+     * @returns 
+       {
+            message: string,
+            imageDetail: [
+                {
+                    imageId: number,
+                    galleryId: number,
+                    userId: string,
+                    imageName: string,
+                    imagePath: string,
+                    uploadDate: string,
+                    createDate: string,
+                    tag: Array<string>,
+                    thumbnailPath: string,
+                    watermarkPath: string,
+                }
+                ...
+            ]
+       }
+     *
+     *
+     */
+
+    return axiosRequestHandler(
+        async (image_id: number) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'GET',
+                url: `${SERVER_URL}/gallery/detail/${image_id}`,
+            })
+            return {
+                message: response.data.message,
+                imageDetail: response.data.imageDetail,
+            }
+        },
+        [image_id],
+    )
+
+    // START - DUMMY DATA
+    // return {
+    //     message: "이미지 상세 정보",
+    //     imageDetail:
+    //     {
+    //         "imageId" : 1,
+    //         "galleryId" : 1,
+    //         "userId" : "canvEarth",
+    //         "imageName" : "dummy",
+    //         "imagePath": "C:/ssafy/canvEarth/image/image.png",
+    //         "uploadDate": "2024-04-12 12:12:12",
+    //         "createDate": "2024",
+    //         "tag": ["사람", "여자"],
+    //         "thumbnailPath": "C:/ssafy/canvEarth/image/image_thumbnail.png",
+    //         "watermarkPath": "C:/ssafy/canvEarth/image/image_watermark.png",
+    //     }
     // }
     // END - DUMMY DATA
 }
