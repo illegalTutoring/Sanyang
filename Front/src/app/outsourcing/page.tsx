@@ -9,9 +9,29 @@ const OutsourcingPage = () => {
             endDate: new Date(2023, 3, 12),
         },
         {
-            title: 'Vacation',
-            startDate: new Date(2023, 3, 15),
+            title: 'Vacation1',
+            startDate: new Date(2023, 3, 12),
             endDate: new Date(2023, 3, 20),
+        },
+        {
+            title: 'Vacation2',
+            startDate: new Date(2023, 3, 15),
+            endDate: new Date(2023, 3, 25),
+        },
+        {
+            title: 'Vacation3',
+            startDate: new Date(2023, 3, 20),
+            endDate: new Date(2023, 3, 24),
+        },
+        {
+            title: 'Vacation4',
+            startDate: new Date(2023, 3, 24),
+            endDate: new Date(2023, 3, 28),
+        },
+        {
+            title: 'Vacation5',
+            startDate: new Date(2023, 3, 24),
+            endDate: new Date(2023, 3, 28),
         },
     ]
 

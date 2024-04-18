@@ -3,7 +3,7 @@ import styles from './header.module.scss'
 const Header: React.FC = () => {
     return (
         <header className={styles.header}>
-            <h2>CanvaEarth</h2>
+            <h2>CanvEarth</h2>
         </header>
     )
 }

@@ -1,11 +1,12 @@
 .calendar {
-    display: flex;
+    display: grid;
+    grid-template-rows: 25px 1fr;
     flex-direction: column;
-    background-color: #f0f0f0;
 }
 
 .header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     justify-content: center;
     margin-bottom: 10px;
 }
@@ -13,22 +14,23 @@
 .daysGrid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    grid-template-rows: repeat(6, 1fr);
+    border: 1px solid #ddd;
 }
 
 .day {
-    padding: 10px;
-    background-color: #fff;
     border: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    overflow: visible;
+}
+
+.number {
+    padding-left: 5px;
 }
 
 .schedule {
-    margin-top: 4px;
-    padding: 2px 4px;
+    margin: -1px;
+    height: 20px;
     background-color: lightblue;
-    border-radius: 4px;
     font-size: 0.8rem;
+    overflow: hidden;
 }
