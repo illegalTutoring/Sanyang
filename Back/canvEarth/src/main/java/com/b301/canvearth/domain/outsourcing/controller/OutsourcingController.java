@@ -1,9 +1,6 @@
 package com.b301.canvearth.domain.outsourcing.controller;
 
-import com.b301.canvearth.domain.outsourcing.dto.OutsourcingRequestPostDto;
-import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponseGetDto;
-import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponsePostDto;
-import com.b301.canvearth.domain.outsourcing.dto.OutsourcingSearchResponseGetDto;
+import com.b301.canvearth.domain.outsourcing.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -93,7 +90,19 @@ public class OutsourcingController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
         }
 
+        OutsourcingImageInfoDto imageInfoDto = OutsourcingImageInfoDto.builder()
+                .imagePath("어딘가의 있을 S3 내의 이미지 경로..").build();
+
+        List<OutsourcingImageInfoDto> list = new ArrayList<>();
+        list.add(imageInfoDto);
+        list.add(imageInfoDto);
+
+        OutsourcingResponsePostDto outsourcingInfo = OutsourcingResponsePostDto.builder().outsourcingId(1)
+                .userId("sanyang").client("d&f").title("이건 목업입니다.").content("목업")
+                .images(list).build();
+
         responseBody.put(MESSAGE, "외주 비밀번호 일치");
+        responseBody.put("outsourcingInfo", outsourcingInfo);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
