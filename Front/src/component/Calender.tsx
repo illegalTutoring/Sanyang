@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
     format,
     startOfMonth,
@@ -9,7 +9,7 @@ import {
     getDay,
     addDays,
 } from 'date-fns'
-import styles from './Calendar.module.scss' // CSS 모듈
+import styles from './Calendar.module.scss'
 
 interface ScheduleItem {
     title: string
@@ -54,14 +54,71 @@ const Calendar: React.FC<CalendarProps> = ({
         ),
     })
 
+    const scheduleMap = useMemo(() => {
+        const map = new Map()
+        schedules.forEach((schedule) => {
+            let currentLevel = 0
+
+            for (
+                let date = new Date(schedule.startDate);
+                date <= schedule.endDate;
+                date = addDays(date, 1)
+            ) {
+                const dateKey = format(date, 'yyyy-MM-dd')
+
+                if (!map.has(dateKey)) {
+                    map.set(dateKey, { schedules: [], maxLevel: 0 })
+                }
+
+                let daySchedules = map.get(dateKey)
+                if (date.getTime() === schedule.startDate.getTime()) {
+                    currentLevel = 0
+                    while (
+                        daySchedules.schedules.some(
+                            (s: any) => s.level === currentLevel && s.visible,
+                        )
+                    ) {
+                        currentLevel++
+                    }
+                }
+
+                daySchedules.maxLevel = Math.max(
+                    daySchedules.maxLevel,
+                    currentLevel,
+                )
+
+                for (let i = 0; i < currentLevel; i++) {
+                    if (
+                        !daySchedules.schedules.some((s: any) => s.level === i)
+                    ) {
+                        daySchedules.schedules.push({
+                            title: '',
+                            level: i,
+                            visible: false,
+                        })
+                    }
+                }
+
+                daySchedules.schedules[currentLevel] = {
+                    title:
+                        date.getTime() === schedule.startDate.getTime()
+                            ? schedule.title
+                            : '',
+                    level: currentLevel,
+                    visible: true,
+                }
+            }
+        })
+
+        console.log(map)
+
+        return map
+    }, [schedules])
+
     const dayStyle = (day: Date) => {
         const isThisMonth = day.getMonth() === selectedMonth
         return {
-            gridColumnStart:
-                isThisMonth && day.getDate() === 1
-                    ? getDay(day) + 1
-                    : undefined,
-            backgroundColor: isThisMonth ? '#fff' : '#eee',
+            color: isThisMonth ? '000' : '#ccc',
         }
     }
 
@@ -90,15 +147,23 @@ const Calendar: React.FC<CalendarProps> = ({
                         style={dayStyle(day)}
                         className={styles.day}
                     >
-                        {format(day, 'd')}
-                        {schedules
-                            .filter(
-                                (schedule) =>
-                                    day >= schedule.startDate &&
-                                    day <= schedule.endDate,
-                            )
-                            .map((schedule, idx) => (
-                                <div key={idx} className={styles.schedule}>
+                        <div style={{ paddingLeft: '5px' }}>
+                            {format(day, 'd')}
+                        </div>
+                        {scheduleMap
+                            .get(format(day, 'yyyy-MM-dd'))
+                            ?.schedules.map((schedule: any, idx: number) => (
+                                <div
+                                    key={idx}
+                                    className={styles.schedule}
+                                    style={
+                                        schedule.visible == true
+                                            ? {
+                                                  backgroundColor: `hsl(${schedule.level * 30}, 50%, 70%)`,
+                                              }
+                                            : { backgroundColor: '#ffffff00' }
+                                    }
+                                >
                                     {schedule.title}
                                 </div>
                             ))}
