@@ -30,6 +30,9 @@ public class GalleryController {
     @Operation(summary = "REQ-GALLERY-01", description = "갤러리 목록")
     @GetMapping()
     public ResponseEntity<Object> getGalleryList(){
+
+        log.info("=================start getGalleryList()====================");
+
         Map<String, Object> responseBody = new HashMap<>();
         List<ImageListResponseGetDto> list = new ArrayList<>();
         list.add(ImageListResponseGetDto.builder().imageId(1).uploadDate("2024-04-12 12:12:12").createDate("2024").imagePath(path+"eunchan1.png").build());
@@ -39,28 +42,34 @@ public class GalleryController {
         responseBody.put(MESSAGE, "갤러리 목록 불러오기 성공");
         responseBody.put("imageList", list);
 
+        log.info("전달 이미지 리스트:{}", list);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    @GetMapping("/{imageId}")
+    @GetMapping("/detail/{imageId}")
     public ResponseEntity<Object> getGalleryDetail(@PathVariable("imageId") int imageId){
+        log.info("=========================start getGalleryDetail==============================");
+
         Map<String, Object> responseBody = new HashMap<>();
 
         List<String> tag = new ArrayList<>();
-        tag.add("사람");
-        tag.add("꼬마");
-        tag.add("아따맘마");
         if(imageId == 1){
+            tag.add("사람");
+            tag.add("꼬마");
+            tag.add("아따맘마");
             responseBody.put(MESSAGE, "이미지 상세 정보");
             ImageDetailResponseGetDto dto = ImageDetailResponseGetDto.builder().imageId(imageId)
-                    .userId("canvEarth").imageName("은찬이엥영").imagePath(path+"eunchan1.png")
+                    .userId("canvEarth").imageName("은찬이").imagePath(path+"eunchan1.png")
                     .uploadDate("2024-04-12 12:12:12").createDate("2024").tag(tag)
                     .thumbnailPath(path+"eunchan2.png").watermarkPath(path+"shisa.png").build();
 
+            log.info("이미지 정보: {}", dto);
             responseBody.put("imageDetail", dto);
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
 
+        log.info("1 이외의 테스트 id 들어옴");
         responseBody.put(MESSAGE,"잘못된 요청입니다.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
@@ -68,6 +77,8 @@ public class GalleryController {
 
     @GetMapping("/search/{tag}")
     public ResponseEntity<Object> getGalleryListByTag(@PathVariable("tag")String tag){
+        log.info("================start getGalleryListByTag=====================");
+        
         Map<String, Object> responseBody = new HashMap<>();
         List<ImageListResponseGetDto> list = new ArrayList<>();
 
@@ -78,17 +89,20 @@ public class GalleryController {
 
             responseBody.put(MESSAGE, tag+"태그 검색 결과");
             responseBody.put("imageList", list);
-
+            
+            log.info("검색된 이미지 리스트: {}" , list);
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
 
         if(tag == null || tag.isEmpty()) {
+            log.info("검색어 없음");
             responseBody.put(MESSAGE, "태그를 입력하세요");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
         }
 
         responseBody.put(MESSAGE, tag+"태그 검색 결과");
         responseBody.put("imageList", list);
+        log.info("태그 검색 결과:{}", list);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 

@@ -2,8 +2,10 @@ package com.b301.canvearth.domain.gallery.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class ImageListResponseGetDto {
     int imageId;
     String uploadDate;
