@@ -11,8 +11,6 @@ import lombok.Setter;
 public class User {
 
     @Id
-    // 정수형 ID 일때 사용하는 전략
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String userName;
     private String userPassword;

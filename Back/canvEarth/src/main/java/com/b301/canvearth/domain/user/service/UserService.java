@@ -22,8 +22,6 @@ public class UserService {
         String username = signinDto.getUsername();
         String password = signinDto.getPassword();
 
-//        Boolean isExist = userRepository.existsByUserName(username);
-
         Boolean isExist = userRepository.existsById(username);
 
         if(isExist){

@@ -22,10 +22,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        //DB에서 조회
         Optional<User> optionalUser = userRepository.findById(username);
+
         if (optionalUser.isPresent()) {
-            // 사용자가 존재하는 경우에 대한 로직
+
             return new CustomUserDetails(optionalUser.get());
         }
 
