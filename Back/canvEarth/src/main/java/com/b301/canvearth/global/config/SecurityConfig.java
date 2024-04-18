@@ -57,9 +57,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/",
                                 "/api/user", "/api/user/*",
-                                "/api/outsourcing/*",
-                                "/api/gallery","/api/gallery/*",
+                                "/api/outsourcing/*", "/api/outsourcing/*/*",
+                                "/api/gallery","/api/gallery/*", "/api/gallery/*/*",
                                 "/api/email",
+                                "/api/embed",
                                 "/api/notice", "/api/notice/*",
                                 "/api/banner"
 
