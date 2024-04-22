@@ -3,9 +3,11 @@ package com.b301.canvearth.global.jwt;
 import com.b301.canvearth.domain.user.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,10 +47,11 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         log.info("login success");
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        String id = customUserDetails.getId();
         String username = customUserDetails.getUsername();
         String passowrd = customUserDetails.getPassword();
 
-        log.info("username: " + username + ", password: " + passowrd);
+        log.info("username: " + username + ", id: " + id + ", password: " + passowrd);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -57,9 +60,22 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 24 * 60 * 60 * 1000L);
+        String access = jwtUtil.createJwt("access", username, role, 24 * 60 * 60 * 1000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, 24 * 60 * 60 * 1000L);
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.setHeader("access", access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
+    }
+
+    private Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 
     @Override
