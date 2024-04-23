@@ -1,0 +1,36 @@
+.calendar {
+    display: grid;
+    grid-template-rows: 25px 1fr;
+    flex-direction: column;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.daysGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    border: 1px solid #ddd;
+}
+
+.day {
+    border: 1px solid #ddd;
+    overflow: visible;
+}
+
+.number {
+    padding-left: 5px;
+}
+
+.schedule {
+    margin: -1px;
+    height: 20px;
+    background-color: lightblue;
+    font-size: 0.8rem;
+    overflow: hidden;
+}
