@@ -1,8 +1,8 @@
 package com.b301.canvearth.global.config;
 
-import com.b301.canvearth.global.jwt.JWTFilter;
-import com.b301.canvearth.global.jwt.JWTUtil;
-import com.b301.canvearth.global.jwt.LogInFilter;
+import com.b301.canvearth.global.filter.JWTFilter;
+import com.b301.canvearth.global.util.JWTUtil;
+import com.b301.canvearth.global.filter.LogInFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

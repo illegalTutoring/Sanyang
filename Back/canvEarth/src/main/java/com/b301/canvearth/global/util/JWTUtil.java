@@ -1,4 +1,4 @@
-package com.b301.canvearth.global.jwt;
+package com.b301.canvearth.global.util;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,7 @@
-package com.b301.canvearth.global.jwt;
+package com.b301.canvearth.global.filter;
 
-import com.b301.canvearth.domain.user.dto.CustomUserDetails;
+import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
+import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

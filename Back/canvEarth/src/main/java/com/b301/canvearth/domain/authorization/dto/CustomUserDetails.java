@@ -1,4 +1,4 @@
-package com.b301.canvearth.domain.user.dto;
+package com.b301.canvearth.domain.authorization.dto;
 
 import com.b301.canvearth.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;

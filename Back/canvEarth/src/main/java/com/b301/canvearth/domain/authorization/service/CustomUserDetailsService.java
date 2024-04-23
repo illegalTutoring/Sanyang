@@ -1,6 +1,6 @@
-package com.b301.canvearth.domain.user.service;
+package com.b301.canvearth.domain.authorization.service;
 
-import com.b301.canvearth.domain.user.dto.CustomUserDetails;
+import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
