@@ -215,3 +215,86 @@ export function deleteGallery(galleryId: number) {
         [galleryId],
     )
 }
+
+export function registCalendar(data: JSON) {
+    /**
+     * 일정 등록
+     *
+     * @param data - 일정 정보
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     */
+
+    return axiosRequestHandler(
+        async (data) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/calendar`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+export function modifyCalendar(data: JSON) {
+    /**
+     * 일정 수정
+     *
+     * @param data - 일정 정보
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     */
+
+    return axiosRequestHandler(
+        async (data) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/calendar/${data.calendarId}`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+export function deleteCalendar(calendarId: number) {
+    /**
+     * 일정 수정
+     *
+     * @param calendarId - 일정 id
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     */
+
+    return axiosRequestHandler(
+        async (calendarId) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/calendar/${calendarId}`,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [calendarId],
+    )
+}
