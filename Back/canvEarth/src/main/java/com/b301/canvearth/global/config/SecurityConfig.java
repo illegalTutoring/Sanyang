@@ -97,6 +97,7 @@ public class SecurityConfig {
 
                         ).permitAll()
                         .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
 
         http
