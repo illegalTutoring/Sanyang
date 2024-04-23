@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
+import Modal from '@/component/Modal'
 
 const Home: React.FC = () => {
     const defaultImages = [
@@ -140,6 +141,32 @@ const Home: React.FC = () => {
                     colCount={4}
                 />
             </div>
+            <Modal>
+                <p>이곳은 모달 창</p>
+                <ul>
+                    <li>메시지1</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                    <li>모달</li>
+                </ul>
+            </Modal>
         </div>
     )
 }
