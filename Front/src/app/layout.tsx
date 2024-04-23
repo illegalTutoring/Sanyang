@@ -3,6 +3,7 @@ import Header from '@/component/Header' // 해더 컴포넌트
 import Sidebar from '@/component/Sidebar' // 사이드바 컴포넌트
 import Footer from '@/component/Footer' // 푸터 컴포넌트
 
+// 메타데이터 설정
 export const metadata = {
     title: {
         default: 'Sanyang Portfolio - Illustrator & Artist',

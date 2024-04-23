@@ -5,8 +5,6 @@ import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
 
-import { getOutsourcingList } from '@/utils/api/outsourcing'
-
 const HomePage = () => {
     const getDummyOutsourcingList = async (year: number, month: number) => {
         return {

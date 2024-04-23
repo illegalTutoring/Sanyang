@@ -19,9 +19,6 @@ const Sidebar: React.FC = () => {
                 <nav>
                     <ul>
                         <li>
-                            <Link href="/">Home</Link>
-                        </li>
-                        <li>
                             <Link href="/outsourcing">외주</Link>
                         </li>
                         <li>
