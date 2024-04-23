@@ -13,6 +13,8 @@ body {
         'sidebar main';
     grid-template-columns: 200px 1fr;
     grid-template-rows: 70px 1fr;
+
+    font-family: 'Freesentation-9Black', sans-serif;
 }
 
 header {
@@ -47,4 +49,11 @@ main {
             'main';
         grid-template-columns: 1fr;
     }
+}
+
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('/fonts/Freesentation-9Black.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
 }
