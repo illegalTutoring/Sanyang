@@ -16,17 +16,6 @@ $dark-blue-hover: #2980b9;
     li + li {
         margin-top: 15px;
     }
-
-    a {
-        color: black;
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s ease;
-
-        &:hover {
-            color: $blue;
-        }
-    }
 }
 
 .toggleButton {
