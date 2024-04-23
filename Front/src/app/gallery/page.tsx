@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import Gallery from '@/component/Gallery'
 import styles from './gallery.module.scss'
+import Gallery from '@/component/Gallery'
+import TagInput from '@/component/TagInput'
 
 const Home: React.FC = () => {
     const defaultImages = [
@@ -81,6 +82,43 @@ const Home: React.FC = () => {
         },
     ]
 
+    const tags = [
+        'apple',
+        'alalal',
+        'apricot',
+        'avocado',
+        'acai',
+        'acerola',
+        'anchovy',
+        'antelope',
+        'ant',
+        'anaconda',
+        'asteroid',
+        'aster',
+        'aspen',
+        'amethyst',
+        'amber',
+        'arrow',
+        'armor',
+        'amphibian',
+        'aluminum',
+        'arsenic',
+        'apartment',
+        'avenue',
+        'answer',
+        'astronomy',
+        'algebra',
+        'artifact',
+        'alchemy',
+        'angle',
+        'argyle',
+        'ascot',
+        'artifact',
+        'aviation',
+        'aviary',
+        'axis',
+    ]
+
     return (
         <div className={styles.container}>
             <div className={styles.galleryWrapper}>
@@ -92,8 +130,7 @@ const Home: React.FC = () => {
                 />
             </div>
             <div>
-                <input type="" />
-                <input type="" />
+                <TagInput availableTags={tags} />
             </div>
             <div>
                 <Gallery
