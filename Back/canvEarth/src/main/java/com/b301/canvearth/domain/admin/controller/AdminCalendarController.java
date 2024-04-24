@@ -76,7 +76,7 @@ public class AdminCalendarController {
 
         calendarService.deleteCalendar(calendarId);
 
-        responseBody.put(MESSAGE, "일정 수정이 완료되었습니다.");
+        responseBody.put(MESSAGE, "일정 삭제가 완료되었습니다.");
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
 
