@@ -36,6 +36,14 @@ public class AdminWorkController {
 
         Map<String, Object> responseBody = new HashMap<>();
 
+        // image라는 form-data는 받았지만 빈 파일일 경우
+        if(image.isEmpty()) {
+            String errorMessage = "image가 비어있습니다.";
+            log.error(errorMessage);
+            responseBody.put(MESSAGE, errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
+
         String isValidWorkDto = requestPostDto.isValid();
         if(!isValidWorkDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidWorkDto);
