@@ -1,13 +1,7 @@
 package com.b301.canvearth.domain.calendar.entity;
 
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
-
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,12 +17,15 @@ public class Calendar {
     @Column(name="user_id", nullable = false)
     private String userId;
 
+    @Setter
     @Column(name="title", nullable = false)
     private String title;
 
+    @Setter
     @Column(name="start_date")
     private String startDate;
 
+    @Setter
     @Column(name="end_date")
     private String endDate;
 
