@@ -2,11 +2,11 @@ $blue: #3498db;
 $dark-blue-hover: #2980b9;
 
 .sidebar {
-    grid-area: sidebar;
     padding: 20px;
     background-color: white;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    font-size: 25px;
 
     ul {
         list-style: none;
@@ -14,7 +14,7 @@ $dark-blue-hover: #2980b9;
     }
 
     li + li {
-        margin-top: 15px;
+        margin-top: 30px;
     }
 }
 
