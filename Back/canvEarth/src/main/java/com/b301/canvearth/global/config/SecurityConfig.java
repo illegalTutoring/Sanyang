@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/api/email",
                                 "/api/embed",
                                 "/api/notice", "/api/notice/*",
-                                "/api/banner"
+                                "/api/banner",
+                                "/api/calendar/", "/api/calendar/*/*"
 
                         ).permitAll()
                         .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
