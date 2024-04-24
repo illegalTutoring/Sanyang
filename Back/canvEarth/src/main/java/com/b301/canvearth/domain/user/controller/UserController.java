@@ -1,5 +1,7 @@
 package com.b301.canvearth.domain.user.controller;
 
+import com.b301.canvearth.domain.authorization.entity.Refresh;
+import com.b301.canvearth.domain.authorization.repository.RefreshRepository;
 import com.b301.canvearth.domain.user.dto.SignInDto;
 import com.b301.canvearth.domain.user.service.UserService;
 import com.b301.canvearth.global.util.JWTUtil;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -19,10 +23,13 @@ public class UserController {
 
     private final JWTUtil jwtUtil;
 
-    public UserController(UserService userService, JWTUtil jwtUtil) {
+    private final RefreshRepository refreshRepository;
+
+    public UserController(UserService userService, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
 
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
     }
 
     @PostMapping("/signin")
@@ -35,15 +42,17 @@ public class UserController {
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
-
         String refresh = null;
 
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
+        if(cookies != null) {
 
-            if (cookie.getName().equals("refresh")) {
+            for (Cookie cookie : cookies) {
 
-                refresh = cookie.getValue();
+                if (cookie.getName().equals("refresh")) {
+
+                    refresh = cookie.getValue();
+                }
             }
         }
 
@@ -55,6 +64,7 @@ public class UserController {
         try {
 
             jwtUtil.isExpired(refresh);
+
         } catch (ExpiredJwtException e) {
 
             return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
@@ -67,11 +77,20 @@ public class UserController {
             return new ResponseEntity<>("refresh token invalid", HttpStatus.BAD_REQUEST);
         }
 
+        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        if(!isExist){
+
+            return new ResponseEntity<>("refresh token not exist", HttpStatus.BAD_REQUEST);
+        }
+
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
 
         String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+        refreshRepository.deleteByRefresh(refresh);
+        addRefreshEntity(username, newRefresh, 86400000L);
 
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
@@ -88,6 +107,18 @@ public class UserController {
         cookie.setHttpOnly(true);
 
         return cookie;
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        Refresh refreshEntity = new Refresh();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.b301.canvearth.global.filter;
 
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
+import com.b301.canvearth.domain.authorization.entity.Refresh;
+import com.b301.canvearth.domain.authorization.repository.RefreshRepository;
 import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 @Slf4j
@@ -25,10 +28,12 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
-    public LogInFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public LogInFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
         super.setFilterProcessesUrl("/api/user/login");
     }
 
@@ -45,24 +50,24 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        log.info("login success");
+//        log.info("login success");
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String id = customUserDetails.getId();
         String username = customUserDetails.getUsername();
         String passowrd = customUserDetails.getPassword();
 
-        log.info("username: " + username + ", id: " + id + ", password: " + passowrd);
+//        log.info("username: " + username + ", id: " + id + ", password: " + passowrd);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-
         GrantedAuthority auth = iterator.next();
-
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", username, role, 24 * 60 * 60 * 1000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 24 * 60 * 60 * 1000L);
+        String access = jwtUtil.createJwt("access", username, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+        addRefreshEntity(username, refresh, 86400000L);
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
@@ -77,6 +82,18 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         cookie.setHttpOnly(true);
 
         return cookie;
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        Refresh refreshEntity = new Refresh();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
     }
 
     @Override

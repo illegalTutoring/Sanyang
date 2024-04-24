@@ -1,5 +1,6 @@
 package com.b301.canvearth.global.config;
 
+import com.b301.canvearth.domain.authorization.repository.RefreshRepository;
 import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.filter.LogInFilter;
@@ -33,10 +34,13 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    private final RefreshRepository refreshRepository;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
     }
 
     @Bean
@@ -103,7 +107,8 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), LogInFilter.class);
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository),
+                        UsernamePasswordAuthenticationFilter.class);
 
         http
                 .sessionManagement((session) -> session
