@@ -55,6 +55,7 @@ public class AdminCalendarController {
     public ResponseEntity<Object> modifyCalendar(@PathVariable("calendarId") Long calendarId,
                                                  @RequestBody CalendarRequestPutDto requestPutDto) {
         log.info("===== [AdminCalendarController] modifyCalendar start =====");
+        log.info("[path variable]: {}", calendarId);
         log.info("[requestData]: {}", requestPutDto);
 
         Map<String, Object> responseBody = new HashMap<>();
@@ -66,9 +67,18 @@ public class AdminCalendarController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-//    @DeleteMapping("/{calendarId}")
-//    public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId,
-//                                                 ) {
-//
-//    }
+    @DeleteMapping("/{calendarId}")
+    public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId) {
+        log.info("===== [AdminCalendarController] deleteCalendar start =====");
+        log.info("[path variable]: {}", calendarId);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        calendarService.deleteCalendar(calendarId);
+
+        responseBody.put(MESSAGE, "일정 수정이 완료되었습니다.");
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+    }
 }

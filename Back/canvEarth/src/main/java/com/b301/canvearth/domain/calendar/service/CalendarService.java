@@ -59,4 +59,11 @@ public class CalendarService {
 
         calendarRepository.save(calendar);
     }
+
+    public void deleteCalendar(Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId)
+                .orElseThrow(() -> new IllegalArgumentException("Calendar not found with id: " + calendarId));
+
+        calendarRepository.delete(calendar);
+    }
 }
