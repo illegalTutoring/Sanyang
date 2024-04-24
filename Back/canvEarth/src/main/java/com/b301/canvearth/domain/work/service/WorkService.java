@@ -42,7 +42,7 @@ public class WorkService {
         String thumbnailPath = s3Service.uploadImage(image, uuid, "thumbnail");
 
         // watermarkPath
-        String watermarkPath = s3Service.uploadImage(image, uuid, "watermarkPath");
+        String watermarkPath = s3Service.uploadImage(image, uuid, "watermark");
 
         if(originalPath == null) {
             log.error("originalPath가 비어있습니다.");
