@@ -44,7 +44,8 @@ public class AdminCalendarController {
         Calendar calendar = Calendar.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
                 .startDate(requestPostDto.getStartDate()).endDate(requestPostDto.getEndDate()).build();
 
-        calendarService.insertCalendar(calendar);
+        Calendar insertCalendar = calendarService.insertCalendar(calendar);
+        log.info("success insert: {}", insertCalendar);
 
         responseBody.put(MESSAGE, "일정 등록이 완료되었습니다.");
         log.info("[responseData] {}", responseBody);
