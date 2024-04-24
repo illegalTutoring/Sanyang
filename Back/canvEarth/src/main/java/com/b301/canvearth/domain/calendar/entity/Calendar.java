@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@ToString
 @Table(name="Calendar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Calendar {
