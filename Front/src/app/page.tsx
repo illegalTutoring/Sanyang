@@ -38,7 +38,7 @@ const HomePage = () => {
                 ]}
                 interval={3000}
                 width="100%"
-                height="350px"
+                height="50vh"
             />
             <div className={style.container_col}>
                 <div className={style.link_container}>

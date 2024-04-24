@@ -7,18 +7,23 @@
 body {
     width: 100vw;
     height: 100vh;
+
     display: grid;
     grid-template-areas:
         'header header'
         'sidebar main';
     grid-template-columns: 200px 1fr;
-    grid-template-rows: 70px 1fr;
+    grid-template-rows: 60px 1fr;
 
     font-family: 'Freesentation-9Black', sans-serif;
 }
 
 header {
     grid-area: header;
+}
+
+aside {
+    grid-area: sidebar;
 }
 
 main {
