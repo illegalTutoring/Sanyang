@@ -28,9 +28,9 @@ public class AdminWorkController {
     private final WorkService workService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> uploadFile(@RequestPart MultipartFile image,
+    public ResponseEntity<Object> registWork(@RequestPart MultipartFile image,
                                              @RequestPart("data") WorkRequestPostDto requestPostDto){
-        log.info("===== [AdminWorkController] uploadFile start =====");
+        log.info("===== [AdminWorkController] registWork start =====");
         log.info("[requestImageName]: {}", image.getOriginalFilename());
         log.info("[requestData]: {}", requestPostDto);
 
@@ -64,4 +64,11 @@ public class AdminWorkController {
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
+//    @PutMapping("/{workId}")
+//    public ResponseEntity<Object> modifyWork(@PathVariable("workId") String workId) {
+//        log.info("===== [AdminWorkController] modifyWork start =====");
+//        log.info("[path variable]: {}", workId);
+//
+//    }
 }
