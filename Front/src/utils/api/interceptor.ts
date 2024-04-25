@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 
 type RequestFunction = (...params: any[]) => any
 
-export async function axiosRequestHandler(
+export function axiosRequestHandler(
     request: RequestFunction,
     params: any[],
 ) {
