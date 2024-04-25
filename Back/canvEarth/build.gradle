@@ -47,7 +47,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// lettuce
-	implementation 'io.lettuce:lettuce-core:6.3.2.RELEASE'
+//	implementation 'io.lettuce:lettuce-core:6.3.2.RELEASE'
 
 }
 

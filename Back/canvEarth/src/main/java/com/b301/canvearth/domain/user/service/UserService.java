@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    final private UserRepository userRepository;
+    final private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
@@ -22,7 +22,7 @@ public class UserService {
         String username = signinDto.getUsername();
         String password = signinDto.getPassword();
 
-        Boolean isExist = userRepository.existsById(username);
+        boolean isExist = userRepository.existsById(username);
 
         if(isExist){
             return;
@@ -36,4 +36,5 @@ public class UserService {
 
         userRepository.save(data);
     }
+
 }

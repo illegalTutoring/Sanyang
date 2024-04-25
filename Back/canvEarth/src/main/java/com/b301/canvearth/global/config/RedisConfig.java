@@ -14,34 +14,59 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    final String host;
-    final int port;
+    @Value("${spring.data.redis.host}")
+    private String host;
 
-    public RedisConfig(@Value("${spring.data.redis.host}") final String host,
-                       @Value("${spring.data.redis.port}") final int port) {
-        this.host = host;
-        this.port = port;
-    }
+    @Value("${spring.data.redis.port}")
+    private int port;
+
 
     @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
+    public LettuceConnectionFactory refreshLettuceConnectionFactory() {
+
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, port);
+        redisConfig.setDatabase(0);
 
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl().and()
+//                .useSsl().and()
                 .commandTimeout(Duration.ofSeconds(2))
                 .shutdownTimeout(Duration.ZERO)
                 .build();
-//        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port), clientConfig);
+
+        return new LettuceConnectionFactory(redisConfig, clientConfig);
     }
 
+//    @Bean
+//    public LettuceConnectionFactory blackListLettuceConnectionFactory() {
+//        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, port);
+//        redisConfig.setDatabase(1);
+//
+//        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+//                .useSsl().and()
+//                .commandTimeout(Duration.ofSeconds(2))
+//                .shutdownTimeout(Duration.ZERO)
+//                .build();
+//
+//        return new LettuceConnectionFactory(redisConfig, clientConfig);
+//    }
+
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(lettuceConnectionFactory());
+    public RedisTemplate<String, String> refreshRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(refreshLettuceConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
 
         return redisTemplate;
     }
+
+//    @Bean
+//    public RedisTemplate<String, String> blackListRedisTemplate() {
+//        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(refreshLettuceConnectionFactory());
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+//
+//        return redisTemplate;
+//    }
 }

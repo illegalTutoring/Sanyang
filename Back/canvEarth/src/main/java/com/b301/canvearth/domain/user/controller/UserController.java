@@ -1,7 +1,6 @@
 package com.b301.canvearth.domain.user.controller;
 
-import com.b301.canvearth.domain.authorization.entity.Refresh;
-import com.b301.canvearth.domain.authorization.repository.RefreshRepository;
+import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.domain.user.dto.SignInDto;
 import com.b301.canvearth.domain.user.service.UserService;
 import com.b301.canvearth.global.util.JWTUtil;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -23,24 +20,24 @@ public class UserController {
 
     private final JWTUtil jwtUtil;
 
-    private final RefreshRepository refreshRepository;
+    private final RefreshService refreshService;
 
-    public UserController(UserService userService, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public UserController(UserService userService, JWTUtil jwtUtil, RefreshService refreshService) {
 
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.refreshService = refreshService;
     }
 
     @PostMapping("/signin")
-    public String join(SignInDto signinDto) {
-        System.out.println(signinDto);
+    public String signIn(SignInDto signinDto) {
         userService.signInProcess(signinDto);
+        // return 처리 필요함
         return "ok";
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> reIssue(HttpServletRequest request, HttpServletResponse response) {
 
         String refresh = null;
 
@@ -77,48 +74,37 @@ public class UserController {
             return new ResponseEntity<>("refresh token invalid", HttpStatus.BAD_REQUEST);
         }
 
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        String username = jwtUtil.getUsername(refresh);
+        String role = jwtUtil.getRole(refresh);
+
+        boolean isExist = refreshService.isRefreshTokenValid(username, refresh);
+
         if(!isExist){
 
             return new ResponseEntity<>("refresh token not exist", HttpStatus.BAD_REQUEST);
         }
 
-        String username = jwtUtil.getUsername(refresh);
-        String role = jwtUtil.getRole(refresh);
-
         String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
-        refreshRepository.deleteByRefresh(refresh);
-        addRefreshEntity(username, newRefresh, 86400000L);
+        refreshService.deleteRefreshToken(username);
+        refreshService.saveRefreshToken(username, newRefresh, 86400000L);
 
         response.setHeader("access", newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
+        response.addCookie(createCookie(newRefresh));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Cookie createCookie(String key, String value) {
+    private Cookie createCookie(String value) {
 
-        Cookie cookie = new Cookie(key, value);
+        Cookie cookie = new Cookie("refresh", value);
         cookie.setMaxAge(24 * 60 * 60);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;
-    }
-
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        Refresh refreshEntity = new Refresh();
-        refreshEntity.setUsername(username);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
-
-        refreshRepository.save(refreshEntity);
     }
 
 }

@@ -1,10 +1,9 @@
 package com.b301.canvearth.global.config;
 
-import com.b301.canvearth.domain.authorization.repository.RefreshRepository;
+import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.filter.LogInFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,13 +32,13 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
 
-    private final RefreshRepository refreshRepository;
+    private final RefreshService refreshService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshService refreshService) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.refreshService = refreshService;
     }
 
     @Bean
@@ -59,23 +57,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+                .cors((corsCustomizer -> corsCustomizer.configurationSource(request -> {
 
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                    CorsConfiguration configuration = new CorsConfiguration();
 
-                        CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setMaxAge(3600L);
 
-                        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
+                    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
 
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                        return configuration;
-                    }
+                    return configuration;
                 })));
 
 
@@ -91,15 +85,20 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/",
+                                // 개발용 : ADMIN 권한 우회
+//                                "/api/admin", "/api/admin/*", "/api/admin/*/*",
+                                //
                                 "/api/user", "/api/user/*",
-                                "/api/outsourcing/*", "/api/outsourcing/*/*",
-                                "/api/gallery","/api/gallery/*", "/api/gallery/*/*",
-                                "/api/email",
-                                "/api/embed",
+                                "/api/calendar/*/*",
+                                "/api/work",
+                                "/api/gallery",
                                 "/api/notice", "/api/notice/*",
-                                "/api/banner"
+                                "/api/banner",
+                                "/api/embed",
+                                "/api/support"
 
                         ).permitAll()
+                        // 배포용 : ADMIN 권한 확인
                         .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
@@ -107,7 +106,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), LogInFilter.class);
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository),
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService),
                         UsernamePasswordAuthenticationFilter.class);
 
         http
