@@ -17,9 +17,6 @@ public class Banner {
     @Column(name="image_path", nullable = false)
     private String path;
 
-    @Column(name="image_name")
-    private String name;
-
     @Column(name = "coordinate_x")
     private double coordinateX;
 
@@ -27,9 +24,8 @@ public class Banner {
     private double coordinateY;
 
     @Builder
-    public Banner(String path, String name, double coordinateX, double coordinateY) {
+    public Banner(String path, double coordinateX, double coordinateY) {
         this.path = path;
-        this.name = name;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
     }
