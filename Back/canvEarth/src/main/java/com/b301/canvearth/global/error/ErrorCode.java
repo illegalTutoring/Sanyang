@@ -14,7 +14,8 @@ public enum ErrorCode {
     NO_IMAGE(HttpStatus.BAD_REQUEST, "이미지가 없습니다."),
     UNSUPPORTED_IMAGE_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 파일 형식입니다."),
     TOO_LARGE_CAPACITY(HttpStatus.PAYLOAD_TOO_LARGE, "이미지 용량이 너무 큽니다."),
-    SIZE_IS_NOT_CORRECT(HttpStatus.BAD_REQUEST, "이미지 크기가 맞지 않습니다.");
+    SIZE_IS_NOT_CORRECT(HttpStatus.BAD_REQUEST, "이미지 크기가 맞지 않습니다."),
+    IMAGE_AND_INFO_SIZE_MISMATCH(HttpStatus.BAD_REQUEST, "배너이미지와 좌표 정보 길이가 일치하지 않습니다.");
 
 
     private final HttpStatus httpStatus;
