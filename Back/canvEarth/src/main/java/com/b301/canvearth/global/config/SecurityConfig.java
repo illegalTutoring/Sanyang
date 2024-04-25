@@ -56,6 +56,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        // Spring security CORS 정책
         http
                 .cors((corsCustomizer -> corsCustomizer.configurationSource(request -> {
 
@@ -72,22 +73,28 @@ public class SecurityConfig {
                     return configuration;
                 })));
 
-
+        // CSRF Disable
         http
                 .csrf(AbstractHttpConfigurer::disable);
 
+        // FormLogin Disable
         http
                 .formLogin(AbstractHttpConfigurer::disable);
 
+        // HttpBasic Disable
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/",
-                                // 개발용 : ADMIN 권한 우회
-//                                "/api/admin", "/api/admin/*", "/api/admin/*/*",
-                                //
+                                /*
+                                    로그인을 통한 토큰 발행 JWT(access, refresh)없이
+                                    API test 진행하고자할 때 사용!!!
+                                */
+
+                                // 1. 개발용 : ADMIN 권한 우회 URI 허용
+                                //"/api/admin", "/api/admin/*", "/api/admin/*/*",
                                 "/api/user", "/api/user/*",
                                 "/api/calendar/*/*",
                                 "/api/work",
@@ -98,7 +105,7 @@ public class SecurityConfig {
                                 "/api/support"
 
                         ).permitAll()
-                        // 배포용 : ADMIN 권한 확인
+                        // 2. 배포용 : ADMIN 권한 확인
                         .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
