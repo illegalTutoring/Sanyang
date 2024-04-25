@@ -3,7 +3,7 @@ import { axiosRequestHandler } from './interceptor'
 
 const SERVER_URL = process.env.SERVER_URL
 
-export function getGalleryList() {
+export function getWorkList() {
     /**
      * 외주 이미지 정보 목록을 반환한다.
      *
@@ -12,9 +12,10 @@ export function getGalleryList() {
      *      message: string,
      *      data: [
      *          {
-     *              galleryId: number,
+     *              workId: number,
                     userId: String,
                     title: String,
+                    company: String,
                     startDate: String,
                     endDate: String,
                     uploadDate: String,
@@ -31,7 +32,7 @@ export function getGalleryList() {
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
             method: 'GET',
-            url: `${SERVER_URL}/gallery`,
+            url: `${SERVER_URL}/work`,
         })
         return {
             message: response.data.message,
@@ -45,9 +46,10 @@ export function getGalleryList() {
         message: string,
         data: [
             {
-                galleryId: 1,
+                workId: 1,
                 userId: "sanyang",
                 title: "d&f 캐릭터 작업",
+                company: "d&f",
                 startDate: "2024-04-01"
                 endDate: "2024-04-30"
                 uploadDate: "2024-04-12 12:12:12",
