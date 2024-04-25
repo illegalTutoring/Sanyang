@@ -12,9 +12,12 @@ import {
 import styles from './Calendar.module.scss'
 
 interface ScheduleItem {
+    calendarId: number
+    userId: string
+    company: string
     title: string
-    startDate: Date
-    endDate: Date
+    startDate: string
+    endDate: string
 }
 
 interface CalendarProps {
@@ -61,7 +64,7 @@ const Calendar: React.FC<CalendarProps> = ({
 
             for (
                 let date = new Date(schedule.startDate);
-                date <= schedule.endDate;
+                date <= new Date(schedule.endDate);
                 date = addDays(date, 1)
             ) {
                 const dateKey = format(date, 'yyyy-MM-dd')
@@ -71,7 +74,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
 
                 let daySchedules = map.get(dateKey)
-                if (date.getTime() === schedule.startDate.getTime()) {
+                if (date.getTime() === new Date(schedule.startDate).getTime()) {
                     currentLevel = 0
                     while (
                         daySchedules.schedules.some(
@@ -101,7 +104,8 @@ const Calendar: React.FC<CalendarProps> = ({
 
                 daySchedules.schedules[currentLevel] = {
                     title:
-                        date.getTime() === schedule.startDate.getTime()
+                        date.getTime() ===
+                        new Date(schedule.startDate).getTime()
                             ? schedule.title
                             : '',
                     level: currentLevel,
