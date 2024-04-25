@@ -5,7 +5,6 @@ import com.b301.canvearth.domain.user.dto.SignInDto;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.domain.user.repository.UserRepository;
 import com.b301.canvearth.global.util.JWTUtil;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -81,9 +80,8 @@ public class UserService {
         }
 
         // 3. refresh 토큰 유효기간 검증
-        try {
-            jwtUtil.isExpired(refresh);
-        } catch (ExpiredJwtException e) {
+        boolean isExpired = jwtUtil.isExpired(refresh);
+        if (isExpired) {
             return "refresh token expired";
         }
 
