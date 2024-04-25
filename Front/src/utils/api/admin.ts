@@ -6,7 +6,15 @@ const SERVER_URL = process.env.SERVER_URL
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-export function registWork(data: JSON, image: File) {
+interface registWorkDTO {
+    userId: String
+    company: String
+    title: String
+    startDate: String
+    endDate: String
+    tags: Array<String>
+}
+export function registWork(data: registWorkDTO, image: File) {
     /**
      * 외주 등록
      *
@@ -44,7 +52,14 @@ export function registWork(data: JSON, image: File) {
     )
 }
 
-export function modifyWork(data: JSON, image: File | null) {
+interface modifyWorkDTO {
+    company: String
+    title: String
+    startDate: String
+    endDate: String
+    tags: Array<String>
+}
+export function modifyWork(data: Object, image: File | null) {
     /**
      * 외주 수정
      *
@@ -111,7 +126,13 @@ export function deleteWork(workId: number) {
     )
 }
 
-export function registGallery(data: JSON, image: File) {
+interface registGalleryDTO {
+    title: String
+    content: String
+    createDate: String
+    tags: Array<String>
+}
+export function registGallery(data: registGalleryDTO, image: File) {
     /**
      * 갤러리 등록
      *
@@ -149,9 +170,16 @@ export function registGallery(data: JSON, image: File) {
     )
 }
 
-export function modifyGallery(data: JSON, image: File | null) {
+interface modifyGalleryDTO {
+    galleryId: number
+    title: String
+    content: String
+    createDate: String
+    tags: Array<String>
+}
+export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
     /**
-     * 외주 수정
+     * 갤러리 수정
      *
      * @param data - 갤러리 정보
      * @param image - 이미지 (수정되지 않으면 null)
@@ -216,16 +244,19 @@ export function deleteGallery(galleryId: number) {
     )
 }
 
-export function registCalendar(data: JSON) {
+interface registCalendarDTO {
+    userId: String
+    title: String
+    startDate: String
+    endDate: String
+}
+export function registCalendar(data: registCalendarDTO) {
     /**
      * 일정 등록
      *
      * @param data - 일정 정보
      * @returns 서버 응답 메시지
      *
-     * @beta
-     * @todo
-     * 테스트
      */
 
     return axiosRequestHandler(
@@ -244,16 +275,20 @@ export function registCalendar(data: JSON) {
     )
 }
 
-export function modifyCalendar(data: JSON) {
+interface modifyCalendarDTO {
+    calendarId: number
+    userId: String
+    title: String
+    startDate: String
+    endDate: String
+}
+export function modifyCalendar(data: modifyCalendarDTO) {
     /**
      * 일정 수정
      *
      * @param data - 일정 정보
      * @returns 서버 응답 메시지
      *
-     * @beta
-     * @todo
-     * 테스트
      */
 
     return axiosRequestHandler(
@@ -279,9 +314,6 @@ export function deleteCalendar(calendarId: number) {
      * @param calendarId - 일정 id
      * @returns 서버 응답 메시지
      *
-     * @beta
-     * @todo
-     * 테스트
      */
 
     return axiosRequestHandler(
