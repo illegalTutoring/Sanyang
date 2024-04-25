@@ -7,16 +7,23 @@
 body {
     width: 100vw;
     height: 100vh;
+
     display: grid;
     grid-template-areas:
         'header header'
         'sidebar main';
     grid-template-columns: 200px 1fr;
-    grid-template-rows: 70px 1fr;
+    grid-template-rows: 60px 1fr;
+
+    font-family: 'Freesentation-9Black', sans-serif;
 }
 
 header {
     grid-area: header;
+}
+
+aside {
+    grid-area: sidebar;
 }
 
 main {
@@ -40,6 +47,17 @@ main {
     overflow: overlay;
 }
 
+a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: lightblue;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         grid-template-areas:
@@ -47,4 +65,11 @@ main {
             'main';
         grid-template-columns: 1fr;
     }
+}
+
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('/fonts/Freesentation-9Black.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
 }

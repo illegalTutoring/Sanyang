@@ -5,9 +5,29 @@ import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
 
-import { getOutsourcingList } from '@/utils/api/outsourcing'
-
 const HomePage = () => {
+    const getDummyOutsourcingList = async (year: number, month: number) => {
+        return {
+            message: `${year}년 ${month}월 외주 목록입니다.`,
+            outsourcingInfo: [
+                {
+                    userId: 'sanyang',
+                    client: 'D&F',
+                    title: 'D&F 신규 캐릭터 일러스트 작업',
+                    startDate: '2024-04-01',
+                    endDate: '2024-04-30',
+                },
+                {
+                    userId: 'sanyang',
+                    client: 'D&F',
+                    title: 'D&F 신규 업데이트 일러스트 작업',
+                    startDate: '2024-05-01',
+                    endDate: '2024-05-31',
+                },
+            ],
+        }
+    }
+
     return (
         <>
             <Banner
@@ -18,7 +38,7 @@ const HomePage = () => {
                 ]}
                 interval={3000}
                 width="100%"
-                height="350px"
+                height="50vh"
             />
             <div className={style.container_col}>
                 <div className={style.link_container}>
@@ -58,9 +78,9 @@ const HomePage = () => {
                         pageSize={10}
                         columns={['userId', 'client', 'title']}
                         tagActions={{
-                            All: () => getOutsourcingList(2024, 4),
-                            Active: () => getOutsourcingList(2024, 4),
-                            Completed: () => getOutsourcingList(2024, 4),
+                            All: () => getDummyOutsourcingList(2024, 4),
+                            Active: () => getDummyOutsourcingList(2024, 4),
+                            Completed: () => getDummyOutsourcingList(2024, 4),
                         }}
                     />
                 </div>

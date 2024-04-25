@@ -2,16 +2,18 @@ package com.b301.canvearth.domain.outsourcing.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class OutsourcingResponseGetDto {
 
-    private int outsourcingId;
-    private String userId;
-    private String client;
-    private String title;
-    private String startDate;
-    private String endDate;
+    private final int outsourcingId;
+    private final String userId;
+    private final String client;
+    private final String title;
+    private final String startDate;
+    private final String endDate;
 
     @Builder
     public OutsourcingResponseGetDto(int outsourcingId, String userId, String client, String title, String startDate, String endDate) {

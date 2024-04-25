@@ -4,152 +4,329 @@ import { axiosRequestHandler } from './interceptor'
 const SERVER_URL = process.env.SERVER_URL
 
 // TODO: redux에서 값을 가져오도록 수정할 것.
-let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
+let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-// TODO: 외주 등록, 외주 수정, 외주 삭제
-// TODO: 갤러리 등록, 갤러리 수정, 갤러리 삭제
-
-export function modifyBanner(image: File) {
+interface registWorkDTO {
+    userId: String
+    company: String
+    title: String
+    startDate: String
+    endDate: String
+    tags: Array<String>
+}
+export function registWork(data: registWorkDTO, image: File) {
     /**
-     * 배너 이미지 변경
+     * 외주 등록
      *
-     * @param image - 변경하고자 하는 새로운 이미지
+     * @param data - 외주 정보
+     * @param image - 이미지
      * @returns 서버 응답 메시지
      *
      * @beta
      * @todo
      * 테스트
-     * 더미 데이터 추가
+     *
      */
 
     return axiosRequestHandler(
-        async (image) => {
+        async (data, image) => {
+            const blobData = new Blob([JSON.stringify(data)], {
+                type: 'application/json',
+            })
             const formData = new FormData()
-            formData.append('image', image, 'banner')
+            formData.append('data', blobData)
+            formData.append('image', image)
 
             const response: AxiosResponse<any, any> = await axios({
-                method: 'PUT',
-                url: `${SERVER_URL}/admin/banner`,
+                method: 'POST',
+                url: `${SERVER_URL}/admin/work`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: token,
+                    Authorization: accessToken,
                 },
             })
             return { message: response.data.message }
         },
-        [image],
+        [data, image],
     )
 }
 
-// TODO: 임베드 링크 변경
-
-export function insertNotice(title: string, content: string, type: number) {
+interface modifyWorkDTO {
+    company: String
+    title: String
+    startDate: String
+    endDate: String
+    tags: Array<String>
+}
+export function modifyWork(data: Object, image: File | null) {
     /**
-     * 공지 사항 추가
+     * 외주 수정
      *
-     * @param title - 공지 사항 제목
-     * @param content - 공지 사항 내용
-     * @param type - 공지 분류 번호 (0: 공지사항, 1: 업데이트)
+     * @param data - 외주 정보
+     * @param image - 이미지 (수정되지 않으면 null)
      * @returns 서버 응답 메시지
      *
      * @beta
      * @todo
      * 테스트
-     * 더미 데이터 추가
+     *
      */
 
     return axiosRequestHandler(
-        async (title: string, content: string, type: number) => {
-            const response: AxiosResponse<any, any> = await axios({
-                method: 'POST',
-                url: `${SERVER_URL}/admin/notice`,
-                data: {
-                    title,
-                    content,
-                    type,
-                },
-                headers: {
-                    Authorization: token,
-                },
+        async (data, image) => {
+            const blobData = new Blob([JSON.stringify(data)], {
+                type: 'application/json',
             })
-            return { message: response.data.message }
-        },
-        [title, content, type],
-    )
-}
+            const formData = new FormData()
+            formData.append('data', blobData)
 
-export function modifyNotice(
-    notice_id: number,
-    title: string,
-    content: string,
-    type: number,
-) {
-    /**
-     * 공지 사항 수정
-     *
-     * @param notice_id - 공지 사항 id
-     * @param title - 공지 사항 제목
-     * @param content - 공지 사항 내용
-     * @param type - 공지 분류 번호 (0: 공지사항, 1: 업데이트)
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     * 더미 데이터 추가
-     */
+            if (image) formData.append('image', image)
 
-    return axiosRequestHandler(
-        async (
-            notice_id: number,
-            title: string,
-            content: string,
-            type: number,
-        ) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/notice/${notice_id}`,
-                data: {
-                    id: notice_id,
-                    title,
-                    content,
-                    type,
-                },
+                url: `${SERVER_URL}/admin/work/${data.workId}`,
+                data: formData,
                 headers: {
-                    Authorization: token,
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: accessToken,
                 },
             })
             return { message: response.data.message }
         },
-        [notice_id, title, content, type],
+        [data, image],
     )
 }
 
-export function deleteNotice(notice_id: number) {
+export function deleteWork(workId: number) {
     /**
-     * 공지 사항 삭제
+     * 외주 삭제
      *
-     * @param notice_id - 공지 사항 id
+     * @param workId - 외주 id
      * @returns 서버 응답 메시지
      *
      * @beta
      * @todo
      * 테스트
-     * 더미 데이터 추가
+     *
      */
 
     return axiosRequestHandler(
-        async (notice_id: number) => {
+        async (workId) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'DELETE',
-                url: `${SERVER_URL}/admin/notice/${notice_id}`,
+                url: `${SERVER_URL}/admin/work/${workId}`,
                 headers: {
-                    Authorization: token,
+                    Authorization: accessToken,
                 },
             })
             return { message: response.data.message }
         },
-        [notice_id],
+        [workId],
+    )
+}
+
+interface registGalleryDTO {
+    title: String
+    content: String
+    createDate: String
+    tags: Array<String>
+}
+export function registGallery(data: registGalleryDTO, image: File) {
+    /**
+     * 갤러리 등록
+     *
+     * @param data - 갤러리 정보
+     * @param image - 이미지
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     *
+     */
+
+    return axiosRequestHandler(
+        async (data, image) => {
+            const blobData = new Blob([JSON.stringify(data)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+            formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/gallery`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data, image],
+    )
+}
+
+interface modifyGalleryDTO {
+    galleryId: number
+    title: String
+    content: String
+    createDate: String
+    tags: Array<String>
+}
+export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
+    /**
+     * 갤러리 수정
+     *
+     * @param data - 갤러리 정보
+     * @param image - 이미지 (수정되지 않으면 null)
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     *
+     */
+
+    return axiosRequestHandler(
+        async (data, image) => {
+            const blobData = new Blob([JSON.stringify(data)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+
+            if (image) formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/gallery/${data.galleryId}`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data, image],
+    )
+}
+
+export function deleteGallery(galleryId: number) {
+    /**
+     * 갤러리 삭제
+     *
+     * @param galleryId - 갤러리 id
+     * @returns 서버 응답 메시지
+     *
+     * @beta
+     * @todo
+     * 테스트
+     *
+     */
+
+    return axiosRequestHandler(
+        async (galleryId) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/gallery/${galleryId}`,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [galleryId],
+    )
+}
+
+interface registCalendarDTO {
+    userId: String
+    title: String
+    startDate: String
+    endDate: String
+}
+export function registCalendar(data: registCalendarDTO) {
+    /**
+     * 일정 등록
+     *
+     * @param data - 일정 정보
+     * @returns 서버 응답 메시지
+     *
+     */
+
+    return axiosRequestHandler(
+        async (data) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/calendar`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+interface modifyCalendarDTO {
+    calendarId: number
+    userId: String
+    title: String
+    startDate: String
+    endDate: String
+}
+export function modifyCalendar(data: modifyCalendarDTO) {
+    /**
+     * 일정 수정
+     *
+     * @param data - 일정 정보
+     * @returns 서버 응답 메시지
+     *
+     */
+
+    return axiosRequestHandler(
+        async (data) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/calendar/${data.calendarId}`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+export function deleteCalendar(calendarId: number) {
+    /**
+     * 일정 수정
+     *
+     * @param calendarId - 일정 id
+     * @returns 서버 응답 메시지
+     *
+     */
+
+    return axiosRequestHandler(
+        async (calendarId) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/calendar/${calendarId}`,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [calendarId],
     )
 }
