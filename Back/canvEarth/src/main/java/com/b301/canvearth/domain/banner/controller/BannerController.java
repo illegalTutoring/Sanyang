@@ -1,6 +1,8 @@
 package com.b301.canvearth.domain.banner.controller;
 
 
+import com.b301.canvearth.domain.banner.dto.BannerListResponseGetDto;
+import com.b301.canvearth.domain.banner.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,16 @@ import java.util.Map;
 @RequestMapping("/api/banner")
 public class BannerController {
 
+    private final BannerService bannerService;
+
     @Operation(summary = "REQ-BANNER-01", description = "배너 이미지 보기")
     @GetMapping()
     public ResponseEntity<Object> getBanner(){
 
-        Map<String, Object> responseBody = new HashMap<>();
+        log.info("=================START getBanner()====================");
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        BannerListResponseGetDto bannerList = BannerListResponseGetDto.builder().bannerList(bannerService.findAllBanner()).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(bannerList);
     }
 }
