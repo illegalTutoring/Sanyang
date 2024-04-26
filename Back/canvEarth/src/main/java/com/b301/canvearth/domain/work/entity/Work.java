@@ -23,15 +23,19 @@ public class Work {
     @Column(name="user_id", nullable = false)
     private String userId;
 
+    @Setter
     @Column(name="title", nullable = false)
     private String title;
 
+    @Setter
     @Column(name="company")
     private String company;
 
+    @Setter
     @Column(name="start_date")
     private String startDate;
 
+    @Setter
     @Column(name="end_date")
     private String endDate;
 
@@ -39,16 +43,20 @@ public class Work {
     @Column(name="upload_date")
     private Date uploadDate;
 
+    @Setter
     @Type(ListArrayType.class)
     @Column(columnDefinition = "varchar[]")
     private List<String> tags;
 
+    @Setter
     @Column(name="original_path")
     private String originalPath;
 
+    @Setter
     @Column(name="thumbnail_path")
     private String thumbnailPath;
 
+    @Setter
     @Column(name="watermark_path")
     private String watermarkPath;
 
