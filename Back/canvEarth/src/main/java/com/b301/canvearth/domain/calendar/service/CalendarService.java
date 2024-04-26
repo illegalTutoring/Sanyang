@@ -47,7 +47,7 @@ public class CalendarService {
     }
 
     public List<Calendar> getCalendarList() {
-        return calendarRepository.findAll(Sort.by(Sort.Direction.DESC, "calendarId"));
+        return calendarRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public void modifyCalendar(Long calendarId, CalendarRequestPutDto requestPutDto) {
