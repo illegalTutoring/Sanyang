@@ -1,29 +1,18 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
+import { getCalendarResponseDTO } from './DTO/calendar'
 
 const SERVER_URL = process.env.SERVER_URL
 
-export function getCalendar(year: number, month: number) {
+export function getCalendar(
+    year: number,
+    month: number,
+): getCalendarResponseDTO {
     /**
      * 월별 일정 리스트를 반환한다.
      *
      * @param year - 조회하고자 하는 연도
      * @param month - 조회하고자 하는 월
-     * @returns
-     * {
-     *      message: string,
-     *      data: [
-     *          {
-     *              calendarId: int,
-     *              userId: string,
-     *              company: string,
-     *              title: string,
-     *              startDate: string,
-     *              endDate: string,
-     *          },
-     *          ...
-     *      ]
-     * }
      */
 
     return axiosRequestHandler(
