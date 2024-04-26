@@ -1,7 +1,6 @@
 package com.b301.canvearth.domain.banner.service;
 
 import com.b301.canvearth.domain.admin.dto.BannerRequestPutDto;
-import com.b301.canvearth.domain.banner.dto.BannerCoordinate;
 import com.b301.canvearth.domain.banner.entity.Banner;
 import com.b301.canvearth.domain.banner.repository.BannerRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
@@ -34,17 +33,17 @@ public class BannerService {
 
 
     @Transactional
-    public String updateBanner(List<MultipartFile> images, BannerRequestPutDto infos) {
+    public String updateBanner(List<MultipartFile> images, List<BannerRequestPutDto> infos) {
         log.info("===== [BannerService] updateBanner START =====");
 
         // null 검사
-        if(images.isEmpty() || infos.getImageInfo() == null){
+        if(images.isEmpty() || infos.isEmpty()){
             bannerRepository.deleteAll();
             return "배너 변경 완료";
         }
 
         // 개수 불일치
-        if(images.size() != infos.getImageInfo().size()){
+        if(images.size() != infos.size()){
             throw new CustomException(ErrorCode.IMAGE_AND_INFO_SIZE_MISMATCH);
         }
 
@@ -74,7 +73,7 @@ public class BannerService {
             String path = s3Service.uploadImage(mf,uuid,"");
 
             // 좌표 얻기
-            BannerCoordinate c = infos.getImageInfo().get(i);
+            BannerRequestPutDto c = infos.get(i);
             Banner banner = Banner.builder().path(path).coordinateX(c.getCoordinateX()).coordinateY(c.getCoordinateY()).build();
 
             //저장
