@@ -1,5 +1,9 @@
+'use client'
+
 import Calendar from '@/component/Calender'
-import style from './outsourcing.module.scss'
+import styles from './outsourcing.module.scss'
+import { useDarkModeStore } from '@/utils/store/useThemaStore'
+import { use } from 'react'
 
 const OutsourcingPage = () => {
     const schedules = [
@@ -34,9 +38,12 @@ const OutsourcingPage = () => {
             endDate: new Date(2023, 3, 28),
         },
     ]
+    const { darkMode } = useDarkModeStore()
 
     return (
-        <div className={style.container}>
+        <article
+            className={`${styles.container} ${darkMode ? 'dark' : 'light'}`}
+        >
             <Calendar
                 width="80vw" // 동적으로 크기 지정
                 height="90vh" // 동적으로 크기 지정
@@ -44,7 +51,7 @@ const OutsourcingPage = () => {
                 month={4}
                 schedules={schedules}
             />
-        </div>
+        </article>
     )
 }
 

@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
+import { useDarkModeStore } from '@/utils/store/useThemaStore'
 
 const Sidebar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { darkMode, toggleDarkMode } = useDarkModeStore()
 
     return (
         <>
@@ -16,7 +18,9 @@ const Sidebar: React.FC = () => {
             >
                 {isOpen ? 'Close' : 'Menu'}
             </button>
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+            <aside
+                className={`${styles.sidebar} ${isOpen ? styles.open : ''} ${darkMode ? 'dark' : 'light'}`}
+            >
                 <nav>
                     <ul>
                         <li>
@@ -37,6 +41,9 @@ const Sidebar: React.FC = () => {
                         </li>
                     </ul>
                 </nav>
+                <button onClick={toggleDarkMode}>
+                    {darkMode ? 'Light Mode' : 'Dark Mode'}
+                </button>
             </aside>
         </>
     )

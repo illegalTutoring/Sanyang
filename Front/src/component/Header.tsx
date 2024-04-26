@@ -5,12 +5,14 @@ import Link from 'next/link'
 import Profile from '@/component/Profile'
 import Modal from '@/component/Modal'
 import useAuthStore from '@/utils/store/useAuthStore'
+import { useDarkModeStore } from '@/utils/store/useThemaStore'
 
 const Header: React.FC = () => {
     const { isLoggedIn } = useAuthStore()
+    const { darkMode } = useDarkModeStore()
 
     return (
-        <header className={styles.header}>
+        <header className={`${styles.header} ${darkMode ? 'dark' : 'light'}`}>
             <h2>
                 <Link href="/">CanvEarth</Link>
             </h2>
