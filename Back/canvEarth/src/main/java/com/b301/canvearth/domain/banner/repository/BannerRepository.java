@@ -1,4 +1,8 @@
 package com.b301.canvearth.domain.banner.repository;
 
-public class BannerRepository {
+import com.b301.canvearth.domain.banner.entity.Banner;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BannerRepository extends JpaRepository<Banner,Long> {
+
 }
