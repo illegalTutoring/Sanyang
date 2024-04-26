@@ -1,27 +1,38 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
+import {
+    deleteWorkResponseDTO,
+    modifyWorkRequestDTO,
+    modifyWorkResponseDTO,
+    registWorkRequestDTO,
+    reigstWorkResponseDTO,
+} from './DTO/work'
+import {
+    deleteGalleryResponseDTO,
+    modifyGalleryRequestDTO,
+    modifyGalleryResponseDTO,
+    registGalleryRequestDTO,
+    registGalleryResponseDTO,
+} from './DTO/gallery'
+import {
+    deleteCalendarResponseDTO,
+    modifyCalendarRequestDTO,
+    modifyCalendarResponseDTO,
+    registCalendarRequestDTO,
+    registCalendarResponseDTO,
+} from './DTO/calendar'
+import {
+    modifyBannerListRequestDTO,
+    modifyBannerListResponseDTO,
+} from './DTO/banner'
 
 const SERVER_URL = process.env.SERVER_URL
 
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-interface serverResponseDTO {
-    message: String
-}
-
 // #########################################################
 // Start - Work API
-
-interface registWorkRequestDTO {
-    userId: String
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
-}
-interface reigstWorkResponseDTO extends serverResponseDTO {}
 
 export function registWork(
     data: registWorkRequestDTO,
@@ -63,15 +74,6 @@ export function registWork(
         [data, image],
     )
 }
-
-interface modifyWorkRequestDTO {
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
-}
-interface modifyWorkResponseDTO extends serverResponseDTO {}
 
 export function modifyWork(
     data: modifyWorkRequestDTO,
@@ -115,8 +117,6 @@ export function modifyWork(
     )
 }
 
-interface deleteWorkResponseDTO extends serverResponseDTO {}
-
 export function deleteWork(workId: number): deleteWorkResponseDTO {
     /**
      * 외주 삭제
@@ -150,13 +150,6 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
 
 // #########################################################
 // Start - Gallery API
-interface registGalleryRequestDTO {
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
-}
-interface registGalleryResponseDTO extends serverResponseDTO {}
 
 export function registGallery(
     data: registGalleryRequestDTO,
@@ -198,15 +191,6 @@ export function registGallery(
         [data, image],
     )
 }
-
-interface modifyGalleryRequestDTO {
-    galleryId: number
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
-}
-interface modifyGalleryResponseDTO extends serverResponseDTO {}
 
 export function modifyGallery(
     data: modifyGalleryRequestDTO,
@@ -250,8 +234,6 @@ export function modifyGallery(
     )
 }
 
-interface deleteGalleryResponseDTO extends serverResponseDTO {}
-
 export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
     /**
      * 갤러리 삭제
@@ -285,13 +267,6 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
 
 // #########################################################
 // Start - Calendar API
-interface registCalendarRequestDTO {
-    userId: String
-    title: String
-    startDate: String
-    endDate: String
-}
-interface registCalendarResponseDTO extends serverResponseDTO {}
 
 export function registCalendar(
     data: registCalendarRequestDTO,
@@ -320,15 +295,6 @@ export function registCalendar(
     )
 }
 
-interface modifyCalendarRequestDTO {
-    calendarId: number
-    userId: String
-    title: String
-    startDate: String
-    endDate: String
-}
-interface modifyCalendarResponseDTO extends serverResponseDTO {}
-
 export function modifyCalendar(
     data: modifyCalendarRequestDTO,
 ): modifyCalendarResponseDTO {
@@ -355,8 +321,6 @@ export function modifyCalendar(
         [data],
     )
 }
-
-interface deleteCalendarResponseDTO extends serverResponseDTO {}
 
 export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
     /**
@@ -387,18 +351,6 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
 
 // #########################################################
 // Start - Banner API
-
-interface imageInfo {
-    x: number
-    y: number
-}
-interface modifyBannerListRequestDTO {
-    // 주의!
-    // images와 해당 이미지의 정보를 담은 infos의 index가 정확하게 매치 되어야한다.
-    images: Array<File>
-    infos: Array<imageInfo>
-}
-interface modifyBannerListResponseDTO {}
 
 export function modifyBannerList(
     data: modifyBannerListRequestDTO,
