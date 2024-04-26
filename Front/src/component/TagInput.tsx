@@ -1,4 +1,5 @@
 import { useState, ChangeEvent, KeyboardEvent } from 'react'
+import styles from './TagInput.module.scss'
 
 interface TagInputProps {
     availableTags: string[]
@@ -61,41 +62,57 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
         }
     }
 
+    const deleteTag = (tagToDelete: string) => {
+        const updatedTags = tags.filter((tag) => tag !== tagToDelete)
+        setTags(updatedTags)
+    }
     return (
         <div>
-            <div>
+            <div className={styles.tagBox}>
                 {tags.map((tag, index) => (
-                    <span key={index} style={{ marginRight: '10px' }}>
+                    <div className={styles.tag} key={index}>
                         {tag}
-                    </span>
+                        <button
+                            className={styles.deleteButton}
+                            onClick={() => deleteTag(tag)}
+                            aria-label="Delete tag"
+                        >
+                            ×
+                        </button>
+                    </div>
                 ))}
             </div>
-            <input
-                type="text"
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleInputKeyDown}
-                placeholder="Add a tag..."
-            />
-            {suggestions.length > 0 && (
-                <ul>
-                    {suggestions.map((suggestion, index) => (
-                        <li
-                            key={index}
-                            onClick={() => selectTag(suggestion)}
-                            style={{
-                                cursor: 'pointer',
-                                backgroundColor:
-                                    index === selectedIndex
-                                        ? 'lightgray'
-                                        : 'transparent',
-                            }}
-                        >
-                            {suggestion}
-                        </li>
-                    ))}
-                </ul>
-            )}
+
+            <div className={styles.inputBox}>
+                <input
+                    type="text"
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    placeholder="Add a tag..."
+                />
+                {suggestions.length > 0 && (
+                    <ul className={styles.suggestions}>
+                        {suggestions.map((suggestion, index) => (
+                            <li
+                                key={index}
+                                onClick={() => selectTag(suggestion)}
+                                style={{
+                                    cursor: 'pointer',
+                                    backgroundColor:
+                                        index === selectedIndex
+                                            ? 'lightgray'
+                                            : 'transparent',
+                                    padding: '10px',
+                                    borderBottom: '1px solid #eee',
+                                }}
+                            >
+                                {suggestion}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     )
 }
