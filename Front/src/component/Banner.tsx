@@ -3,6 +3,7 @@ import styles from './Banner.module.scss'
 
 interface BannerProps {
     images: string[]
+    yindex: number[]
     interval: number
     width?: string
     height?: string
@@ -10,11 +11,13 @@ interface BannerProps {
 
 const Banner: React.FC<BannerProps> = ({
     images,
+    yindex,
     interval,
     width = '100%',
     height = '300px',
 }) => {
     const extendedImages = [...images, images[0]]
+    const extendedYIndex = [...yindex, yindex[0]] // yindex도 확장해줍니다.
     const [currentIdx, setCurrentIdx] = useState(0)
     const [transitionEnabled, setTransitionEnabled] = useState(true)
 
@@ -46,13 +49,17 @@ const Banner: React.FC<BannerProps> = ({
                         : 'none',
                 }}
             >
-                {extendedImages.map((extendedImages, index) => (
-                    <img
+                {extendedImages.map((image, index) => (
+                    <div
                         key={index}
-                        src={extendedImages}
-                        alt={`Banner Image ${index}`}
                         className={styles.imageItem}
-                        style={{ width: `${100 / images.length}%` }}
+                        style={{
+                            backgroundImage: `url(${image})`,
+                            backgroundPositionY: `${extendedYIndex[index]}px`, // y축 위치를 조정합니다.
+                            backgroundSize: 'cover',
+                            width: `${100 / images.length}%`,
+                            height: '100%',
+                        }}
                     />
                 ))}
             </div>

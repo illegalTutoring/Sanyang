@@ -38,6 +38,7 @@ const HomePage = () => {
                 ]}
                 interval={5000}
                 width="100%"
+                yindex={[-60, -150, -450]}
                 height="50vh"
             />
             <div className={style.container_col}>
