@@ -98,4 +98,19 @@ public class AdminWorkController {
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
+    @DeleteMapping("/{workId}")
+    public ResponseEntity<Object> deleteWork(@PathVariable("workId") Long workId) {
+        log.info("===== [AdminWorkController] deleteWork start =====");
+        log.info("[path variable]: {}", workId);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        workService.deleteWork(workId);
+
+        responseBody.put(MESSAGE, "외주 작품 삭제가 완료되었습니다.");
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+    }
 }
