@@ -22,17 +22,20 @@ const Banner: React.FC<BannerProps> = ({
     const [transitionEnabled, setTransitionEnabled] = useState(true)
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            const nextIdx = (currentIdx + 1) % extendedImages.length
+        const timer = setInterval(
+            () => {
+                const nextIdx = (currentIdx + 1) % extendedImages.length
 
-            if (nextIdx === 0) {
-                setTransitionEnabled(false)
-                setCurrentIdx(0)
-            } else {
-                setCurrentIdx(nextIdx)
-                setTransitionEnabled(true)
-            }
-        }, interval)
+                if (nextIdx === 0) {
+                    setTransitionEnabled(false)
+                    setCurrentIdx(0)
+                } else {
+                    setCurrentIdx(nextIdx)
+                    setTransitionEnabled(true)
+                }
+            },
+            transitionEnabled ? interval : 200,
+        )
 
         return () => clearInterval(timer)
     }, [currentIdx, extendedImages.length, interval])
@@ -55,7 +58,7 @@ const Banner: React.FC<BannerProps> = ({
                         className={styles.imageItem}
                         style={{
                             backgroundImage: `url(${image})`,
-                            backgroundPositionY: `${extendedYIndex[index]}px`, // y축 위치를 조정합니다.
+                            backgroundPositionY: `${extendedYIndex[index]}px`,
                             backgroundSize: 'cover',
                             width: `${100 / images.length}%`,
                             height: '100%',
