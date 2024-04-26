@@ -2,9 +2,12 @@ package com.b301.canvearth.domain.admin.controller;
 
 
 import com.b301.canvearth.domain.admin.dto.WorkRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.WorkResponsePutDto;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.service.WorkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,10 +68,49 @@ public class AdminWorkController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-//    @PutMapping("/{workId}")
-//    public ResponseEntity<Object> modifyWork(@PathVariable("workId") String workId) {
-//        log.info("===== [AdminWorkController] modifyWork start =====");
-//        log.info("[path variable]: {}", workId);
-//
-//    }
+    @PutMapping("/{workId}")
+    public ResponseEntity<Object> modifyWork(@PathVariable("workId") Long workId,
+                                             @RequestPart(value="image", required = false) MultipartFile image,
+                                             @RequestPart("data") WorkRequestPutDto requestPutDto) {
+        log.info("===== [AdminWorkController] modifyWork start =====");
+        log.info("[path variable]: {}", workId);
+        log.info("[requestData]: {}", requestPutDto);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        String isValidWorkDto = requestPutDto.isValid();
+        if(!isValidWorkDto.equals("valid")) {
+            String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidWorkDto);
+            log.error(errorMessage);
+            responseBody.put(MESSAGE, errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
+
+        Work modifyWork = workService.modifyWork(workId, image, requestPutDto);
+
+        WorkResponsePutDto responsePutDto = WorkResponsePutDto.builder()
+                .original(modifyWork.getOriginalPath())
+                .thumbnail(modifyWork.getThumbnailPath())
+                .watermark(modifyWork.getWatermarkPath()).build();
+
+        responseBody.put(MESSAGE, "외주 작품 수정이 완료되었습니다.");
+        responseBody.put("data", responsePutDto);
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    @DeleteMapping("/{workId}")
+    public ResponseEntity<Object> deleteWork(@PathVariable("workId") Long workId) {
+        log.info("===== [AdminWorkController] deleteWork start =====");
+        log.info("[path variable]: {}", workId);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        workService.deleteWork(workId);
+
+        responseBody.put(MESSAGE, "외주 작품 삭제가 완료되었습니다.");
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+    }
 }
