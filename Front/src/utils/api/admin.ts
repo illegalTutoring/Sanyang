@@ -6,7 +6,14 @@ const SERVER_URL = process.env.SERVER_URL
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-interface registWorkDTO {
+interface serverResponseDTO {
+    message: String
+}
+
+// #########################################################
+// Start - Work API
+
+interface registWorkRequestDTO {
     userId: String
     company: String
     title: String
@@ -14,7 +21,12 @@ interface registWorkDTO {
     endDate: String
     tags: Array<String>
 }
-export function registWork(data: registWorkDTO, image: File) {
+interface reigstWorkResponseDTO extends serverResponseDTO {}
+
+export function registWork(
+    data: registWorkRequestDTO,
+    image: File,
+): reigstWorkResponseDTO {
     /**
      * 외주 등록
      *
@@ -52,14 +64,19 @@ export function registWork(data: registWorkDTO, image: File) {
     )
 }
 
-interface modifyWorkDTO {
+interface modifyWorkRequestDTO {
     company: String
     title: String
     startDate: String
     endDate: String
     tags: Array<String>
 }
-export function modifyWork(data: Object, image: File | null) {
+interface modifyWorkResponseDTO extends serverResponseDTO {}
+
+export function modifyWork(
+    data: modifyWorkRequestDTO,
+    image: File | null,
+): modifyWorkResponseDTO {
     /**
      * 외주 수정
      *
@@ -98,7 +115,9 @@ export function modifyWork(data: Object, image: File | null) {
     )
 }
 
-export function deleteWork(workId: number) {
+interface deleteWorkResponseDTO extends serverResponseDTO {}
+
+export function deleteWork(workId: number): deleteWorkResponseDTO {
     /**
      * 외주 삭제
      *
@@ -126,13 +145,23 @@ export function deleteWork(workId: number) {
     )
 }
 
-interface registGalleryDTO {
+// End - Work API
+// #########################################################
+
+// #########################################################
+// Start - Gallery API
+interface registGalleryRequestDTO {
     title: String
     content: String
     createDate: String
     tags: Array<String>
 }
-export function registGallery(data: registGalleryDTO, image: File) {
+interface registGalleryResponseDTO extends serverResponseDTO {}
+
+export function registGallery(
+    data: registGalleryRequestDTO,
+    image: File,
+): registGalleryResponseDTO {
     /**
      * 갤러리 등록
      *
@@ -170,14 +199,19 @@ export function registGallery(data: registGalleryDTO, image: File) {
     )
 }
 
-interface modifyGalleryDTO {
+interface modifyGalleryRequestDTO {
     galleryId: number
     title: String
     content: String
     createDate: String
     tags: Array<String>
 }
-export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
+interface modifyGalleryResponseDTO extends serverResponseDTO {}
+
+export function modifyGallery(
+    data: modifyGalleryRequestDTO,
+    image: File | null,
+): modifyGalleryResponseDTO {
     /**
      * 갤러리 수정
      *
@@ -216,7 +250,9 @@ export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
     )
 }
 
-export function deleteGallery(galleryId: number) {
+interface deleteGalleryResponseDTO extends serverResponseDTO {}
+
+export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
     /**
      * 갤러리 삭제
      *
@@ -244,13 +280,22 @@ export function deleteGallery(galleryId: number) {
     )
 }
 
-interface registCalendarDTO {
+// End - Gallery API
+// #########################################################
+
+// #########################################################
+// Start - Calendar API
+interface registCalendarRequestDTO {
     userId: String
     title: String
     startDate: String
     endDate: String
 }
-export function registCalendar(data: registCalendarDTO) {
+interface registCalendarResponseDTO extends serverResponseDTO {}
+
+export function registCalendar(
+    data: registCalendarRequestDTO,
+): registCalendarResponseDTO {
     /**
      * 일정 등록
      *
@@ -275,14 +320,18 @@ export function registCalendar(data: registCalendarDTO) {
     )
 }
 
-interface modifyCalendarDTO {
+interface modifyCalendarRequestDTO {
     calendarId: number
     userId: String
     title: String
     startDate: String
     endDate: String
 }
-export function modifyCalendar(data: modifyCalendarDTO) {
+interface modifyCalendarResponseDTO extends serverResponseDTO {}
+
+export function modifyCalendar(
+    data: modifyCalendarRequestDTO,
+): modifyCalendarResponseDTO {
     /**
      * 일정 수정
      *
@@ -307,7 +356,9 @@ export function modifyCalendar(data: modifyCalendarDTO) {
     )
 }
 
-export function deleteCalendar(calendarId: number) {
+interface deleteCalendarResponseDTO extends serverResponseDTO {}
+
+export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
     /**
      * 일정 수정
      *
@@ -330,3 +381,48 @@ export function deleteCalendar(calendarId: number) {
         [calendarId],
     )
 }
+
+// End - Calendar API
+// #########################################################
+
+// #########################################################
+// Start - Banner API
+
+interface imageInfo {
+    x: number
+    y: number
+}
+interface modifyBannerListRequestDTO {
+    // 주의!
+    // images와 해당 이미지의 정보를 담은 infos의 index가 정확하게 매치 되어야한다.
+    images: Array<File>
+    infos: Array<imageInfo>
+}
+interface modifyBannerListResponseDTO {}
+
+export function modifyBannerList(
+    data: modifyBannerListRequestDTO,
+): modifyBannerListResponseDTO {
+    /**
+     * 배너 수정
+     *
+     * @param data - 배너 이미지 및 이미지의 정보
+     * @returns 서버 응답 메시지
+     *
+     */
+
+    return axiosRequestHandler(async (data: modifyBannerListRequestDTO) => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'PUT',
+            url: `${SERVER_URL}/admin/banner`,
+            data: data,
+            headers: {
+                Authorization: accessToken,
+            },
+        })
+        return { message: response.data.message }
+    }, [])
+}
+
+// End - Banner API
+// #########################################################
