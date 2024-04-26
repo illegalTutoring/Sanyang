@@ -15,12 +15,7 @@ export interface GalleryProps {
     height?: string
 }
 
-const Gallery: React.FC<GalleryProps> = ({
-    images,
-    colCount,
-    width,
-    height,
-}) => {
+const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
     const breakpointColumnsObj = {
         default: colCount,
         1100: colCount > 3 ? 3 : colCount,
