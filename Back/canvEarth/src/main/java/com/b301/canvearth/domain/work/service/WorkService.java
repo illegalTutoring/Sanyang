@@ -58,7 +58,7 @@ public class WorkService {
     }
 
     public List<Work> getWorkList() {
-        return workRepository.findAll(Sort.by(Sort.Direction.DESC, "workId"));
+        return workRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public Work modifyWork(Long workId, MultipartFile image, WorkRequestPutDto requestPutDto) {
