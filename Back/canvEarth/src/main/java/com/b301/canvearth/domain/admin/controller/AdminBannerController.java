@@ -33,7 +33,7 @@ public class AdminBannerController {
 
     @Operation(summary = "REQ-ADMIN-03", description = "배너 이미지 변경")
     @PutMapping()
-    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "images")List<MultipartFile> images, @RequestPart(value = "infos")  List<BannerRequestPutDto> infos){
+    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "images", required = false)List<MultipartFile> images, @RequestPart(value = "infos", required = false)  List<BannerRequestPutDto> infos){
         log.info("===== [AdminBannerController] modifyBannerList START =====");
         log.info("[images]: {}", images);
         log.info("[infos] : {}", infos);
