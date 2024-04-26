@@ -5,11 +5,8 @@ import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
-<<<<<<< HEAD
 import useDarkModeStore from '@/utils/store/useThemaStore'
-=======
 import GridGallery from '@/component/GridGallery'
->>>>>>> fe/feature/gallery
 
 const Home: React.FC = () => {
     const defaultImages = [
