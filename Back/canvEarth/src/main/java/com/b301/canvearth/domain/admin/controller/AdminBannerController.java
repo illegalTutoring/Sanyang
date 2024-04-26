@@ -27,22 +27,22 @@ public class AdminBannerController {
 
     private final BannerService bannerService;
 
+    private final static String MESSAGE = "message";
+
+
+
     @Operation(summary = "REQ-ADMIN-03", description = "배너 이미지 변경")
     @PutMapping()
-    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "image")List<MultipartFile> image, @RequestPart(value = "info")  BannerRequestPutDto info){
-
-        log.info("=========================START AdminBannerController.modifyBannerList ==========================");
-        log.info("image1: {} ", image.get(0).getOriginalFilename());
-//        log.info("image2: {} ", image.get(1).getOriginalFilename());
-        log.info("info: {}", info.getImageInfo());
-
-
+    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "images")List<MultipartFile> images, @RequestPart(value = "infos")  List<BannerRequestPutDto> infos){
+        log.info("===== [AdminBannerController] modifyBannerList START =====");
+        log.info("[images]: {}", images);
+        log.info("[infos] : {}", infos);
 
         Map<String, Object> responseBody = new HashMap<>();
 
-        String message = bannerService.updateBanner(image, info);
+        String message = bannerService.updateBanner(images, infos);
 
-        responseBody.put("message", message);
+        responseBody.put(MESSAGE, message);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
