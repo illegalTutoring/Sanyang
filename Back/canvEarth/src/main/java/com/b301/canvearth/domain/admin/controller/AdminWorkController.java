@@ -7,6 +7,7 @@ import com.b301.canvearth.domain.admin.dto.WorkResponsePutDto;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.service.WorkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -69,11 +70,10 @@ public class AdminWorkController {
 
     @PutMapping("/{workId}")
     public ResponseEntity<Object> modifyWork(@PathVariable("workId") Long workId,
-                                             @RequestPart("image") MultipartFile image,
+                                             @RequestPart(value="image", required = false) MultipartFile image,
                                              @RequestPart("data") WorkRequestPutDto requestPutDto) {
         log.info("===== [AdminWorkController] modifyWork start =====");
         log.info("[path variable]: {}", workId);
-        log.info("[requestImageName]: {}", image.getOriginalFilename());
         log.info("[requestData]: {}", requestPutDto);
 
         Map<String, Object> responseBody = new HashMap<>();

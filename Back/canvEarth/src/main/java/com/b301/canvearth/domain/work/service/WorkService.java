@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +66,7 @@ public class WorkService {
         // 이미지가 비지 않은 경우 받은 이미지로 S3에 이미지 변경 후 DB에도 반영
         boolean changeImage = false;
         Map<String, String> paths = new HashMap<>();
-        if(!image.isEmpty()) {
+        if(image != null && !image.isEmpty()) {
             paths = uploadS3AndGetPath(image);
             changeImage = true;
         }
