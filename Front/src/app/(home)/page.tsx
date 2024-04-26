@@ -4,10 +4,10 @@ import style from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
-import { useDarkModeStore } from '@/utils/store/useThemaStore'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const HomePage = () => {
-    const { darkMode } = useDarkModeStore()
+    const { isDarkMode } = useDarkModeStore()
 
     const getDummyOutsourcingList = async (year: number, month: number) => {
         return {
@@ -32,7 +32,7 @@ const HomePage = () => {
     }
 
     return (
-        <article className={`${darkMode ? 'dark' : 'light'}`}>
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <Banner
                 images={[
                     'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',

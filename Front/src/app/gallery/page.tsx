@@ -5,7 +5,7 @@ import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
-import { useDarkModeStore } from '@/utils/store/useThemaStore'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const Home: React.FC = () => {
     const defaultImages = [
@@ -121,11 +121,11 @@ const Home: React.FC = () => {
         'axis',
     ]
 
-    const { darkMode } = useDarkModeStore()
+    const { isDarkMode } = useDarkModeStore()
 
     return (
         <article
-            className={`${styles.container} ${darkMode ? 'dark' : 'light'}`}
+            className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
         >
             <div className={styles.galleryWrapper}>
                 <Gallery
