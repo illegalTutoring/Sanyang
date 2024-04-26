@@ -4,18 +4,21 @@ import styles from './Header.module.scss'
 import Link from 'next/link'
 import Profile from '@/component/Profile'
 import Modal from '@/component/Modal'
+import useAuthStore from '@/utils/store/useAuthStore'
+import { useDarkModeStore } from '@/utils/store/useThemaStore'
 
 const Header: React.FC = () => {
-    let isLogin = false
+    const { isLoggedIn } = useAuthStore()
+    const { darkMode } = useDarkModeStore()
 
     return (
-        <header className={styles.header}>
+        <header className={`${styles.header} ${darkMode ? 'dark' : 'light'}`}>
             <h2>
                 <Link href="/">CanvEarth</Link>
             </h2>
             <div></div>
 
-            {isLogin ? (
+            {isLoggedIn ? (
                 <div className={styles.profile}>
                     <Profile
                         src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"

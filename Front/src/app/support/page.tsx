@@ -1,3 +1,13 @@
+'use client'
+
+import { useDarkModeStore } from '@/utils/store/useThemaStore'
+
 export default function GalleryPage() {
-    return <h1>서포트 페이지</h1>
+    const { darkMode } = useDarkModeStore()
+
+    return (
+        <article className={`${darkMode ? 'dark' : 'light'}`}>
+            <h1>서포트 페이지</h1>
+        </article>
+    )
 }
