@@ -4,9 +4,15 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
+import useAuthStore from '@/utils/store/useAuthStore'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore '
 
 const Sidebar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { isDarkMode, toggleDarkMode } = useDarkModeStore()
+    const { isLoggedIn } = useAuthStore()
+    const { isEditMode, toggleEditMode } = useEditModeStore()
 
     return (
         <>
@@ -16,7 +22,9 @@ const Sidebar: React.FC = () => {
             >
                 {isOpen ? 'Close' : 'Menu'}
             </button>
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+            <aside
+                className={`${styles.sidebar} ${isOpen ? styles.open : ''} ${isDarkMode ? 'dark' : 'light'}`}
+            >
                 <nav>
                     <ul>
                         <li>
@@ -37,6 +45,18 @@ const Sidebar: React.FC = () => {
                         </li>
                     </ul>
                 </nav>
+                <button onClick={toggleDarkMode}>
+                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                </button>
+
+                <br></br>
+
+                {isLoggedIn &&
+                    (isEditMode ? (
+                        <button onClick={toggleEditMode}>edit</button>
+                    ) : (
+                        <button onClick={toggleEditMode}>view</button>
+                    ))}
             </aside>
         </>
     )

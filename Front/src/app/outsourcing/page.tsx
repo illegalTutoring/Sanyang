@@ -1,7 +1,9 @@
 'use client'
 
+import styles from './outsourcing.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+
 import Calendar from '@/component/Calender'
-import style from './outsourcing.module.scss'
 import { getCalendar } from '@/utils/api/calendar'
 import { useEffect, useState } from 'react'
 
@@ -29,8 +31,11 @@ const OutsourcingPage: React.FC = () => {
         fetchSchedules()
     }, [])
 
+    const { isDarkMode } = useDarkModeStore()
     return (
-        <div className={style.container}>
+        <article
+            className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
+        >
             <Calendar
                 width="80vw"
                 height="90vh"
@@ -38,7 +43,7 @@ const OutsourcingPage: React.FC = () => {
                 month={new Date().getMonth() + 1}
                 schedules={schedules}
             />
-        </div>
+        </article>
     )
 }
 

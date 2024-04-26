@@ -57,6 +57,9 @@ a {
         color: lightblue;
     }
 }
+[data-theme='dark'] {
+    color: #ffffff;
+}
 
 @media (max-width: 768px) {
     body {
@@ -72,4 +75,21 @@ a {
     src: url('/fonts/Freesentation-9Black.ttf') format('woff2');
     font-weight: 900;
     font-style: normal;
+}
+
+.light {
+    background-color: #ffffff;
+    color: #333333;
+
+    a {
+        color: #333333;
+    }
+}
+.dark {
+    background-color: #333333;
+    color: #ffffff;
+
+    a {
+        color: #ffffff;
+    }
 }

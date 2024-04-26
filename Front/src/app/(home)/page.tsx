@@ -4,8 +4,11 @@ import style from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const HomePage = () => {
+    const { isDarkMode } = useDarkModeStore()
+
     const getDummyOutsourcingList = async (year: number, month: number) => {
         return {
             message: `${year}년 ${month}월 외주 목록입니다.`,
@@ -29,7 +32,7 @@ const HomePage = () => {
     }
 
     return (
-        <>
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <Banner
                 images={[
                     'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
@@ -123,7 +126,7 @@ const HomePage = () => {
             <h1>메인 페이지</h1>
             <h1>메인 페이지</h1>
             <h1>메인 페이지</h1>
-        </>
+        </article>
     )
 }
 
