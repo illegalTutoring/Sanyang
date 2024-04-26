@@ -1,9 +1,12 @@
 package com.b301.canvearth.domain.work.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -39,6 +42,9 @@ public class Work {
     @Column(name="end_date")
     private String endDate;
 
+    @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul") //날짜 포멧 바꾸기
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="upload_date")
     private Date uploadDate;
