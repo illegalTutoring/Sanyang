@@ -14,7 +14,7 @@ interface workInfo {
     watermark: String
 }
 
-export interface getWorkListResponseDTO {
+export interface getWorkListResponseDTO extends serverResponseDTO {
     data: Array<workInfo>
 }
 

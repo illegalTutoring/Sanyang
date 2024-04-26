@@ -13,7 +13,7 @@ interface galleryInfo {
     watermark: String
 }
 
-export interface getGalleryListResponseDTO {
+export interface getGalleryListResponseDTO extends serverResponseDTO {
     data: Array<galleryInfo>
 }
 

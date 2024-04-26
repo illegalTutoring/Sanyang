@@ -12,7 +12,7 @@ interface bannerInfo {
     coordinateY: number
 }
 
-export interface getBannerResponseDTO {
+export interface getBannerResponseDTO extends serverResponseDTO {
     data: Array<bannerInfo>
 }
 
@@ -23,4 +23,4 @@ export interface modifyBannerListRequestDTO {
     infos: Array<imageInfo>
 }
 
-export interface modifyBannerListResponseDTO {}
+export interface modifyBannerListResponseDTO extends serverResponseDTO {}

@@ -25,6 +25,10 @@ import {
     modifyBannerListRequestDTO,
     modifyBannerListResponseDTO,
 } from './DTO/banner'
+import {
+    modifyEmbedLinkRequestDTO,
+    modifyEmbedLinkResponseDTO,
+} from './DTO/embed'
 
 const SERVER_URL = process.env.SERVER_URL
 
@@ -320,18 +324,52 @@ export function modifyBannerList(
      * @param data - 배너 이미지 및 이미지의 정보
      */
 
-    return axiosRequestHandler(async (data: modifyBannerListRequestDTO) => {
-        const response: AxiosResponse<any, any> = await axios({
-            method: 'PUT',
-            url: `${SERVER_URL}/admin/banner`,
-            data: data,
-            headers: {
-                Authorization: accessToken,
-            },
-        })
-        return { message: response.data.message }
-    }, [])
+    return axiosRequestHandler(
+        async (data: modifyBannerListRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/banner`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
 }
 
 // End - Banner API
+// #########################################################
+
+// #########################################################
+// Start - Embed API
+
+export function modifyEmbedLink(
+    data: modifyEmbedLinkRequestDTO,
+): modifyEmbedLinkResponseDTO {
+    /**
+     * 임베드 링크 수정
+     *
+     * @param data - 임베드 링크 목록 정보
+     */
+
+    return axiosRequestHandler(
+        async (data: modifyEmbedLinkRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/embed`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+// End - Embed API
 // #########################################################
