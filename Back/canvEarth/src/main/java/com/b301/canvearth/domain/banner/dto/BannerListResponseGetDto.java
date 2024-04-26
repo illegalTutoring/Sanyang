@@ -15,14 +15,14 @@ import java.util.List;
 public class BannerListResponseGetDto {
 
     private Long bannerId;
-    private String path;
+    private String imagePath;
     private double coordinateX;
     private double coordinateY;
 
     @Builder
-    public BannerListResponseGetDto(Long bannerId, String path, double coordinateX, double coordinateY) {
+    public BannerListResponseGetDto(Long bannerId, String imagePath, double coordinateX, double coordinateY) {
         this.bannerId = bannerId;
-        this.path = path;
+        this.imagePath = imagePath;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
     }

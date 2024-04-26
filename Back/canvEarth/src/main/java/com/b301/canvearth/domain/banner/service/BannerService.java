@@ -29,7 +29,7 @@ public class BannerService {
     private final S3Service s3Service;
 
     public List<BannerListResponseGetDto> findAllBanner(){
-        log.info("===== [BannerService] findALlBanner START =====");
+        log.info("===== [BannerService] findAllBanner START =====");
 
         List<Banner> bannerList = bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "bannerId"));
         List<BannerListResponseGetDto> result = new ArrayList<>();
@@ -38,7 +38,7 @@ public class BannerService {
             Banner b = bannerList.get(i);
             result.add(BannerListResponseGetDto.builder()
                     .bannerId(b.getBannerId())
-                    .path(b.getPath())
+                    .imagePath(b.getPath())
                     .coordinateX(b.getCoordinateX())
                     .coordinateY(b.getCoordinateY())
                     .build());
@@ -53,7 +53,7 @@ public class BannerService {
         log.info("===== [BannerService] updateBanner START =====");
 
         // null 검사
-        if(images.isEmpty() || infos.isEmpty()){
+        if(images == null || infos == null){
             bannerRepository.deleteAll();
             return "배너 변경 완료";
         }
