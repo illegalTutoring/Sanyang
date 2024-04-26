@@ -13,21 +13,6 @@ export function getCalendar(
      *
      * @param year - 조회하고자 하는 연도
      * @param month - 조회하고자 하는 월
-     * @returns
-     * {
-     *      message: string,
-     *      data: [
-     *          {
-     *              calendarId: int,
-     *              userId: string,
-     *              company: string,
-     *              title: string,
-     *              startDate: string,
-     *              endDate: string,
-     *          },
-     *          ...
-     *      ]
-     * }
      */
 
     return axiosRequestHandler(

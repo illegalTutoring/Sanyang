@@ -1,8 +1,19 @@
 import { serverResponseDTO } from './common'
 
 interface imageInfo {
-    x: number
-    y: number
+    coordinateX: number
+    coordinateY: number
+}
+
+interface bannerInfo {
+    bannerId: number
+    imagePath: String
+    coordinateX: number
+    coordinateY: number
+}
+
+export interface getBannerResponseDTO {
+    data: Array<bannerInfo>
 }
 
 export interface modifyBannerListRequestDTO {

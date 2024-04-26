@@ -43,11 +43,6 @@ export function registWork(
      *
      * @param data - 외주 정보
      * @param image - 이미지
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
      *
      */
 
@@ -84,12 +79,6 @@ export function modifyWork(
      *
      * @param data - 외주 정보
      * @param image - 이미지 (수정되지 않으면 null)
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -122,12 +111,6 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
      * 외주 삭제
      *
      * @param workId - 외주 id
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -160,12 +143,6 @@ export function registGallery(
      *
      * @param data - 갤러리 정보
      * @param image - 이미지
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -201,12 +178,6 @@ export function modifyGallery(
      *
      * @param data - 갤러리 정보
      * @param image - 이미지 (수정되지 않으면 null)
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -239,12 +210,6 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
      * 갤러리 삭제
      *
      * @param galleryId - 갤러리 id
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -275,8 +240,6 @@ export function registCalendar(
      * 일정 등록
      *
      * @param data - 일정 정보
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -302,8 +265,6 @@ export function modifyCalendar(
      * 일정 수정
      *
      * @param data - 일정 정보
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -327,8 +288,6 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
      * 일정 수정
      *
      * @param calendarId - 일정 id
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -359,8 +318,6 @@ export function modifyBannerList(
      * 배너 수정
      *
      * @param data - 배너 이미지 및 이미지의 정보
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(async (data: modifyBannerListRequestDTO) => {
