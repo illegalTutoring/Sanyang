@@ -6,12 +6,16 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.b301.canvearth.domain.admin.dto.WorkRequestPostDto;
 import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
+import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.s3.service.S3Service;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.repository.WorkRepository;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,7 +58,7 @@ public class WorkService {
     }
 
     public List<Work> getWorkList() {
-        return workRepository.findAll();
+        return workRepository.findAll(Sort.by(Sort.Direction.DESC, "workId"));
     }
 
     public Work modifyWork(Long workId, MultipartFile image, WorkRequestPutDto requestPutDto) {
@@ -71,7 +75,7 @@ public class WorkService {
         }
 
         Work changeWork = workRepository.findById(workId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendar not found with id: " + workId));
+                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
 
         changeWork.setCompany(requestPutDto.getCompany());
         changeWork.setTitle(requestPutDto.getTitle());
@@ -88,7 +92,16 @@ public class WorkService {
         return workRepository.save(changeWork);
     }
 
+    public void deleteWork(Long workId) {
+        log.info("===== [WorkService] deleteWork start =====");
+        Work work = workRepository.findById(workId)
+                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
+
+        workRepository.delete(work);
+    }
+
     public Map<String, String> uploadS3AndGetPath(MultipartFile image) {
+        log.info("===== [WorkService] uploadS3AndGetPath start =====");
         Map<String, String> paths = new HashMap<>();
         UUID uuid = UUID.randomUUID();
         // originalPath
