@@ -36,7 +36,7 @@ const HomePage = () => {
                     'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
                     'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
                 ]}
-                interval={3000}
+                interval={5000}
                 width="100%"
                 height="50vh"
             />

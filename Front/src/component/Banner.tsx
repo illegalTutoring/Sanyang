@@ -1,6 +1,5 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
+import styles from './Banner.module.scss'
 
 interface BannerProps {
     images: string[]
@@ -15,23 +14,48 @@ const Banner: React.FC<BannerProps> = ({
     width = '100%',
     height = '300px',
 }) => {
+    const extendedImages = [...images, images[0]]
     const [currentIdx, setCurrentIdx] = useState(0)
+    const [transitionEnabled, setTransitionEnabled] = useState(true)
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentIdx((prevIdx) => (prevIdx + 1) % images.length)
+            const nextIdx = (currentIdx + 1) % extendedImages.length
+
+            if (nextIdx === 0) {
+                setTransitionEnabled(false)
+                setCurrentIdx(0)
+            } else {
+                setCurrentIdx(nextIdx)
+                setTransitionEnabled(true)
+            }
         }, interval)
 
         return () => clearInterval(timer)
-    }, [images.length, interval])
+    }, [currentIdx, extendedImages.length, interval])
 
     return (
-        <div style={{ width, height, overflow: 'hidden' }}>
-            <img
-                src={images[currentIdx]}
-                alt="Banner Image"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
+        <div className={styles.bannerContainer} style={{ width, height }}>
+            <div
+                className={styles.imagesWrapper}
+                style={{
+                    width: `${100 * images.length}%`,
+                    transform: `translateX(-${currentIdx * (100 / images.length)}%)`,
+                    transition: transitionEnabled
+                        ? 'transform 0.5s ease-in-out'
+                        : 'none',
+                }}
+            >
+                {extendedImages.map((extendedImages, index) => (
+                    <img
+                        key={index}
+                        src={extendedImages}
+                        alt={`Banner Image ${index}`}
+                        className={styles.imageItem}
+                        style={{ width: `${100 / images.length}%` }}
+                    />
+                ))}
+            </div>
         </div>
     )
 }
