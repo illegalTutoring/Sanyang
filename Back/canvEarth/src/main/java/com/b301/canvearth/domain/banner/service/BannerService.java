@@ -1,6 +1,7 @@
 package com.b301.canvearth.domain.banner.service;
 
 import com.b301.canvearth.domain.admin.dto.BannerRequestPutDto;
+import com.b301.canvearth.domain.banner.dto.BannerListResponseGetDto;
 import com.b301.canvearth.domain.banner.entity.Banner;
 import com.b301.canvearth.domain.banner.repository.BannerRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,9 +28,23 @@ public class BannerService {
     private final BannerRepository bannerRepository;
     private final S3Service s3Service;
 
-    public List<Banner> findAllBanner(){
+    public List<BannerListResponseGetDto> findAllBanner(){
         log.info("===== [BannerService] findALlBanner START =====");
-        return bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "bannerId"));
+
+        List<Banner> bannerList = bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "bannerId"));
+        List<BannerListResponseGetDto> result = new ArrayList<>();
+
+        for (int i = 0; i < bannerList.size(); i++) {
+            Banner b = bannerList.get(i);
+            result.add(BannerListResponseGetDto.builder()
+                    .bannerId(b.getBannerId())
+                    .path(b.getPath())
+                    .coordinateX(b.getCoordinateX())
+                    .coordinateY(b.getCoordinateY())
+                    .build());
+        }
+
+        return result;
     }
 
 

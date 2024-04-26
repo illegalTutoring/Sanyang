@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,7 +32,7 @@ public class BannerController {
 
         log.info("===== [BannerController] getBanner START =====");
 
-        BannerListResponseGetDto data = BannerListResponseGetDto.builder().bannerList(bannerService.findAllBanner()).build();
+        List<BannerListResponseGetDto> data = bannerService.findAllBanner();
 
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
