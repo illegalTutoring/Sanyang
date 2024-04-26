@@ -29,10 +29,10 @@ public class BannerController {
     @GetMapping()
     public ResponseEntity<Object> getBanner(){
 
-        log.info("=================START getBanner()====================");
+        log.info("===== [BannerController] getBanner START =====");
 
-        BannerListResponseGetDto bannerList = BannerListResponseGetDto.builder().bannerList(bannerService.findAllBanner()).build();
+        BannerListResponseGetDto data = BannerListResponseGetDto.builder().bannerList(bannerService.findAllBanner()).build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(bannerList);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 }
