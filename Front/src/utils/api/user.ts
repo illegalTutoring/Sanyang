@@ -1,109 +1,82 @@
 import axios, { AxiosResponse } from 'axios'
+import { axiosRequestHandler } from './interceptor'
+import {
+    loginRequestDTO,
+    loginResponseDTO,
+    signinRequestDTO,
+    signinResponseDTO,
+} from './DTO/user'
 
 const SERVER_URL = process.env.SERVER_URL
 
 // TODO: redux에서 값을 가져오도록 수정할 것.
-let token: string = 'TEST_TOKEN_IT_MUST_BE_CHANGED'
+let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-export async function login(userId: string, userPw: string) {
+export function login(data: loginRequestDTO): loginResponseDTO {
     /**
      * 로그인
      *
-     * @param userId - 사용자가 입력한 id
-     * @param userPw - 사용자가 입력한 pw
-     * @returns 성공 시 token, 실패 시 서버 응답 메시지
+     * @beta
+     */
+
+    return axiosRequestHandler(
+        async (data: loginRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/user/login`,
+                data: data,
+            })
+
+            // TODO: AccessToken, Refresh Token 전역 관리 코드 추가
+
+            return {
+                message: response.data.message,
+                accessToken: response.data.accessToken,
+            }
+        },
+        [data],
+    )
+}
+
+export function logout() {
+    /**
+     * 로그아웃
      *
      * @beta
      */
 
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'POST',
-        url: `${SERVER_URL}/user/login`,
-        data: {
-            userId,
-            userPw,
-        },
-    })
-    return response.data
+    return axiosRequestHandler(async () => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'GET',
+            url: `${SERVER_URL}/user/logout`,
+            headers: {
+                Authorization: accessToken,
+            },
+        })
+
+        // TODO: AccessToken, Refresh Token 전역 관리 코드 추가
+
+        return { message: response.data.message }
+    }, [])
 }
 
-export async function logout() {
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'GET',
-        url: `${SERVER_URL}/user/logout`,
-        headers: {
-            Authorization: token,
-        },
-    })
-}
-
-export async function signin(userId: string, userPw: string, userName: string) {
+export function signin(data: signinRequestDTO): signinResponseDTO {
     /**
      * 회원 가입
      *
-     * @param userId - 사용자가 입력한 id
-     * @param userPw - 사용자가 입력한 pw
-     * @param userName - 사용자가 입력한 이름
-     * @returns 서버 응답 메시지
-     *
      * @beta
      */
 
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'POST',
-        url: `${SERVER_URL}/user/signin`,
-        data: {
-            userId,
-            userPw,
-            userName,
-        },
-    })
-}
+    return axiosRequestHandler(
+        async (data: signinRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/user/signin`,
+                data: data,
+            })
 
-export async function getUserInfo() {
-    /**
-     * 입력한 비밀번호가 올바르다면, 외주 상세 정보를 반환한다.
-     *
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     */
-
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'GET',
-        url: `${SERVER_URL}/user`,
-        headers: {
-            Authorization: token,
+            return { message: response.data.message }
         },
-    })
-    return response.data
-}
-
-export async function updateUserInfo(
-    token: string,
-    userPw: string,
-    userName: string,
-) {
-    /**
-     * 회원 정보 수정
-     *
-     * @param userPw - 변경하고자 하는 사용자 비밀번호
-     * @param userName - 변경하고자 하는 사용자 이름
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     */
-
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'PUT',
-        url: `${SERVER_URL}/user`,
-        data: {
-            userPw,
-            userName,
-        },
-        headers: {
-            Authorization: token,
-        },
-    })
-    return response.data
+        [data],
+    )
 }
