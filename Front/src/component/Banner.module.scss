@@ -1,0 +1,18 @@
+.bannerContainer {
+    overflow: hidden;
+    position: relative;
+}
+
+.imagesWrapper {
+    width: 100%; /* 이 부분은 React에서 동적으로 처리합니다 */
+    height: 100%;
+    display: flex;
+    transition: transform 1s ease-in-out;
+}
+
+.imageItem {
+    flex: 0 0 auto;
+    width: 100%; /* 이 부분은 React에서 동적으로 처리합니다 */
+    height: 100%;
+    object-fit: cover;
+}
