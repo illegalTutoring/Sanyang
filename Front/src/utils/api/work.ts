@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
+import { getWorkListResponseDTO } from './DTO/work'
 
 const SERVER_URL = process.env.SERVER_URL
 
-export function getWorkList() {
+export function getWorkList(): getWorkListResponseDTO {
     /**
      * 외주 이미지 정보 목록을 반환한다.
      *
