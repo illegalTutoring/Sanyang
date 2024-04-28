@@ -1,5 +1,6 @@
 package com.b301.canvearth.domain.authorization.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +11,7 @@ public class RefreshService {
 
     private final RedisTemplate<String, String> refreshRedisTemplate;
 
-    public RefreshService(RedisTemplate<String, String> refreshRedisTemplate) {
-
+    public RefreshService(@Qualifier("refreshRedisTemplate") RedisTemplate<String, String> refreshRedisTemplate) {
         this.refreshRedisTemplate = refreshRedisTemplate;
     }
 

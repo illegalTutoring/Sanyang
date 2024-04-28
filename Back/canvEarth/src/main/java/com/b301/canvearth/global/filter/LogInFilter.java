@@ -1,6 +1,7 @@
 package com.b301.canvearth.global.filter;
 
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
+import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.FilterChain;
@@ -16,6 +17,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -25,27 +28,31 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final RefreshService refreshService;
+    private final AccessService accessService;
 
-    public LogInFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshService refreshService) {
+    public LogInFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshService = refreshService;
+        this.accessService = accessService;
         super.setFilterProcessesUrl("/api/user/login");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
+        // 로그인 시도
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
+        // spring security 자동으로 검증
         return authenticationManager.authenticate(authToken);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
+        // 로그인 성공
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
@@ -58,15 +65,22 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
+        // white list 작성
+        accessService.saveAccessToken(username, access, 600000L);
         refreshService.saveRefreshToken(username, refresh, 86400000L);
 
-        response.setHeader("access", access);
+        response.setHeader("accessToken", access);
         response.addCookie(createCookie(refresh));
+
+        PrintWriter writer = response.getWriter();
+        writer.print("로그인 성공");
+
         response.setStatus(HttpStatus.OK.value());
     }
 
     private Cookie createCookie(String value) {
-        Cookie cookie = new Cookie("refresh", value);
+        // 쿠키 발행
+        Cookie cookie = new Cookie("refreshToken", value);
         cookie.setMaxAge(24*60*60);
         cookie.setSecure(true);
         cookie.setPath("/");
@@ -77,9 +91,7 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-
-        log.error("login failed");
-
-        response.setStatus(401);
+        // 로그인 실패
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
     }
 }

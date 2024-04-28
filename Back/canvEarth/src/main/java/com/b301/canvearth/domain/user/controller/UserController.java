@@ -25,7 +25,7 @@ public class UserController {
         String result = userService.signInProcess(signinDto);
         HttpStatus status;
 
-        if(result.equals("User save success")){
+        if(result.equals("회원가입 성공")){
             status = HttpStatus.CREATED;
         }else{
             status = HttpStatus.BAD_REQUEST;
@@ -40,7 +40,7 @@ public class UserController {
         String result = userService.reIssueProcess(request, response);
         HttpStatus status;
 
-        if(result.equals("Cookie creation success")){
+        if(result.equals("refresh 토큰 재발행 성공")){
             status = HttpStatus.CREATED;
         }else{
             status = HttpStatus.BAD_REQUEST;

@@ -1,5 +1,6 @@
 package com.b301.canvearth.global.config;
 
+import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.util.JWTUtil;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
@@ -34,11 +36,14 @@ public class SecurityConfig {
 
     private final RefreshService refreshService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshService refreshService) {
+    private final AccessService accessService;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshService = refreshService;
+        this.accessService = accessService;
     }
 
     @Bean
@@ -85,36 +90,40 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
+
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/",
                                 /*
                                     로그인을 통한 토큰 발행 JWT(access, refresh)없이
                                     API test 진행하고자할 때 사용!!!
+                                    1. 개발용 : ADMIN 권한 우회 URI 허용
                                 */
+                                //"/api/admin/**",
 
-                                // 1. 개발용 : ADMIN 권한 우회 URI 허용
-                                //"/api/admin", "/api/admin/*", "/api/admin/*/*",
-                                "/api/user", "/api/user/*",
-                                "/api/calendar/*/*",
+                                "/api/user/**",
+                                "/api/calendar/**",
                                 "/api/work",
                                 "/api/gallery",
-                                "/api/notice", "/api/notice/*",
+                                "/api/notice/**",
                                 "/api/banner",
                                 "/api/embed",
                                 "/api/support"
 
                         ).permitAll()
                         // 2. 배포용 : ADMIN 권한 확인
-                        .requestMatchers("/api/admin", "/api/admin/*", "/api/admin/*/*").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LogInFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil, accessService), LogInFilter.class);
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService),
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
                         UsernamePasswordAuthenticationFilter.class);
+
+        http
+                .addFilterBefore(new com.b301.canvearth.global.filter.LogoutFilter(jwtUtil, refreshService, accessService), LogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session
