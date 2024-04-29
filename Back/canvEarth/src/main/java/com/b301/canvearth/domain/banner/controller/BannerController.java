@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,6 +25,7 @@ import java.util.Map;
 public class BannerController {
 
     private final BannerService bannerService;
+    private final static String MESSAGE = "message";
 
     @Operation(summary = "REQ-BANNER-01", description = "배너 이미지 보기")
     @GetMapping()
@@ -31,8 +33,14 @@ public class BannerController {
 
         log.info("===== [BannerController] getBanner START =====");
 
-        BannerListResponseGetDto data = BannerListResponseGetDto.builder().bannerList(bannerService.findAllBanner()).build();
+        List<BannerListResponseGetDto> data = bannerService.findAllBanner();
 
-        return ResponseEntity.status(HttpStatus.OK).body(data);
+        log.info("banner list: {}", data);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put(MESSAGE, "배너 목록 전달 완료");
+        responseBody.put("data", data);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }
