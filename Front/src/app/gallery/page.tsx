@@ -5,7 +5,6 @@ import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
-import useDarkModeStore from '@/utils/store/useThemaStore'
 import GridGallery from '@/component/GridGallery'
 
 const Home: React.FC = () => {
@@ -57,21 +56,6 @@ const Home: React.FC = () => {
         },
         {
             id: 15,
-            url: 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            title: 'Image 4',
-        },
-        {
-            id: 16,
-            url: 'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            title: 'Image 3',
-        },
-        {
-            id: 17,
-            url: 'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            title: 'Image 4',
-        },
-        {
-            id: 1,
             url: 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
             title: 'Image 4',
         },
@@ -137,24 +121,26 @@ const Home: React.FC = () => {
         'axis',
     ]
 
-    const { isDarkMode } = useDarkModeStore()
-
     return (
-        <article
-            className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
-        >
+        <div className={styles.container}>
             <div className={styles.galleryWrapper}>
                 <GridGallery
                     images={defaultImages2}
-                    colCount={4}
-                    height="300px"
+                    width={'100%'}
+                    height={'300px'}
+                    colCount={defaultImages2.length}
                 />
             </div>
             <div>
                 <TagInput availableTags={tags} />
             </div>
             <div>
-                <Gallery images={defaultImages} colCount={4} />
+                <Gallery
+                    images={defaultImages}
+                    width={'100%'}
+                    height={'400px'}
+                    colCount={4}
+                />
             </div>
             <Modal>
                 <p>이곳은 모달 창</p>
@@ -182,7 +168,7 @@ const Home: React.FC = () => {
                     <li>모달</li>
                 </ul>
             </Modal>
-        </article>
+        </div>
     )
 }
 

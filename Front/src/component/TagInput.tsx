@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, KeyboardEvent } from 'react'
+import { useState, ChangeEvent, KeyboardEvent, useRef } from 'react'
 import styles from './TagInput.module.scss'
 
 interface TagInputProps {
@@ -10,14 +10,17 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
     const [input, setInput] = useState('')
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value
         setInput(inputValue)
 
         if (inputValue) {
-            const filteredSuggestions = availableTags.filter((tag) =>
-                tag.toLowerCase().startsWith(inputValue.toLowerCase()),
+            const filteredSuggestions = availableTags.filter(
+                (tag) =>
+                    tag.toLowerCase().startsWith(inputValue.toLowerCase()) &&
+                    !tags.includes(tag),
             )
             setSuggestions(filteredSuggestions)
             setSelectedIndex(0)
@@ -34,18 +37,20 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                     suggestions.length > 0 &&
                     suggestions[selectedIndex]
                 ) {
-                    selectTag(suggestions[selectedIndex])
+                    selectTag(suggestions[selectedIndex], selectedIndex)
                 }
                 break
             case 'ArrowUp':
                 if (selectedIndex > 0) {
                     setSelectedIndex(selectedIndex - 1)
+                    scrollIntoSelectedItem(selectedIndex - 2)
                 }
                 event.preventDefault()
                 break
             case 'ArrowDown':
                 if (selectedIndex < suggestions.length - 1) {
                     setSelectedIndex(selectedIndex + 1)
+                    scrollIntoSelectedItem(selectedIndex + 2)
                 }
                 event.preventDefault()
                 break
@@ -54,18 +59,51 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
         }
     }
 
-    const selectTag = (tag: string) => {
+    const scrollIntoSelectedItem = (index: number) => {
+        const element = document.querySelector(`#suggestion-item-${index}`)
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        }
+    }
+
+    const selectTag = (tag: string, index: number) => {
         if (!tags.includes(tag)) {
             setTags([...tags, tag])
-            setInput('')
             setSuggestions([])
+
+            const updatedSuggestions = suggestions.filter(
+                (suggestion) => suggestion !== tag,
+            )
+            setSuggestions(updatedSuggestions)
+
+            inputRef.current?.focus()
+            setSelectedIndex(index)
         }
     }
 
     const deleteTag = (tagToDelete: string) => {
         const updatedTags = tags.filter((tag) => tag !== tagToDelete)
         setTags(updatedTags)
+
+        if (
+            availableTags.includes(tagToDelete) &&
+            tagToDelete.toLowerCase().startsWith(input.toLowerCase())
+        ) {
+            const originalIndex = availableTags.indexOf(tagToDelete)
+            const updatedSuggestions = [...suggestions]
+            const nextIndex = updatedSuggestions.findIndex(
+                (suggestion) =>
+                    availableTags.indexOf(suggestion) > originalIndex,
+            )
+            if (nextIndex === -1) {
+                updatedSuggestions.push(tagToDelete)
+            } else {
+                updatedSuggestions.splice(nextIndex, 0, tagToDelete)
+            }
+            setSuggestions(updatedSuggestions)
+        }
     }
+
     return (
         <div>
             <div className={styles.tagBox}>
@@ -85,6 +123,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
 
             <div className={styles.inputBox}>
                 <input
+                    ref={inputRef}
                     type="text"
                     value={input}
                     onChange={handleInputChange}
@@ -95,8 +134,9 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                     <ul className={styles.suggestions}>
                         {suggestions.map((suggestion, index) => (
                             <li
+                                id={`suggestion-item-${index}`}
                                 key={index}
-                                onClick={() => selectTag(suggestion)}
+                                onClick={() => selectTag(suggestion, index)}
                                 style={{
                                     cursor: 'pointer',
                                     backgroundColor:
