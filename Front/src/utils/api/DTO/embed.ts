@@ -2,13 +2,13 @@ import { serverResponseDTO } from './common'
 
 interface embedInfo {
     type: number
-    link: String
+    link: string
 }
 
 interface embedLinkInfo {
     embedId: number
     type: number
-    link: String
+    link: string
 }
 
 export interface getEmbedLinkResponseDTO extends serverResponseDTO {

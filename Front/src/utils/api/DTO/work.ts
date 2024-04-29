@@ -2,16 +2,16 @@ import { serverResponseDTO } from './common'
 
 interface workInfo {
     workId: number
-    userId: String
-    title: String
-    company: String
-    startDate: String
-    endDate: String
-    uploadDate: String
-    tags: Array<String>
-    original: String
-    thumbnail: String
-    watermark: String
+    userId: string
+    title: string
+    company: string
+    startDate: string
+    endDate: string
+    uploadDate: string
+    tags: Array<string>
+    original: string
+    thumbnail: string
+    watermark: string
 }
 
 export interface getWorkListResponseDTO extends serverResponseDTO {
@@ -19,20 +19,20 @@ export interface getWorkListResponseDTO extends serverResponseDTO {
 }
 
 export interface registWorkRequestDTO {
-    userId: String
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
+    userId: string
+    company: string
+    title: string
+    startDate: string
+    endDate: string
+    tags: Array<string>
 }
 
 export interface modifyWorkRequestDTO {
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
+    company: string
+    title: string
+    startDate: string
+    endDate: string
+    tags: Array<string>
 }
 
 export interface reigstWorkResponseDTO extends serverResponseDTO {}

@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
 import { getBannerResponseDTO } from './DTO/banner'
 
-const SERVER_URL = process.env.SERVER_URL
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 export function getBanner(): getBannerResponseDTO {
     /**
