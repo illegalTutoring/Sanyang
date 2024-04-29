@@ -31,16 +31,16 @@ public class BannerService {
     public List<BannerListResponseGetDto> findAllBanner(){
         log.info("===== [BannerService] findAllBanner START =====");
 
-        List<Banner> bannerList = bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "bannerId"));
+        List<Banner> bannerList = bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "order"));
         List<BannerListResponseGetDto> result = new ArrayList<>();
 
         for (int i = 0; i < bannerList.size(); i++) {
             Banner b = bannerList.get(i);
             result.add(BannerListResponseGetDto.builder()
-                    .bannerId(b.getBannerId())
                     .imagePath(b.getPath())
                     .coordinateX(b.getCoordinateX())
                     .coordinateY(b.getCoordinateY())
+                    .order(b.getOrder())
                     .build());
         }
 
@@ -90,7 +90,7 @@ public class BannerService {
 
             // 좌표 얻기
             BannerRequestPutDto c = infos.get(i);
-            Banner banner = Banner.builder().path(path).coordinateX(c.getCoordinateX()).coordinateY(c.getCoordinateY()).build();
+            Banner banner = Banner.builder().path(path).coordinateX(c.getCoordinateX()).coordinateY(c.getCoordinateY()).order(i).build();
 
             //저장
             bannerRepository.save(banner);
