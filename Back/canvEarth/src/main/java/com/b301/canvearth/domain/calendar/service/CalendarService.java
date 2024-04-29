@@ -7,6 +7,7 @@ import com.b301.canvearth.domain.calendar.dto.CalendarResponseGetDto;
 import com.b301.canvearth.domain.calendar.repository.CalendarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CalendarService {
     private final CalendarRepository calendarRepository;
 
     public List<Calendar> insertTestData(int year, int month) {
-        log.info("===== [CalendarService] insertTestData =====");
+        log.info("===== [CalendarService] insertTestData start =====");
         List<Calendar> list = new ArrayList<>();
         for(int i=0; i<50; i++) {
             int randYear = (int) (Math.random() * (3)) + 2022;
@@ -46,10 +47,11 @@ public class CalendarService {
     }
 
     public List<Calendar> getCalendarList() {
-        return calendarRepository.findAll();
+        return calendarRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public void modifyCalendar(Long calendarId, CalendarRequestPutDto requestPutDto) {
+        log.info("===== [CalendarService] modifyCalendar start =====");
         Calendar calendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("Calendar not found with id: " + calendarId));
 
@@ -61,6 +63,7 @@ public class CalendarService {
     }
 
     public void deleteCalendar(Long calendarId) {
+        log.info("===== [CalendarService] deleteCalendar start =====");
         Calendar calendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("Calendar not found with id: " + calendarId));
 
