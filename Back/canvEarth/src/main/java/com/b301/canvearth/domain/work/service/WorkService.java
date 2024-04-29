@@ -81,6 +81,11 @@ public class WorkService {
         changeWork.setTags(requestPutDto.getTags());
 
         if(changeImage) {
+            // 기존 S3 이미지는 삭제
+            s3Service.deleteImage(changeWork.getOriginalPath());
+            s3Service.deleteImage(changeWork.getThumbnailPath());
+            s3Service.deleteImage(changeWork.getWatermarkPath());
+
             changeWork.setOriginalPath(paths.get("originalPath"));
             changeWork.setThumbnailPath(paths.get("thumbnailPath"));
             changeWork.setWatermarkPath(paths.get("watermarkPath"));
@@ -94,6 +99,12 @@ public class WorkService {
         Work work = workRepository.findById(workId)
                 .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
 
+        // S3 이미지들 삭제
+        s3Service.deleteImage(work.getOriginalPath());
+        s3Service.deleteImage(work.getThumbnailPath());
+        s3Service.deleteImage(work.getWatermarkPath());
+        
+        // DB에서 삭제
         workRepository.delete(work);
     }
 
