@@ -2,8 +2,6 @@ import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
 import { getCalendarResponseDTO } from './DTO/calendar'
 
-const SERVER_URL = process.env.SERVER_URL
-
 export function getCalendar(
     year: number,
     month: number,
@@ -19,7 +17,7 @@ export function getCalendar(
         async (year: number, month: number) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'GET',
-                url: `${SERVER_URL}/calendar/${year}/${month}`,
+                url: `${process.env.SERVER_URL}/calendar/${year}/${month}`,
             })
             return {
                 message: response.data.message,

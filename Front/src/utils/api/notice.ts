@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
 
-const SERVER_URL = process.env.SERVER_URL
-
 export async function getNoticeList() {
     /**
      * 공지 사항 목록을 반환한다.
@@ -13,7 +11,7 @@ export async function getNoticeList() {
 
     const response: AxiosResponse<JSON> = await axios({
         method: 'GET',
-        url: `${SERVER_URL}/notice`,
+        url: `${process.env.SERVER_URL}/notice`,
     })
     return response.data
 }
@@ -29,7 +27,7 @@ export async function getNoticeDetail(notice_id: number) {
 
     const response: AxiosResponse<JSON> = await axios({
         method: 'GET',
-        url: `${SERVER_URL}/notice/${notice_id}`,
+        url: `${process.env.SERVER_URL}/notice/${notice_id}`,
     })
     return response.data
 }

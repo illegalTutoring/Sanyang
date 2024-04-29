@@ -7,8 +7,6 @@ import {
     signinResponseDTO,
 } from './DTO/user'
 
-const SERVER_URL = process.env.SERVER_URL
-
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
@@ -23,7 +21,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
         async (data: loginRequestDTO) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'POST',
-                url: `${SERVER_URL}/user/login`,
+                url: `${process.env.SERVER_URL}/user/login`,
                 data: data,
             })
 
@@ -48,7 +46,7 @@ export function logout() {
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
             method: 'GET',
-            url: `${SERVER_URL}/user/logout`,
+            url: `${process.env.SERVER_URL}/user/logout`,
             headers: {
                 Authorization: accessToken,
             },
@@ -71,7 +69,7 @@ export function signin(data: signinRequestDTO): signinResponseDTO {
         async (data: signinRequestDTO) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'POST',
-                url: `${SERVER_URL}/user/signin`,
+                url: `${process.env.SERVER_URL}/user/signin`,
                 data: data,
             })
 

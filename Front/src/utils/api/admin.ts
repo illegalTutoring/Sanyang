@@ -30,8 +30,6 @@ import {
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
 
-const SERVER_URL = process.env.SERVER_URL
-
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
@@ -61,7 +59,7 @@ export function registWork(
 
             const response: AxiosResponse<any, any> = await axios({
                 method: 'POST',
-                url: `${SERVER_URL}/admin/work`,
+                url: `${process.env.SERVER_URL}/admin/work`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -97,7 +95,7 @@ export function modifyWork(
 
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/work/${data.workId}`,
+                url: `${process.env.SERVER_URL}/admin/work/${data.workId}`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -121,7 +119,7 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
         async (workId) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'DELETE',
-                url: `${SERVER_URL}/admin/work/${workId}`,
+                url: `${process.env.SERVER_URL}/admin/work/${workId}`,
                 headers: {
                     Authorization: accessToken,
                 },
@@ -160,7 +158,7 @@ export function registGallery(
 
             const response: AxiosResponse<any, any> = await axios({
                 method: 'POST',
-                url: `${SERVER_URL}/admin/gallery`,
+                url: `${process.env.SERVER_URL}/admin/gallery`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -196,7 +194,7 @@ export function modifyGallery(
 
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/gallery/${data.galleryId}`,
+                url: `${process.env.SERVER_URL}/admin/gallery/${data.galleryId}`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -220,7 +218,7 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
         async (galleryId) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'DELETE',
-                url: `${SERVER_URL}/admin/gallery/${galleryId}`,
+                url: `${process.env.SERVER_URL}/admin/gallery/${galleryId}`,
                 headers: {
                     Authorization: accessToken,
                 },
@@ -250,7 +248,7 @@ export function registCalendar(
         async (data) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'POST',
-                url: `${SERVER_URL}/admin/calendar`,
+                url: `${process.env.SERVER_URL}/admin/calendar`,
                 data: data,
                 headers: {
                     Authorization: accessToken,
@@ -275,7 +273,7 @@ export function modifyCalendar(
         async (data) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/calendar/${data.calendarId}`,
+                url: `${process.env.SERVER_URL}/admin/calendar/${data.calendarId}`,
                 data: data,
                 headers: {
                     Authorization: accessToken,
@@ -298,7 +296,7 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
         async (calendarId) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'DELETE',
-                url: `${SERVER_URL}/admin/calendar/${calendarId}`,
+                url: `${process.env.SERVER_URL}/admin/calendar/${calendarId}`,
                 headers: {
                     Authorization: accessToken,
                 },
@@ -328,7 +326,7 @@ export function modifyBannerList(
         async (data: modifyBannerListRequestDTO) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/banner`,
+                url: `${process.env.SERVER_URL}/admin/banner`,
                 data: data,
                 headers: {
                     Authorization: accessToken,
@@ -359,7 +357,7 @@ export function modifyEmbedLink(
         async (data: modifyEmbedLinkRequestDTO) => {
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/embed`,
+                url: `${process.env.SERVER_URL}/admin/embed`,
                 data: data,
                 headers: {
                     Authorization: accessToken,
