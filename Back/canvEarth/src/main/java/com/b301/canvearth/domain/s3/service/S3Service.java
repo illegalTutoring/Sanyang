@@ -51,4 +51,21 @@ public class S3Service {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteImage(String url) {
+        log.info("===== [S3Service] deleteImage start =====");
+
+        try {
+            String[] splitStr = url.split("/");
+            String urlKey = splitStr[splitStr.length-1];
+
+            amazonS3Client.deleteObject(bucket, urlKey);
+            log.info("delete S3 imageName: {}", urlKey);
+            log.info("===== [S3Service] deleteImage end =====");
+        } catch (AmazonServiceException e) {
+            log.error("AmazonServiceException 발생");
+        } catch (SdkClientException e) {
+            log.error("SdkClientException 발생");
+        }
+    }
 }
