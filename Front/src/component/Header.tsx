@@ -3,30 +3,12 @@
 import styles from './Header.module.scss'
 import Link from 'next/link'
 import Profile from '@/component/Profile'
-import Modal from '@/component/Modal'
 import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
-import { useState } from 'react'
-
 const Header: React.FC = () => {
-    const { isLoggedIn, logIn, logOut } = useAuthStore()
+    const { isLoggedIn, logOut } = useAuthStore()
     const { isDarkMode } = useDarkModeStore()
-    const [modalVisible, setModalVisible] = useState(false)
-
-    const toggleModal = () => setModalVisible(!modalVisible)
-
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const username = event.currentTarget.username.value
-        const password = event.currentTarget.password.value
-
-        if (username === 'ssafy' && password === 'ssafy') {
-            logIn()
-        } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
-        }
-    }
 
     return (
         <header className={`${styles.header} ${isDarkMode ? 'dark' : 'light'}`}>
@@ -35,7 +17,7 @@ const Header: React.FC = () => {
             </h2>
             <div></div>
 
-            {isLoggedIn ? (
+            {isLoggedIn && (
                 <div className={styles.profile}>
                     <Profile
                         src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
@@ -46,44 +28,6 @@ const Header: React.FC = () => {
                     />
                     <h3 onClick={logOut}>sanyamg</h3>
                 </div>
-            ) : (
-                <>
-                    <button onClick={toggleModal}>Toggle Modal</button>
-                    <Modal
-                        isVisible={modalVisible}
-                        toggleModal={toggleModal}
-                        width="40vw"
-                        height="60vh"
-                    >
-                        <div className={styles.loginModal}>
-                            <h1>Login</h1>
-                            <form
-                                className={styles.loginForm}
-                                onSubmit={handleLogin}
-                            >
-                                <label htmlFor="username">Username:</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    required
-                                />
-                                <label htmlFor="password">Password:</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    required
-                                />
-                                <button type="submit">Login</button>
-                            </form>
-                            <p>
-                                Need an account?{' '}
-                                <Link href="/signup">Sign up</Link>
-                            </p>
-                        </div>
-                    </Modal>
-                </>
             )}
         </header>
     )
