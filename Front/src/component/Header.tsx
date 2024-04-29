@@ -7,9 +7,14 @@ import Modal from '@/component/Modal'
 import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
+import { useState } from 'react'
+
 const Header: React.FC = () => {
     const { isLoggedIn, logIn, logOut } = useAuthStore()
     const { isDarkMode } = useDarkModeStore()
+    const [modalVisible, setModalVisible] = useState(false)
+
+    const toggleModal = () => setModalVisible(!modalVisible)
 
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -42,34 +47,43 @@ const Header: React.FC = () => {
                     <h3 onClick={logOut}>sanyamg</h3>
                 </div>
             ) : (
-                <Modal width="40vw" height="60vh">
-                    <div className={styles.loginModal}>
-                        <h1>Login</h1>
-                        <form
-                            className={styles.loginForm}
-                            onSubmit={handleLogin}
-                        >
-                            <label htmlFor="username">Username:</label>
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                required
-                            />
-                            <label htmlFor="password">Password:</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                required
-                            />
-                            <button type="submit">Login</button>
-                        </form>
-                        <p>
-                            Need an account? <Link href="/signup">Sign up</Link>
-                        </p>
-                    </div>
-                </Modal>
+                <>
+                    <button onClick={toggleModal}>Toggle Modal</button>
+                    <Modal
+                        isVisible={modalVisible}
+                        toggleModal={toggleModal}
+                        width="40vw"
+                        height="60vh"
+                    >
+                        <div className={styles.loginModal}>
+                            <h1>Login</h1>
+                            <form
+                                className={styles.loginForm}
+                                onSubmit={handleLogin}
+                            >
+                                <label htmlFor="username">Username:</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    required
+                                />
+                                <label htmlFor="password">Password:</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    required
+                                />
+                                <button type="submit">Login</button>
+                            </form>
+                            <p>
+                                Need an account?{' '}
+                                <Link href="/signup">Sign up</Link>
+                            </p>
+                        </div>
+                    </Modal>
+                </>
             )}
         </header>
     )
