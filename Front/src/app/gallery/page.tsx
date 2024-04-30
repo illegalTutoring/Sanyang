@@ -7,7 +7,7 @@ import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
 import GridGallery from '@/component/GridGallery'
 
-const Home: React.FC = () => {
+const GalleryPage: React.FC = () => {
     const defaultImages = [
         {
             id: 1,
@@ -142,34 +142,8 @@ const Home: React.FC = () => {
                     colCount={4}
                 />
             </div>
-            <Modal>
-                <p>이곳은 모달 창</p>
-                <ul>
-                    <li>메시지1</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                    <li>모달</li>
-                </ul>
-            </Modal>
         </div>
     )
 }
 
-export default Home
+export default GalleryPage

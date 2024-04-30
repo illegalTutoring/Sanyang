@@ -10,7 +10,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 
 const Sidebar: React.FC = () => {
-    const { isDarkMode, toggleDarkMode } = useDarkModeStore()
+    const { isDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn } = useAuthStore()
     const { isEditMode, toggleEditMode } = useEditModeStore()
 
@@ -45,6 +45,19 @@ const Sidebar: React.FC = () => {
                 <nav>
                     <ul>
                         <li>
+                            <Link href="/personal">
+                                <div
+                                    className={
+                                        usePathname() === '/personal'
+                                            ? `${styles.link} ${styles.selectedLink}`
+                                            : styles.link
+                                    }
+                                >
+                                    개인일정
+                                </div>
+                            </Link>
+                        </li>
+                        <li>
                             <Link href="/outsourcing">
                                 <div
                                     className={
@@ -66,7 +79,7 @@ const Sidebar: React.FC = () => {
                                             : styles.link
                                     }
                                 >
-                                    개인
+                                    갤러리
                                 </div>
                             </Link>
                         </li>
@@ -92,33 +105,18 @@ const Sidebar: React.FC = () => {
                                             : styles.link
                                     }
                                 >
-                                    문의
+                                    공지사항
                                 </div>
                             </Link>
                         </li>
                     </ul>
                 </nav>
 
-                <img
-                    onClick={toggleDarkMode}
-                    className={styles.toggleDarkModeButton}
-                    src={
-                        isDarkMode
-                            ? '/svgs/moon_white.svg'
-                            : '/svgs/sun_black.svg'
-                    }
-                    alt={
-                        isDarkMode
-                            ? 'Switch to light mode'
-                            : 'Switch to dark mode'
-                    }
-                />
-
                 <br></br>
 
                 <img
                     onClick={toggleLogin}
-                    className={styles.toggleDarkModeButton}
+                    className={styles.toggleLoginButton}
                     src={
                         isDarkMode
                             ? '/svgs/key_white.svg'
