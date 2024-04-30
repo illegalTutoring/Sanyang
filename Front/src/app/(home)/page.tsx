@@ -15,6 +15,9 @@ const HomePage = () => {
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
+    const [editBanner, setEditBanner] = useState(false)
+    const toggleEditBanner = () => setEditBanner(!editBanner)
+
     const [images, setImages] = useState([
         'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
         'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
@@ -54,7 +57,12 @@ const HomePage = () => {
             />
 
             {isEditMode && (
-                <Modal width="60vw" height="60vh">
+                <Modal
+                    isVisible={editBanner}
+                    toggleModal={toggleEditBanner}
+                    width="60vw"
+                    height="60vh"
+                >
                     <ImageUploadPreview></ImageUploadPreview>
                 </Modal>
             )}
