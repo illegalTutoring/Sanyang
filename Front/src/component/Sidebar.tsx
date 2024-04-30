@@ -45,20 +45,56 @@ const Sidebar: React.FC = () => {
                 <nav>
                     <ul>
                         <li>
-                            <Link href="/outsourcing">외주</Link>
-                            {usePathname() === '/outsourcing' ? ' ⦁' : ''}
+                            <Link href="/outsourcing">
+                                <div
+                                    className={
+                                        usePathname() === '/outsourcing'
+                                            ? `${styles.link} ${styles.selectedLink}`
+                                            : styles.link
+                                    }
+                                >
+                                    외주
+                                </div>
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/gallery">개인</Link>
-                            {usePathname() === '/gallery' ? ' ⦁' : ''}
+                            <Link href="/gallery">
+                                <div
+                                    className={
+                                        usePathname() === '/gallery'
+                                            ? `${styles.link} ${styles.selectedLink}`
+                                            : styles.link
+                                    }
+                                >
+                                    개인
+                                </div>
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/support">서포트</Link>
-                            {usePathname() === '/support' ? ' ⦁' : ''}
+                            <Link href="/support">
+                                <div
+                                    className={
+                                        usePathname() === '/support'
+                                            ? `${styles.link} ${styles.selectedLink}`
+                                            : styles.link
+                                    }
+                                >
+                                    서포트
+                                </div>
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/inquire">문의</Link>
-                            {usePathname() === '/inquire' ? ' ⦁' : ''}
+                            <Link href="/inquire">
+                                <div
+                                    className={
+                                        usePathname() === '/inquire'
+                                            ? `${styles.link} ${styles.selectedLink}`
+                                            : styles.link
+                                    }
+                                >
+                                    문의
+                                </div>
+                            </Link>
                         </li>
                     </ul>
                 </nav>

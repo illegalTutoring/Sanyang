@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-const SERVER_URL = process.env.SERVER_URL
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 export async function getNoticeList() {
     /**

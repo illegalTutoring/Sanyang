@@ -1,18 +1,19 @@
 import { serverResponseDTO } from './common'
 
 export interface loginRequestDTO {
-    username: String
-    password: String
+    username: string
+    password: string
 }
 
 export interface loginResponseDTO extends serverResponseDTO {
-    accessToken: String
+    accessToken: string
 }
 
 export interface signinRequestDTO {
-    id: String
-    userName: String
-    userPassword: String
+    id: string
+    userName: string
+    userPassword: string
 }
 
 export interface signinResponseDTO extends serverResponseDTO {}
+export interface reIssueResponseDTO extends serverResponseDTO {}

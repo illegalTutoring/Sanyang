@@ -30,10 +30,10 @@ import {
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
 
-const SERVER_URL = process.env.SERVER_URL
-
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 // #########################################################
 // Start - Work API
