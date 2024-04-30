@@ -1,9 +1,21 @@
 import React from 'react'
+import styles from './GridGallery.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import { BiLabel } from 'react-icons/bi'
 
 export interface ImageData {
-    id: number
-    url: string
+    workId?: number
+    galleryId?: number
+    userId: string
     title: string
+    company?: string
+    startDate: string
+    endDate: string
+    uploadDate: string
+    tags: string[]
+    original: string
+    thumbnail: string
+    watermark: string
 }
 
 export interface GalleryProps {
@@ -20,6 +32,7 @@ const GridGallery: React.FC<GalleryProps> = ({
     height,
 }) => {
     const gridTemplateColumns = `repeat(${colCount}, 1fr)`
+    const { isDarkMode } = useDarkModeStore()
 
     return (
         <div
@@ -33,15 +46,33 @@ const GridGallery: React.FC<GalleryProps> = ({
         >
             {images.map((image) => (
                 <div
-                    key={image.id}
+                    key={image.workId ? image.workId : image.galleryId}
                     style={{
                         overflow: 'hidden',
                         width: '100%',
                         height: height,
                     }}
                 >
+                    {image.company && (
+                        <div
+                            className={`${styles.title} ${isDarkMode ? styles.darkTitle : styles.lightTitle}`}
+                        >
+                            <div
+                                style={{
+                                    fontSize: '40px',
+                                    borderBottom: `1px solid ${isDarkMode ? 'white' : 'black'}`,
+                                    marginBottom: '10px',
+                                }}
+                            >
+                                {image.company}
+                            </div>
+                            <div>
+                                {image.startDate} ~ {image.endDate}
+                            </div>
+                        </div>
+                    )}
                     <img
-                        src={image.url}
+                        src={image.thumbnail}
                         alt={image.title}
                         style={{
                             width: '100%',
@@ -49,7 +80,6 @@ const GridGallery: React.FC<GalleryProps> = ({
                             objectFit: 'cover',
                         }}
                     />
-                    <p>{image.title}</p>
                 </div>
             ))}
         </div>

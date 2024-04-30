@@ -3,9 +3,18 @@ import Masonry from 'react-masonry-css'
 import styles from './Gallery.module.scss'
 
 export interface ImageData {
-    id: number
-    url: string
+    workId?: number
+    galleryId?: number
+    userId: string
     title: string
+    company?: string
+    startDate: string
+    endDate: string
+    uploadDate: string
+    tags: string[]
+    original: string
+    thumbnail: string
+    watermark: string
 }
 
 export interface GalleryProps {
@@ -30,9 +39,9 @@ const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
             columnClassName={styles.column}
         >
             {images.map((image) => (
-                <div key={image.id} className={styles.item}>
+                <div key={image.workId ? image.workId : image.galleryId}>
                     <img
-                        src={image.url}
+                        src={image.thumbnail}
                         alt={image.title}
                         style={{
                             width: '100%',
