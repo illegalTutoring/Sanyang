@@ -1,0 +1,13 @@
+.banner {
+    background-color: #a3a3a3;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.container {
+    height: 100%;
+    display: grid;
+    grid-template-rows: '1fr' '2fr';
+
+    gap: 10px;
+}

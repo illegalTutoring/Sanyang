@@ -97,10 +97,10 @@ const Sidebar: React.FC = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/inquire">
+                            <Link href="/notification">
                                 <div
                                     className={
-                                        usePathname() === '/inquire'
+                                        usePathname() === '/notification'
                                             ? `${styles.link} ${styles.selectedLink}`
                                             : styles.link
                                     }
