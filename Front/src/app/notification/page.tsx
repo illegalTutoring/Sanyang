@@ -2,12 +2,12 @@
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
-export default function OutsourcingPage() {
+export default function NotificationPage() {
     const { isDarkMode } = useDarkModeStore()
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <h1>외주 페이지</h1>
+            <h1>공지사항 페이지</h1>
         </article>
     )
 }
