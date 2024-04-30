@@ -9,6 +9,7 @@ import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,6 @@ public class UserService {
 
     private final AccessService accessService;
 
-//    private final
-
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
                        JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
         this.userRepository = userRepository;
@@ -41,8 +40,8 @@ public class UserService {
 
         // 1. 회원중복 조회
         String id = signinDto.getId();
-        String userName = signinDto.getUserName();
-        String userPassword = signinDto.getUserPassword();
+        String userName = signinDto.getUsername();
+        String userPassword = signinDto.getPassword();
 
         // 1-1. Id 중복검사
         boolean isExist = userRepository.existsById(id);
@@ -66,38 +65,46 @@ public class UserService {
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response){
 
         // 1. 쿠키에서 refresh 토큰 검색
-        String refresh = null;
+        String refreshToken = null;
         Cookie[] cookies = request.getCookies();
+
+//        System.out.println("cookie length:" + cookies.length);
+
+
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("refreshToken")) {
-                    refresh = cookie.getValue();
+                    refreshToken = cookie.getValue();
                 }
             }
         }
 
-        if (refresh == null) {
+        if (refreshToken == null) {
             return "refresh 토큰이 존재하지 않습니다";
         }
 
         // 2. 토큰 카테고리가 refresh 인지 대조
-        String category = jwtUtil.getCategory(refresh);
+        String category = jwtUtil.getCategory(refreshToken);
+
+        System.out.println("refresh = " + refreshToken);
+        System.out.println("category = " + category);
+
         if (!category.equals("refresh")) {
-            return "잘못된 refresh 토큰 입니다";
+            return "잘못된 refresh 토큰입니다";
         }
 
         // 3. refresh 토큰 유효기간 검증
-        boolean isExpired = jwtUtil.isExpired(refresh);
+        boolean isExpired = jwtUtil.isExpired(refreshToken);
         if (isExpired) {
-            return "만료된 refresh 토큰 입니다";
+            return "만료된 refresh 토큰입니다";
         }
 
         // 4. Redis 에서 refresh 토큰 2차 검증
-        String username = jwtUtil.getUsername(refresh);
-        String role = jwtUtil.getRole(refresh);
-        boolean isExist = refreshService.isRefreshTokenValid(username, refresh);
+        String username = jwtUtil.getUsername(refreshToken);
+        String role = jwtUtil.getRole(refreshToken);
+        boolean isExist = refreshService.isRefreshTokenValid(username, refreshToken);
         if(!isExist){
-            return "존재하지 않는 refresh 토큰 입니다";
+            return "사용하지 않는 refresh 토큰입니다";
         }
 
         // 5. access, refresh 토큰 재발급
@@ -112,20 +119,22 @@ public class UserService {
         refreshService.saveRefreshToken(username, newRefresh, 86400000L);
 
         response.setHeader("accessToken", newAccess);
-        response.addCookie(createCookie(newRefresh));
+        response.addHeader("Set-Cookie", createCookie(newRefresh) + "; SameSite=None");
 
         return "refresh 토큰 재발행 성공";
     }
 
-    private Cookie createCookie(String value) {
-        // 1. 쿠키 생성
-        Cookie cookie = new Cookie("refreshToken", value);
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
+    private String createCookie(String value) {
 
-        return cookie;
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
+                .path("/")
+                .maxAge(24*60*60)
+                .sameSite("None")
+                .httpOnly(false)
+                .secure(true)
+                .build();
+
+        return cookie.toString();
     }
 
 }

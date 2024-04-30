@@ -8,9 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    private final static String MESSAGE = "message";
 
     private final UserService userService;
 
@@ -20,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signIn(SignInDto signinDto) {
+    public ResponseEntity<Object> signIn(SignInDto signinDto) {
 
         String result = userService.signInProcess(signinDto);
         HttpStatus status;
@@ -31,11 +36,14 @@ public class UserController {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<>(result, status);
+        Map<String, Object> data = new HashMap<>();
+        data.put(MESSAGE, result);
+
+        return ResponseEntity.status(status).body(data);
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<?> reIssue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> reIssue(HttpServletRequest request, HttpServletResponse response) {
 
         String result = userService.reIssueProcess(request, response);
         HttpStatus status;
@@ -46,7 +54,10 @@ public class UserController {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<>(result, status);
+        Map<String, Object> data = new HashMap<>();
+        data.put(MESSAGE, result);
+
+        return ResponseEntity.status(status).body(data);
     }
 
 }

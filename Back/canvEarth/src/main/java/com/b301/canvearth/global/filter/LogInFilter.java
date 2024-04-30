@@ -4,6 +4,7 @@ import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.util.JWTUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +19,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 @Slf4j
 public class LogInFilter extends UsernamePasswordAuthenticationFilter {
@@ -72,9 +74,15 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("accessToken", access);
         response.addCookie(createCookie(refresh));
 
-        PrintWriter writer = response.getWriter();
-        writer.print("로그인 성공");
+        Map<String, String> data = new HashMap<>();
+        data.put("message", "로그인 성공");
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonData = objectMapper.writeValueAsString(data);
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(jsonData);
         response.setStatus(HttpStatus.OK.value());
     }
 
@@ -90,8 +98,20 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        // 로그인 실패
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+
+//        Map<String, String> data = new HashMap<>();
+//        data.put("message", "로그인 실패");
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String jsonData = objectMapper.writeValueAsString(data);
+//
+//        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("application/json;charset=utf-8");
+//        response.getWriter().write(jsonData);
+//        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        throw new CustomException(ErrorCode.CHECK_THE_ID_OR_PASS);
+
     }
 }

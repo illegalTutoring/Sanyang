@@ -4,6 +4,7 @@ import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.util.JWTUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
@@ -32,6 +34,12 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        Map<String, String> data = new HashMap<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=utf-8");
+
         // 1. Header 에서 access 토큰 검색
         String accessToken = request.getHeader("accessToken");
 
@@ -40,24 +48,29 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 2. 토큰 카테고리가 refresh 인지 대조
+        // 2. 토큰 카테고리가 access 인지 대조
         String category = jwtUtil.getCategory(accessToken);
+
+        System.out.println("access = " + accessToken);
 
         if(!category.equals("access")){
 
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
+            data.put("message", "잘못된 access 토큰입니다");
+            String jsonData = objectMapper.writeValueAsString(data);
 
+            response.getWriter().write(jsonData);
             response.setStatus((HttpServletResponse.SC_UNAUTHORIZED));
             return;
         }
 
-        // 3. refresh 토큰 유효기간 검증
+        // 3. access 토큰 유효기간 검증
         boolean result = jwtUtil.isExpired(accessToken);
-        if(!result) {
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
+        if(result) {
 
+            data.put("message", "만료된 access 토큰입니다");
+            String jsonData = objectMapper.writeValueAsString(data);
+
+            response.getWriter().write(jsonData);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
 
@@ -68,9 +81,11 @@ public class JWTFilter extends OncePerRequestFilter {
         boolean isExist = accessService.isAccessTokenValid(username, accessToken);
 
         if(!isExist){
-            PrintWriter writer = response.getWriter();
-            writer.print("blacked access token");
 
+            data.put("message", "사용하지 않는 access 토큰입니다");
+            String jsonData = objectMapper.writeValueAsString(data);
+
+            response.getWriter().write(jsonData);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
