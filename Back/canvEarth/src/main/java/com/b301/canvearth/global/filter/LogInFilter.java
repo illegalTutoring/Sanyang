@@ -3,14 +3,16 @@ package com.b301.canvearth.global.filter;
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,15 +66,16 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String accessToken = jwtUtil.createJwt("access", username, role, 1800000L);
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // white list 작성
-        accessService.saveAccessToken(username, access, 600000L);
-        refreshService.saveRefreshToken(username, refresh, 86400000L);
+        accessService.saveAccessToken(username, accessToken, 1800000L);
+        refreshService.saveRefreshToken(username, refreshToken, 86400000L);
 
-        response.setHeader("accessToken", access);
-        response.addCookie(createCookie(refresh));
+        // 토큰 발행
+        response.setHeader("accessToken", accessToken);
+        response.addHeader("Set-Cookie", createCookie(refreshToken) + "; SameSite=None");
 
         Map<String, String> data = new HashMap<>();
         data.put("message", "로그인 성공");
@@ -86,15 +89,17 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.OK.value());
     }
 
-    private Cookie createCookie(String value) {
-        // 쿠키 발행
-        Cookie cookie = new Cookie("refreshToken", value);
-        cookie.setMaxAge(24*60*60);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
+    private String createCookie(String value) {
 
-        return cookie;
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
+                .path("/")
+                .maxAge(24*60*60)
+                .sameSite("None")
+                .httpOnly(false)
+                .secure(true)
+                .build();
+
+        return cookie.toString();
     }
 
     @Override
