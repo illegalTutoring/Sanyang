@@ -8,6 +8,10 @@ import Modal from '@/component/Modal'
 import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
+import { login, reIssue } from '@/utils/api/user'
+
+let m = ''
+let a = ''
 
 const Sidebar: React.FC = () => {
     const { isDarkMode } = useDarkModeStore()
@@ -19,15 +23,29 @@ const Sidebar: React.FC = () => {
 
     const toggleLogin = () => setLoginVisible(!loginVisible)
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const username = event.currentTarget.username.value
-        const password = event.currentTarget.password.value
+        // const username = event.currentTarget.username.value
+        // const password = event.currentTarget.password.value
 
-        if (username === 'ssafy' && password === 'ssafy') {
+        // if (username === 'ssafy' && password === 'ssafy') {
+        //     logIn()
+        // } else {
+        //     alert('사용자가 다릅니다. 다시 시도해주세요.')
+        // }
+
+        if (!isLoggedIn) {
+            let { message, accessToken } = await login({
+                username: event.currentTarget.username.value,
+                password: event.currentTarget.password.value,
+            })
             logIn()
+            console.log('Browser', message, accessToken)
+            m = message
+            a = accessToken
         } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
+            let { message } = await reIssue(a)
+            console.log('ReIssue', message)
         }
     }
 
@@ -153,6 +171,7 @@ const Sidebar: React.FC = () => {
                                         type="text"
                                         id="username"
                                         name="username"
+                                        value="admin"
                                         required
                                     />
                                     <label htmlFor="password">Password:</label>
@@ -160,6 +179,7 @@ const Sidebar: React.FC = () => {
                                         type="password"
                                         id="password"
                                         name="password"
+                                        value="b105!!"
                                         required
                                     />
                                     <button type="submit">Login</button>
