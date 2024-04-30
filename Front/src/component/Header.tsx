@@ -7,8 +7,8 @@ import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const Header: React.FC = () => {
+    const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logOut } = useAuthStore()
-    const { isDarkMode } = useDarkModeStore()
 
     return (
         <header className={`${styles.header} ${isDarkMode ? 'dark' : 'light'}`}>
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
             </h2>
             <div></div>
 
-            {isLoggedIn && (
+            {isLoggedIn ? (
                 <div className={styles.profile}>
                     <Profile
                         src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
@@ -28,7 +28,20 @@ const Header: React.FC = () => {
                     />
                     <h3 onClick={logOut}>sanyamg</h3>
                 </div>
+            ) : (
+                <div></div>
             )}
+
+            <img
+                onClick={toggleDarkMode}
+                className={styles.toggleDarkModeButton}
+                src={
+                    isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
+                }
+                alt={
+                    isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+                }
+            />
         </header>
     )
 }

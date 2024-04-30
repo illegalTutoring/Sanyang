@@ -10,7 +10,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 
 const Sidebar: React.FC = () => {
-    const { isDarkMode, toggleDarkMode } = useDarkModeStore()
+    const { isDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn } = useAuthStore()
     const { isEditMode, toggleEditMode } = useEditModeStore()
 
@@ -99,26 +99,11 @@ const Sidebar: React.FC = () => {
                     </ul>
                 </nav>
 
-                <img
-                    onClick={toggleDarkMode}
-                    className={styles.toggleDarkModeButton}
-                    src={
-                        isDarkMode
-                            ? '/svgs/moon_white.svg'
-                            : '/svgs/sun_black.svg'
-                    }
-                    alt={
-                        isDarkMode
-                            ? 'Switch to light mode'
-                            : 'Switch to dark mode'
-                    }
-                />
-
                 <br></br>
 
                 <img
                     onClick={toggleLogin}
-                    className={styles.toggleDarkModeButton}
+                    className={styles.toggleLoginButton}
                     src={
                         isDarkMode
                             ? '/svgs/key_white.svg'
