@@ -65,43 +65,6 @@ $dark-blue-hover: #2980b9;
     }
 }
 
-.loginModal {
-    display: grid;
-}
-
-.loginForm {
-    display: grid;
-
-    label {
-        margin: 1rem;
-    }
-
-    input {
-        padding: 8px;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    button {
-        padding: 10px;
-        background-color: #0061a8;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-
-        &:hover {
-            background-color: #004885;
-        }
-    }
-}
-
-.toggleLoginButton {
-    width: 40px;
-}
-
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;

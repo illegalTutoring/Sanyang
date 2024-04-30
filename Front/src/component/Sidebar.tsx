@@ -4,32 +4,11 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
-import Modal from '@/component/Modal'
-import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import useEditModeStore from '@/utils/store/useEditModeStore '
 
 const Sidebar: React.FC = () => {
-    const { isDarkMode } = useDarkModeStore()
-    const { isLoggedIn, logIn } = useAuthStore()
-    const { isEditMode, toggleEditMode } = useEditModeStore()
-
     const [isOpen, setIsOpen] = useState(false)
-    const [loginVisible, setLoginVisible] = useState(false)
-
-    const toggleLogin = () => setLoginVisible(!loginVisible)
-
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const username = event.currentTarget.username.value
-        const password = event.currentTarget.password.value
-
-        if (username === 'ssafy' && password === 'ssafy') {
-            logIn()
-        } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
-        }
-    }
+    const { isDarkMode } = useDarkModeStore()
 
     return (
         <>
@@ -113,65 +92,6 @@ const Sidebar: React.FC = () => {
                 </nav>
 
                 <br></br>
-
-                <img
-                    onClick={toggleLogin}
-                    className={styles.toggleLoginButton}
-                    src={
-                        isDarkMode
-                            ? '/svgs/key_white.svg'
-                            : '/svgs/key_black.svg'
-                    }
-                    alt="login"
-                />
-
-                <br></br>
-
-                {isLoggedIn &&
-                    (isEditMode ? (
-                        <button onClick={toggleEditMode}>edit</button>
-                    ) : (
-                        <button onClick={toggleEditMode}>view</button>
-                    ))}
-
-                {loginVisible && (
-                    <>
-                        <Modal
-                            isVisible={loginVisible}
-                            toggleModal={toggleLogin}
-                            width="40vw"
-                            height="60vh"
-                        >
-                            <div className={styles.loginModal}>
-                                <h1>Login</h1>
-                                <form
-                                    className={styles.loginForm}
-                                    onSubmit={handleLogin}
-                                >
-                                    <label htmlFor="username">Username:</label>
-                                    <input
-                                        type="text"
-                                        id="username"
-                                        name="username"
-                                        required
-                                    />
-                                    <label htmlFor="password">Password:</label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        name="password"
-                                        required
-                                    />
-                                    <button type="submit">Login</button>
-                                </form>
-                                <p>
-                                    Need an account?{' '}
-                                    <Link href="/signup">Sign up</Link>
-                                </p>
-                            </div>
-                        </Modal>
-                    </>
-                )}
             </aside>
         </>
     )
