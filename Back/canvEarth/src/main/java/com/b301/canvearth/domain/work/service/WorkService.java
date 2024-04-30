@@ -38,7 +38,7 @@ public class WorkService {
     public Work insertWork(MultipartFile image, WorkRequestPostDto requestPostDto) {
         log.info("===== [WorkService] insertWork start =====");
 
-        Map<String, String> paths = uploadS3AndGetPath(image);
+        Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
         Work work = Work.builder().userId(requestPostDto.getUserId()).company(requestPostDto.getCompany())
                 .title(requestPostDto.getTitle()).startDate(requestPostDto.getStartDate())
@@ -67,7 +67,7 @@ public class WorkService {
         boolean changeImage = false;
         Map<String, String> paths = new HashMap<>();
         if(image != null && !image.isEmpty()) {
-            paths = uploadS3AndGetPath(image);
+            paths = s3Service.uploadS3AndGetPath(image);
             changeImage = true;
         }
 
@@ -106,25 +106,5 @@ public class WorkService {
         
         // DB에서 삭제
         workRepository.delete(work);
-    }
-
-    public Map<String, String> uploadS3AndGetPath(MultipartFile image) {
-        log.info("===== [WorkService] uploadS3AndGetPath start =====");
-        Map<String, String> paths = new HashMap<>();
-        UUID uuid = UUID.randomUUID();
-        // originalPath
-        String originalPath = s3Service.uploadImage(image, uuid, "original");
-        paths.put("originalPath", originalPath);
-
-        // TODO: 썸네일, 워터마크 해줘야함.
-        // thumbnailPath
-        String thumbnailPath = s3Service.uploadImage(image, uuid, "thumbnail");
-        paths.put("thumbnailPath", thumbnailPath);
-
-        // watermarkPath
-        String watermarkPath = s3Service.uploadImage(image, uuid, "watermark");
-        paths.put("watermarkPath", watermarkPath);
-
-        return paths;
     }
 }

@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -83,6 +85,25 @@ public class S3Service {
             log.error("IOException 발생");
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<String, String> uploadS3AndGetPath(MultipartFile image) {
+        log.info("===== [S3Service] uploadS3AndGetPath start =====");
+        Map<String, String> paths = new HashMap<>();
+        UUID uuid = UUID.randomUUID();
+        // originalPath
+        String originalPath = uploadImage(image, uuid, "original");
+        paths.put("originalPath", originalPath);
+
+        // thumbnailPath
+        String thumbnailPath = uploadImage(image, uuid, "thumbnail");
+        paths.put("thumbnailPath", thumbnailPath);
+
+        // watermarkPath
+        String watermarkPath = uploadImage(image, uuid, "watermark");
+        paths.put("watermarkPath", watermarkPath);
+
+        return paths;
     }
 
     private BufferedImage resizeImage(MultipartFile image) throws IOException {
