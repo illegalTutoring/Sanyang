@@ -43,6 +43,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+	// reids
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63
 	implementation group: 'io.hypersistence', name: 'hypersistence-utils-hibernate-63', version: '3.7.3'
 
