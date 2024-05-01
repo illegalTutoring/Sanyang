@@ -6,8 +6,11 @@ import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
 import GridGallery from '@/component/GridGallery'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const GalleryPage = () => {
+    const { isDarkMode } = useDarkModeStore()
+
     const defaultImages = [
         {
             galleryId: 1,
@@ -155,8 +158,13 @@ const GalleryPage = () => {
     ]
 
     return (
-        <div className={styles.container}>
-            <div className={styles.galleryWrapper}>
+        <div className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}>
+            <div
+                className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
+            >
+                <div style={{ fontSize: '20px', marginBottom: '5px' }}>
+                    최신 업데이트
+                </div>
                 <GridGallery
                     images={defaultImages2}
                     width={'100%'}

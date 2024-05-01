@@ -1,16 +1,36 @@
-import { useState, ChangeEvent, KeyboardEvent, useRef } from 'react'
+import { useState, ChangeEvent, KeyboardEvent, useRef, useEffect } from 'react'
 import styles from './TagInput.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface TagInputProps {
     availableTags: string[]
 }
 
 const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
+    const { isDarkMode } = useDarkModeStore()
     const [tags, setTags] = useState<string[]>([])
     const [input, setInput] = useState('')
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
     const inputRef = useRef<HTMLInputElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(target)
+            ) {
+                setSuggestions([])
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value
@@ -104,14 +124,54 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
         }
     }
 
+    const deleteAllTag = () => {
+        setTags([])
+        setSuggestions([])
+        setInput('')
+    }
+
     return (
-        <div>
-            <div className={styles.tagBox}>
+        <div ref={containerRef}>
+            <div
+                className={`${styles.tagBox} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                >
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={input}
+                        onChange={handleInputChange}
+                        onKeyDown={handleInputKeyDown}
+                        placeholder="Add a tag..."
+                        style={{
+                            height: '35px',
+                            margin: '0 5px 0 5px',
+                            width: '150px',
+                            fontSize: '18px',
+                            borderRadius: '20px',
+                            paddingLeft: '10px',
+                        }}
+                    />
+                    <div
+                        className={`${styles.resetButton} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
+                        onClick={() => deleteAllTag()}
+                    >
+                        Reset
+                    </div>
+                </div>
                 {tags.map((tag, index) => (
-                    <div className={styles.tag} key={index}>
-                        {tag}
+                    <div
+                        className={`${styles.tag} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
+                        key={index}
+                    >
+                        #{tag}
                         <button
-                            className={styles.deleteButton}
+                            className={`${styles.deleteButton} ${isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton}`}
                             onClick={() => deleteTag(tag)}
                             aria-label="Delete tag"
                         >
@@ -122,14 +182,6 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
             </div>
 
             <div className={styles.inputBox}>
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={input}
-                    onChange={handleInputChange}
-                    onKeyDown={handleInputKeyDown}
-                    placeholder="Add a tag..."
-                />
                 {suggestions.length > 0 && (
                     <ul className={styles.suggestions}>
                         {suggestions.map((suggestion, index) => (
