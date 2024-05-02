@@ -72,7 +72,7 @@ public class WorkService {
         }
 
         Work changeWork = workRepository.findById(workId)
-                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 workId로 데이터를 찾을 수 없습니다. workId: " + workId));
 
         changeWork.setCompany(requestPutDto.getCompany());
         changeWork.setTitle(requestPutDto.getTitle());
@@ -97,7 +97,7 @@ public class WorkService {
     public void deleteWork(Long workId) {
         log.info("===== [WorkService] deleteWork start =====");
         Work work = workRepository.findById(workId)
-                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 workId로 데이터를 찾을 수 없습니다. workId: " + workId));
 
         // S3 이미지들 삭제
         s3Service.deleteImage(work.getOriginalPath());
