@@ -6,13 +6,18 @@
     margin-bottom: 5px;
     gap: 5px;
     min-height: 40px;
-    background-color: black;
-    border-radius: 5px;
+    border-radius: 20px;
+}
+
+.lightBox {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.darkBox {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .tag {
-    background-color: #eeeeee;
-    color: #222222;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 5px;
@@ -24,19 +29,48 @@
     cursor: default;
 }
 
+.lightTag {
+    background-color: #666666;
+    color: #eeeeee;
+}
+
+.darkTag {
+    background-color: #eeeeee;
+    color: #222222;
+}
+
 // 태그 내부, 삭제 버튼
 .deleteButton {
     background: none;
     border: none;
-    color: #444444;
     cursor: pointer;
     margin-left: 10px;
     font-size: 25px;
 }
 
+.lightDeleteButton {
+    color: #eeeeee;
+}
+
+.darkDeleteButton {
+    color: #666666;
+}
+
 .deleteButton:hover {
-    color: #222222;
     font-weight: bold;
+}
+
+// Reset button
+.resetButton {
+    height: 35px;
+    width: 100%;
+    padding: 0 5px 0 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+    border-radius: 10px;
+    user-select: none;
 }
 
 // 인풋 박스
@@ -52,7 +86,8 @@
         position: absolute;
         z-index: 1000;
         background: white;
-        width: 100%;
+        color: #222222;
+        width: 150px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border: 1px solid #ccc;
         max-height: 200px;

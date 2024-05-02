@@ -4,7 +4,7 @@ $dark-blue-hover: #2980b9;
 .sidebar {
     padding: 20px;
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
-    font-size: 25px;
+    font-size: 20px;
 
     ul {
         list-style: none;
@@ -19,15 +19,20 @@ $dark-blue-hover: #2980b9;
 .selectedLink {
     padding-left: 10px;
     background-color: rgba(0, 0, 0, 0.3);
-    transition:
-        background-color 0.3s ease-in-out,
-        padding-left 0.5s ease-in-out;
 }
 
 .link {
     padding-top: 5px;
     padding-bottom: 5px;
     border-radius: 5px;
+
+    &:hover {
+        padding-left: 10px;
+        background-color: rgba(0, 0, 0, 0.3);
+        transition:
+            background-color 0.2s ease-in-out,
+            padding-left 0.2s ease-in-out;
+    }
 }
 
 .toggleButton {
