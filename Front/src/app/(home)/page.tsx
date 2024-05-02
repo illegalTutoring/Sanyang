@@ -19,19 +19,85 @@ const HomePage = () => {
     const [showContent, setShowContent] = useState(false)
 
     const handleArrowClick = () => {
-        setShowArrow(false) // 화살표 숨기기
-        setShowContent(true) // 내용 보이기
-        // 스크롤 이동
+        setShowArrow(false)
+        setShowContent(true)
         setTimeout(() => {
             const contentDiv = document.getElementById('contentDiv')
             contentDiv?.scrollIntoView({ behavior: 'smooth' })
-        }, 100) // 콘텐츠가 렌더링 된 후 스크롤
+        }, 100)
     }
 
     const [editBanner, setEditBanner] = useState(false)
+
     const [notice, setNotice] = useState(
         '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
     )
+
+    const embedData = [
+        {
+            type: 0,
+            link: 'https://example.com/link1',
+        },
+        {
+            type: 1,
+            link: 'https://example.com/link2',
+        },
+        {
+            type: 2,
+            link: 'https://example.com/link3',
+        },
+        {
+            type: 3,
+            link: 'https://example.com/link4',
+        },
+        {
+            type: 4,
+            link: 'https://example.com/link5',
+        },
+        {
+            type: 5,
+            link: 'https://example.com/link6',
+        },
+        {
+            type: 6,
+            link: 'https://example.com/link7',
+        },
+    ]
+
+    const getImageSource = (type: number) => {
+        switch (type) {
+            case 0:
+                return isDarkMode
+                    ? '/svgs/youtube_white.svg'
+                    : '/svgs/youtube_black.svg'
+            case 1:
+                return isDarkMode
+                    ? '/svgs/blog_white.svg'
+                    : '/svgs/blog_black.svg'
+            case 2:
+                return isDarkMode
+                    ? '/svgs/instagram_white.svg'
+                    : '/svgs/instagram_black.svg'
+            case 3:
+                return isDarkMode
+                    ? '/svgs/twitter_white.svg'
+                    : '/svgs/twitter_black.svg'
+            case 4:
+                return isDarkMode
+                    ? '/svgs/artstation_white.svg'
+                    : '/svgs/artstation_black.svg'
+            case 5:
+                return isDarkMode
+                    ? '/svgs/pixiv_white.svg'
+                    : '/svgs/pixiv_black.svg'
+            case 6:
+                return isDarkMode
+                    ? '/svgs/etc_white.svg'
+                    : '/svgs/etc_black.svg'
+            default:
+                return ''
+        }
+    }
 
     const toggleEditBanner = () => setEditBanner(!editBanner)
 
@@ -40,28 +106,6 @@ const HomePage = () => {
         'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
         'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
     ])
-
-    const getDummyOutsourcingList = async (year: number, month: number) => {
-        return {
-            message: `${year}년 ${month}월 외주 목록입니다.`,
-            outsourcingInfo: [
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 신규 캐릭터 일러스트 작업',
-                    startDate: '2024-04-01',
-                    endDate: '2024-04-30',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 신규 업데이트 일러스트 작업',
-                    startDate: '2024-05-01',
-                    endDate: '2024-05-31',
-                },
-            ],
-        }
-    }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -151,34 +195,17 @@ const HomePage = () => {
                         </div>
 
                         <div className={styles.link_container}>
-                            <Profile
-                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/Vector-Instagram-icon-PNG.png"
-                                size={70}
-                                border="1px solid balck"
-                                alt="instargram"
-                                radius={50}
-                            />
-                            <Profile
-                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/twitter_x_new_logo_x_rounded_icon_256078.png"
-                                size={80}
-                                border="1px solid balck"
-                                alt="X-Twitter"
-                                radius={50}
-                            />
-                            <Profile
-                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/pngwing.com.png"
-                                size={70}
-                                border="1px solid balck"
-                                alt="gumload"
-                                radius={50}
-                            />
-                            <Profile
-                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/PATREON_SYMBOL_1_BLACK_RGB.svg"
-                                size={70}
-                                border="1px solid balck"
-                                alt="gumload"
-                                radius={50}
-                            />
+                            {embedData.map((data, index) => (
+                                <div
+                                    key={index}
+                                    className={styles.link_container}
+                                >
+                                    <Profile
+                                        src={getImageSource(data.type)}
+                                        size={70}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
