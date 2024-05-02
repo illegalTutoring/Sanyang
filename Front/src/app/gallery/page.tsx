@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
@@ -7,7 +9,31 @@ import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
 
-const defaultImages = getGalleryList().data
+let defaultImages = getGalleryList().data
+if (!defaultImages) {
+    /**
+     * @todo 이미지가 존재하지 않을 때 예외 처리
+     */
+
+    defaultImages = [
+        {
+            galleryId: 0,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original:
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
+            thumbnail:
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
+            watermark:
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
+        },
+    ]
+}
+console.log(defaultImages)
 /**
  * @todo Error Handling
  */
