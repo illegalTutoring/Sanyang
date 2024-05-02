@@ -42,12 +42,6 @@ public class LogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
-        String requestMethod = request.getMethod();
-        if (!requestMethod.equals("POST")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         // 2. 쿠키에서 refresh 토큰 검색
         String refresh = null;
@@ -94,7 +88,7 @@ public class LogoutFilter extends GenericFilterBean {
         boolean isExist = refreshService.isRefreshTokenValid(username, refresh);
         if(!isExist){
             PrintWriter writer = response.getWriter();
-            writer.print("존재하지 않는 refresh 토큰 입니다");
+            writer.print("사용하지 않는 refresh 토큰입니다");
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;

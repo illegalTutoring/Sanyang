@@ -36,7 +36,7 @@ public class UserController {
         if(result.equals("회원가입 성공")){
             status = HttpStatus.CREATED;
         }else{
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.CONFLICT;
         }
 
         Map<String, Object> data = new HashMap<>();
@@ -55,7 +55,7 @@ public class UserController {
         if(result.equals("refresh 토큰 재발행 성공")){
             status = HttpStatus.CREATED;
         }else{
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.UNAUTHORIZED;
         }
 
         Map<String, Object> data = new HashMap<>();

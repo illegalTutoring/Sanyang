@@ -40,7 +40,14 @@ public class UserService {
         boolean isExist = userRepository.existsById(id);
 
         if(isExist){
-            return "회원가입 실패";
+            return "중복된 ID 입니다";
+        }
+
+        // 1-2. UserName 중복검사
+        isExist = userRepository.existsByUserName(username);
+
+        if(isExist){
+            return "중복된 닉네임 입니다";
         }
 
         // 회원 등록
