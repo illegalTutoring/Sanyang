@@ -94,8 +94,8 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
                 .path("/")
                 .maxAge(24*60*60)
-                .sameSite("None")
-                .httpOnly(false)
+//                .sameSite("None")
+                .httpOnly(true)
                 .secure(true)
                 .build();
 
