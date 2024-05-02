@@ -60,6 +60,7 @@ const Banner: React.FC<BannerProps> = ({
                             backgroundImage: `url(${image})`,
                             backgroundPositionY: `${extendedYIndex[index]}px`,
                             backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
                             width: `${100 / images.length}%`,
                             height: '100%',
                         }}
