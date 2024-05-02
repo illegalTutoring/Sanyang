@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
                                             : styles.link
                                     }
                                 >
-                                    개인일정
+                                    일정
                                 </div>
                             </Link>
                         </li>

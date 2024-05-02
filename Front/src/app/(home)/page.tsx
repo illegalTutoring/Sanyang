@@ -1,7 +1,7 @@
 'use client'
 
 import Modal from '@/component/Modal'
-import style from './home.module.scss'
+import styles from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
@@ -9,13 +9,30 @@ import ImageUploadPreview from '@/component/ImageUploadPreview'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const HomePage = () => {
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
+    const [showArrow, setShowArrow] = useState(true)
+    const [showContent, setShowContent] = useState(false)
+
+    const handleArrowClick = () => {
+        setShowArrow(false) // 화살표 숨기기
+        setShowContent(true) // 내용 보이기
+        // 스크롤 이동
+        setTimeout(() => {
+            const contentDiv = document.getElementById('contentDiv')
+            contentDiv?.scrollIntoView({ behavior: 'smooth' })
+        }, 100) // 콘텐츠가 렌더링 된 후 스크롤
+    }
+
     const [editBanner, setEditBanner] = useState(false)
+    const [notice, setNotice] = useState(
+        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
+    )
+
     const toggleEditBanner = () => setEditBanner(!editBanner)
 
     const [images, setImages] = useState([
@@ -53,7 +70,7 @@ const HomePage = () => {
                 interval={5000}
                 width="100%"
                 yindex={[-60, -150, -450]}
-                height="50vh"
+                height="80vh"
             />
 
             {isEditMode && (
@@ -67,50 +84,104 @@ const HomePage = () => {
                 </Modal>
             )}
 
-            <div className={style.container_col}>
-                <div className={style.link_container}>
-                    <Profile
-                        src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/Vector-Instagram-icon-PNG.png"
-                        size={70}
-                        border="1px solid balck"
-                        alt="instargram"
-                        radius={50}
-                    />
-                    <Profile
-                        src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/twitter_x_new_logo_x_rounded_icon_256078.png"
-                        size={80}
-                        border="1px solid balck"
-                        alt="X-Twitter"
-                        radius={50}
-                    />
-                    <Profile
-                        src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/pngwing.com.png"
-                        size={70}
-                        border="1px solid balck"
-                        alt="gumload"
-                        radius={50}
-                    />
-                    <Profile
-                        src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/PATREON_SYMBOL_1_BLACK_RGB.svg"
-                        size={70}
-                        border="1px solid balck"
-                        alt="gumload"
-                        radius={50}
-                    />
-                </div>
-                <div>
-                    <List
-                        width="100%"
-                        height="40vh"
-                        pageSize={10}
-                        columns={['userId', 'client', 'title']}
-                        tagActions={{
-                            All: () => getDummyOutsourcingList(2024, 4),
-                            Update: () => getDummyOutsourcingList(2024, 4),
-                            Notice: () => getDummyOutsourcingList(2024, 4),
-                        }}
-                    />
-                </div>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                {showArrow && (
+                    <div
+                        onClick={handleArrowClick}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img
+                            className={styles.shake}
+                            style={{ width: '30px', margin: '30px 0 30px 0' }}
+                            src={
+                                isDarkMode
+                                    ? '/svgs/double_down_white.svg'
+                                    : '/svgs/double_down_black.svg'
+                            }
+                        />
+                    </div>
+                )}
+
+                {showContent && (
+                    <div id="contentDiv">
+                        <div>
+                            <div
+                                className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
+                            ></div>
+                        </div>
+
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                fontSize: '70px',
+                                marginBottom: '30px',
+                                fontFamily: 'Stalemate-Regular',
+                            }}
+                        >
+                            Notice
+                        </div>
+
+                        <div
+                            className={`${styles.notice} ${isDarkMode ? styles.noticeDark : styles.noticeLight}`}
+                        >
+                            {notice}
+                        </div>
+
+                        <div>
+                            <div
+                                className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
+                            ></div>
+                        </div>
+
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                fontSize: '70px',
+                                marginBottom: '30px',
+                                fontFamily: 'Stalemate-Regular',
+                            }}
+                        >
+                            Contact
+                        </div>
+
+                        <div className={styles.link_container}>
+                            <Profile
+                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/Vector-Instagram-icon-PNG.png"
+                                size={70}
+                                border="1px solid balck"
+                                alt="instargram"
+                                radius={50}
+                            />
+                            <Profile
+                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/twitter_x_new_logo_x_rounded_icon_256078.png"
+                                size={80}
+                                border="1px solid balck"
+                                alt="X-Twitter"
+                                radius={50}
+                            />
+                            <Profile
+                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/pngwing.com.png"
+                                size={70}
+                                border="1px solid balck"
+                                alt="gumload"
+                                radius={50}
+                            />
+                            <Profile
+                                src="https://jariyo-s3.s3.ap-northeast-2.amazonaws.com/logo/PATREON_SYMBOL_1_BLACK_RGB.svg"
+                                size={70}
+                                border="1px solid balck"
+                                alt="gumload"
+                                radius={50}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </article>
     )

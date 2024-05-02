@@ -6,14 +6,16 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-
-        &:hover {
-            background-color: rgb(192, 224, 230);
-        }
     }
 
-    .active {
-        background-color: rgb(192, 224, 230);
+    .lightActive {
+        background-color: rgb(187, 251, 225);
+        font-weight: bold;
+    }
+
+    .darkActive {
+        background-color: rgb(51, 87, 157);
+        color: white;
         font-weight: bold;
     }
 }
