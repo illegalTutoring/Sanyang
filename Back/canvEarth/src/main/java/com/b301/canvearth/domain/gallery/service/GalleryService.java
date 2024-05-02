@@ -40,7 +40,8 @@ public class GalleryService {
 
         Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
-        Gallery gallery = Gallery.builder().title(requestPostDto.getTitle()).createDate(requestPostDto.getCreateDate())
+        Gallery gallery = Gallery.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
+                .createDate(requestPostDto.getCreateDate())
                 .tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))
                 .thumbnailPath(paths.get("thumbnailPath"))
