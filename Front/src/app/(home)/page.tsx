@@ -1,22 +1,33 @@
 'use client'
 
-import Modal from '@/component/layout/Modal'
 import styles from './home.module.scss'
-import Banner from '@/component/layout/Banner'
+import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
-import List from '@/component/TagList'
-import ImageUploadPreview from '@/component/ImageUploadPreview'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 
 import { useEffect, useState } from 'react'
 
 const HomePage = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
+    //지역변수
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
+    const [editBanner, setEditBanner] = useState(false)
+    const [images, setImages] = useState([
+        'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
+        'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
+        'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+    ])
+    const [notice, setNotice] = useState(
+        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
+    )
+
+    //함수
+    const toggleEditBanner = () => setEditBanner(!editBanner)
 
     const handleArrowClick = () => {
         setShowArrow(false)
@@ -26,43 +37,6 @@ const HomePage = () => {
             contentDiv?.scrollIntoView({ behavior: 'smooth' })
         }, 100)
     }
-
-    const [editBanner, setEditBanner] = useState(false)
-
-    const [notice, setNotice] = useState(
-        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
-    )
-
-    const embedData = [
-        {
-            type: 0,
-            link: 'https://example.com/link1',
-        },
-        {
-            type: 1,
-            link: 'https://example.com/link2',
-        },
-        {
-            type: 2,
-            link: 'https://example.com/link3',
-        },
-        {
-            type: 3,
-            link: 'https://example.com/link4',
-        },
-        {
-            type: 4,
-            link: 'https://example.com/link5',
-        },
-        {
-            type: 5,
-            link: 'https://example.com/link6',
-        },
-        {
-            type: 6,
-            link: 'https://example.com/link7',
-        },
-    ]
 
     const getImageSource = (type: number) => {
         switch (type) {
@@ -99,13 +73,37 @@ const HomePage = () => {
         }
     }
 
-    const toggleEditBanner = () => setEditBanner(!editBanner)
-
-    const [images, setImages] = useState([
-        'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-        'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-        'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
-    ])
+    // 더미 데이터
+    const embedData = [
+        {
+            type: 0,
+            link: 'https://example.com/link1',
+        },
+        {
+            type: 1,
+            link: 'https://example.com/link2',
+        },
+        {
+            type: 2,
+            link: 'https://example.com/link3',
+        },
+        {
+            type: 3,
+            link: 'https://example.com/link4',
+        },
+        {
+            type: 4,
+            link: 'https://example.com/link5',
+        },
+        {
+            type: 5,
+            link: 'https://example.com/link6',
+        },
+        {
+            type: 6,
+            link: 'https://example.com/link7',
+        },
+    ]
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -115,18 +113,8 @@ const HomePage = () => {
                 width="100%"
                 yindex={[-60, -150, -450]}
                 height="80vh"
+                isEditMode={isEditMode}
             />
-
-            {isEditMode && (
-                <Modal
-                    isVisible={editBanner}
-                    toggleModal={toggleEditBanner}
-                    width="60vw"
-                    height="60vh"
-                >
-                    <ImageUploadPreview></ImageUploadPreview>
-                </Modal>
-            )}
 
             <div
                 style={{
