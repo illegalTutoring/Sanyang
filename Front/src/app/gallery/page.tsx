@@ -6,83 +6,119 @@ import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/Modal'
 import GridGallery from '@/component/GridGallery'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
-const GalleryPage: React.FC = () => {
+const GalleryPage = () => {
+    const { isDarkMode } = useDarkModeStore()
+
     const defaultImages = [
         {
-            id: 1,
-            url: 'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            title: 'Image 1',
+            galleryId: 1,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+            watermark: 's3 path watermark',
         },
         {
-            id: 2,
-            url: 'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-            title: 'Image 2',
+            galleryId: 2,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
         },
         {
-            id: 3,
-            url: 'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            title: 'Image 3',
+            galleryId: 3,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+            watermark: 's3 path watermark',
         },
         {
-            id: 4,
-            url: 'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            title: 'Image 4',
+            galleryId: 4,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
         },
         {
-            id: 5,
-            url: 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            title: 'Image 4',
+            galleryId: 5,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+            watermark: 's3 path watermark',
         },
         {
-            id: 11,
-            url: 'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            title: 'Image 1',
+            galleryId: 6,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
+            watermark: 's3 path watermark',
         },
         {
-            id: 12,
-            url: 'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-            title: 'Image 2',
+            galleryId: 7,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
+            watermark: 's3 path watermark',
         },
         {
-            id: 13,
-            url: 'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            title: 'Image 3',
-        },
-        {
-            id: 14,
-            url: 'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            title: 'Image 4',
-        },
-        {
-            id: 15,
-            url: 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            title: 'Image 4',
+            galleryId: 8,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+            watermark: 's3 path watermark',
         },
     ]
 
-    const defaultImages2 = [
-        {
-            id: 1,
-            url: 'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            title: 'Image 1',
-        },
-        {
-            id: 2,
-            url: 'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-            title: 'Image 2',
-        },
-        {
-            id: 3,
-            url: 'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            title: 'Image 3',
-        },
-        {
-            id: 4,
-            url: 'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            title: 'Image 4',
-        },
-    ]
+    const defaultImages2 = defaultImages.slice(0, 4)
 
     const tags = [
         'apple',
@@ -122,8 +158,13 @@ const GalleryPage: React.FC = () => {
     ]
 
     return (
-        <div className={styles.container}>
-            <div className={styles.galleryWrapper}>
+        <div className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}>
+            <div
+                className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
+            >
+                <div style={{ fontSize: '25px', marginBottom: '5px' }}>
+                    최신 업데이트
+                </div>
                 <GridGallery
                     images={defaultImages2}
                     width={'100%'}

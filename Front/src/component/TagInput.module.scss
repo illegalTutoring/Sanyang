@@ -3,16 +3,21 @@
     display: flex;
     flex-wrap: wrap;
     max-width: 100%;
-    margin-bottom: 5px;
+    margin: 0 5px 0 5px;
     gap: 5px;
     min-height: 40px;
-    background-color: black;
-    border-radius: 5px;
+    border-radius: 20px;
+}
+
+.lightBox {
+    background-color: rgb(222, 237, 240);
+}
+
+.darkBox {
+    background-color: rgba(115, 196, 203, 0.2);
 }
 
 .tag {
-    background-color: #eeeeee;
-    color: #222222;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 5px;
@@ -22,21 +27,58 @@
     align-items: center;
     text-align: center;
     cursor: default;
+    border: 2px solid black;
+}
+
+.lightTag {
+    background-color: #eeeeee;
+    color: #222222;
+}
+
+.darkTag {
+    background-color: #222222;
+    color: #eeeeee;
 }
 
 // 태그 내부, 삭제 버튼
 .deleteButton {
     background: none;
     border: none;
-    color: #444444;
     cursor: pointer;
     margin-left: 10px;
     font-size: 25px;
 }
 
+.lightDeleteButton {
+    color: black;
+}
+
+.darkDeleteButton {
+    color: white;
+}
+
 .deleteButton:hover {
-    color: #222222;
     font-weight: bold;
+}
+
+// Reset button
+.resetButton {
+    height: 35px;
+    width: 100%;
+    padding: 0 5px 0 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding-right: 10px;
+    border: 2px outset black;
+    user-select: none;
+
+    &:hover {
+        border: 2px inset black;
+    }
 }
 
 // 인풋 박스
@@ -50,9 +92,11 @@
 
     .suggestions {
         position: absolute;
+        margin-left: 10px;
         z-index: 1000;
         background: white;
-        width: 100%;
+        color: #222222;
+        width: 150px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border: 1px solid #ccc;
         max-height: 200px;

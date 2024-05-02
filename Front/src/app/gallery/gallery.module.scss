@@ -4,15 +4,20 @@
     gap: 10px;
     height: 100%;
     width: 100%;
-
-    padding: 10px;
 }
 
-.galleryWrapper {
-    background-color: black;
-    padding: 20px;
+.lightGalleryWrapper {
+    background-color: rgb(222, 237, 240);
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
 
-    display: grid;
-    place-items: center;
-    display: grid;
+.darkGalleryWrapper {
+    background-color: rgba(115, 196, 203, 0.2);
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
 }
