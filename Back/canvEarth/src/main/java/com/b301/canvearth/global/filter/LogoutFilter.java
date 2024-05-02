@@ -11,24 +11,22 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@RequiredArgsConstructor
+@Slf4j
 public class LogoutFilter extends GenericFilterBean {
 
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
-    private RefreshService refreshService;
+    private final RefreshService refreshService;
 
-    private AccessService accessService;
-
-    public LogoutFilter(JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
-        this.jwtUtil = jwtUtil;
-        this.refreshService = refreshService;
-        this.accessService = accessService;
-    }
+    private final AccessService accessService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

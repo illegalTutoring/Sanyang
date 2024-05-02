@@ -10,9 +10,11 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
@@ -25,15 +27,6 @@ public class UserService {
     private final RefreshService refreshService;
 
     private final AccessService accessService;
-
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtUtil = jwtUtil;
-        this.refreshService = refreshService;
-        this.accessService = accessService;
-    }
 
 
     public String signInProcess(SignInDto signinDto) {
