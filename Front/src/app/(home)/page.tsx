@@ -1,8 +1,8 @@
 'use client'
 
-import Modal from '@/component/Modal'
+import Modal from '@/component/layout/Modal'
 import style from './home.module.scss'
-import Banner from '@/component/Banner'
+import Banner from '@/component/layout/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
 import ImageUploadPreview from '@/component/ImageUploadPreview'

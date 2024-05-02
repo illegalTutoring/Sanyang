@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
-import Modal from '@/component/Modal'
+import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 

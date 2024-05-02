@@ -7,17 +7,20 @@ import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 import Profile from '@/component/Profile'
-import Modal from '@/component/Modal'
+import Modal from '@/component/layout/Modal'
 
 const Header: React.FC = () => {
-    const [loginVisible, setLoginVisible] = useState(false)
+    // 상태관리
+    const [loginModalVisible, setLoginModalVisible] = useState(false)
     const [profileMenuVisible, setProfileMenuVisible] = useState(false)
 
+    // 전역 상태관리
     const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn, logOut } = useAuthStore()
     const { isEditMode, toggleEditMode } = useEditModeStore()
 
-    const toggleLogin = () => setLoginVisible(!loginVisible)
+    // 함수
+    const toggleLoginModal = () => setLoginModalVisible(!loginModalVisible)
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
@@ -26,6 +29,7 @@ const Header: React.FC = () => {
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
 
+        // api call
         if (username === 'ssafy' && password === 'ssafy') {
             logIn()
         } else {
@@ -79,7 +83,7 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <div className={styles.profile} onClick={toggleLogin}>
+                <div className={styles.profile} onClick={toggleLoginModal}>
                     <img
                         className={styles.toggleLoginButton}
                         src={
@@ -93,11 +97,11 @@ const Header: React.FC = () => {
                 </div>
             )}
 
-            {loginVisible && (
+            {loginModalVisible && (
                 <>
                     <Modal
-                        isVisible={loginVisible}
-                        toggleModal={toggleLogin}
+                        isVisible={loginModalVisible}
+                        toggleModal={toggleLoginModal}
                         width="40vw"
                         height="60vh"
                     >
