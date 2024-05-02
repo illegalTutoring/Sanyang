@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import styles from './Modal.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface ModalProps {
     width?: string
@@ -16,12 +17,14 @@ const Modal: React.FC<ModalProps> = ({
     isVisible,
     toggleModal,
 }) => {
+    const { isDarkMode } = useDarkModeStore()
+
     return (
         <>
             {isVisible && (
                 <div className={styles.backdrop} onClick={toggleModal}>
                     <div
-                        className={styles.modal}
+                        className={`${styles.modal} ${isDarkMode ? 'dark' : 'light'}`}
                         style={{ width, height }}
                         onClick={(e) => e.stopPropagation()}
                     >
