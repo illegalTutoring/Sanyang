@@ -29,16 +29,14 @@ const Header: React.FC = () => {
         event.preventDefault()
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
-        {
-            const { statusCode, message } = await login({ username, password })
 
-            if (statusCode == 200) {
-                logIn()
-            } else if (statusCode == 400) {
-                /**
-                 * @todo 입력값을 확인하세요. 등의 BAD_REQUEST 핸들링
-                 */
-            }
+        const { statusCode } = await login({ username, password })
+        if (statusCode == 200) {
+            logIn()
+        } else if (statusCode == 401) {
+            /**
+             * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
+             */
         }
     }
 
