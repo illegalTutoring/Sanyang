@@ -3,6 +3,7 @@ package com.b301.canvearth.global.filter;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.util.JWTUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -69,21 +70,22 @@ public class LogoutFilter extends GenericFilterBean {
             return;
         }
 
-        // 3. 토큰 카테고리가 refresh 인지 대조
-        String category = jwtUtil.getCategory(refresh);
-        if (!category.equals("refresh")) {
+        // 3. refresh 토큰 유효기간 검증
+        try{
+            jwtUtil.isExpired(refresh);
+        } catch(ExpiredJwtException e){
             PrintWriter writer = response.getWriter();
-            writer.print("잘못된 refresh 토큰 입니다");
+            writer.print("만료된 refresh 토큰 입니다");
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        // 4. refresh 토큰 유효기간 검증
-        boolean isExpired = jwtUtil.isExpired(refresh);
-        if (isExpired) {
+        // 4. 토큰 카테고리가 refresh 인지 대조
+        String category = jwtUtil.getCategory(refresh);
+        if (!category.equals("refresh")) {
             PrintWriter writer = response.getWriter();
-            writer.print("만료된 refresh 토큰 입니다");
+            writer.print("잘못된 refresh 토큰 입니다");
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;

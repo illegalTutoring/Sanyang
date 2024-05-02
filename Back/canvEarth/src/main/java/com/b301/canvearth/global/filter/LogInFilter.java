@@ -3,8 +3,6 @@ package com.b301.canvearth.global.filter;
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
-import com.b301.canvearth.global.error.CustomException;
-import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -104,18 +102,18 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
 
-//        Map<String, String> data = new HashMap<>();
-//        data.put("message", "로그인 실패");
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String jsonData = objectMapper.writeValueAsString(data);
-//
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("application/json;charset=utf-8");
-//        response.getWriter().write(jsonData);
-//        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        Map<String, String> data = new HashMap<>();
+        data.put("message", "로그인 실패");
 
-        throw new CustomException(ErrorCode.CHECK_THE_ID_OR_PASS);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonData = objectMapper.writeValueAsString(data);
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(jsonData);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+//        throw new CustomException(ErrorCode.CHECK_THE_ID_OR_PASS);
 
     }
 }

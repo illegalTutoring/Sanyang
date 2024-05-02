@@ -6,6 +6,7 @@ import com.b301.canvearth.domain.user.dto.SignInDto;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.domain.user.repository.UserRepository;
 import com.b301.canvearth.global.util.JWTUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -79,7 +80,14 @@ public class UserService {
             return "refresh 토큰이 존재하지 않습니다";
         }
 
-        // 2. 토큰 카테고리가 refresh 인지 대조
+        // 2. refresh 토큰 유효기간 검증
+        try{
+            jwtUtil.isExpired(refreshToken);
+        }catch (ExpiredJwtException e){
+            return "만료된 refresh 토큰입니다";
+        }
+
+        // 3. 토큰 카테고리가 refresh 인지 대조
         String category = jwtUtil.getCategory(refreshToken);
 
         System.out.println("refresh = " + refreshToken);
@@ -87,12 +95,6 @@ public class UserService {
 
         if (!category.equals("refresh")) {
             return "잘못된 refresh 토큰입니다";
-        }
-
-        // 3. refresh 토큰 유효기간 검증
-        boolean isExpired = jwtUtil.isExpired(refreshToken);
-        if (isExpired) {
-            return "만료된 refresh 토큰입니다";
         }
 
         // 4. Redis 에서 refresh 토큰 2차 검증

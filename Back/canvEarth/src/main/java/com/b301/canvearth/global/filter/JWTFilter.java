@@ -5,6 +5,7 @@ import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +49,19 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 2. 토큰 카테고리가 access 인지 대조
+        // 2. access 토큰 유효기간 검증
+        try{
+            jwtUtil.isExpired(accessToken);
+        }catch (ExpiredJwtException e){
+            data.put("message", "만료된 access 토큰입니다");
+            String jsonData = objectMapper.writeValueAsString(data);
+
+            response.getWriter().write(jsonData);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // 3. 토큰 카테고리가 access 인지 대조
         String category = jwtUtil.getCategory(accessToken);
 
         System.out.println("access = " + accessToken);
@@ -61,19 +74,6 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write(jsonData);
             response.setStatus((HttpServletResponse.SC_UNAUTHORIZED));
             return;
-        }
-
-        // 3. access 토큰 유효기간 검증
-        boolean result = jwtUtil.isExpired(accessToken);
-        if(result) {
-
-            data.put("message", "만료된 access 토큰입니다");
-            String jsonData = objectMapper.writeValueAsString(data);
-
-            response.getWriter().write(jsonData);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-
         }
 
         // 4. Redis 에서 access 토큰 2차 검증
