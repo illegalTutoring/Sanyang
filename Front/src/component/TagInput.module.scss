@@ -1,0 +1,61 @@
+// 태그박스
+.tagBox {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-bottom: 5px;
+    gap: 5px;
+    min-height: 40px;
+    background-color: black;
+    border-radius: 5px;
+}
+
+.tag {
+    background-color: #eeeeee;
+    color: #222222;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    padding: 0 10px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    cursor: default;
+}
+
+// 태그 내부, 삭제 버튼
+.deleteButton {
+    background: none;
+    border: none;
+    color: #444444;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 25px;
+}
+
+.deleteButton:hover {
+    color: #222222;
+    font-weight: bold;
+}
+
+// 인풋 박스
+.inputBox {
+    position: relative;
+    width: 100%;
+
+    input {
+        width: 100%;
+    }
+
+    .suggestions {
+        position: absolute;
+        z-index: 1000;
+        background: white;
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}

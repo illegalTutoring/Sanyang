@@ -1,27 +1,25 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 import styles from './Modal.module.scss'
 
 interface ModalProps {
     width?: string
     height?: string
     children: ReactNode
+    isVisible: boolean
+    toggleModal: () => void
 }
 
 const Modal: React.FC<ModalProps> = ({
     width = '80vw',
     height = '80vh',
     children,
+    isVisible,
+    toggleModal,
 }) => {
-    const [isVisible, setIsVisible] = useState(false)
-
-    const showModal = () => setIsVisible(true)
-    const hideModal = () => setIsVisible(false)
-
     return (
         <>
-            <button onClick={showModal}>Open Modal</button>
             {isVisible && (
-                <div className={styles.backdrop} onClick={hideModal}>
+                <div className={styles.backdrop} onClick={toggleModal}>
                     <div
                         className={styles.modal}
                         style={{ width, height }}
@@ -29,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({
                     >
                         {children}
                         <button
-                            onClick={hideModal}
+                            onClick={toggleModal}
                             className={styles.closeButton}
                         >
                             X

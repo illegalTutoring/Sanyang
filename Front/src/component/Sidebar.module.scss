@@ -3,9 +3,7 @@ $dark-blue-hover: #2980b9;
 
 .sidebar {
     padding: 20px;
-    background-color: white;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
     font-size: 25px;
 
     ul {
@@ -16,6 +14,20 @@ $dark-blue-hover: #2980b9;
     li + li {
         margin-top: 30px;
     }
+}
+
+.selectedLink {
+    padding-left: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition:
+        background-color 0.3s ease-in-out,
+        padding-left 0.5s ease-in-out;
+}
+
+.link {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
 }
 
 .toggleButton {
@@ -53,6 +65,43 @@ $dark-blue-hover: #2980b9;
     }
 }
 
+.loginModal {
+    display: grid;
+}
+
+.loginForm {
+    display: grid;
+
+    label {
+        margin: 1rem;
+    }
+
+    input {
+        padding: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #0061a8;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #004885;
+        }
+    }
+}
+
+.toggleLoginButton {
+    width: 40px;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
@@ -62,6 +111,8 @@ $dark-blue-hover: #2980b9;
         height: 100%;
         transition: left 0.3s ease;
         z-index: 5;
+
+        transition: all 0.3s ease;
 
         &.open {
             left: 0;

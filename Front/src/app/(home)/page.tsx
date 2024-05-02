@@ -1,11 +1,29 @@
 'use client'
 
+import Modal from '@/component/Modal'
 import style from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import List from '@/component/TagList'
+import ImageUploadPreview from '@/component/ImageUploadPreview'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore '
+
+import { useState } from 'react'
 
 const HomePage = () => {
+    const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
+
+    const [editBanner, setEditBanner] = useState(false)
+    const toggleEditBanner = () => setEditBanner(!editBanner)
+
+    const [images, setImages] = useState([
+        'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
+        'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
+        'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+    ])
+
     const getDummyOutsourcingList = async (year: number, month: number) => {
         return {
             message: `${year}년 ${month}월 외주 목록입니다.`,
@@ -29,17 +47,26 @@ const HomePage = () => {
     }
 
     return (
-        <>
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <Banner
-                images={[
-                    'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-                    'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-                    'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
-                ]}
-                interval={3000}
+                images={images}
+                interval={5000}
                 width="100%"
+                yindex={[-60, -150, -450]}
                 height="50vh"
             />
+
+            {isEditMode && (
+                <Modal
+                    isVisible={editBanner}
+                    toggleModal={toggleEditBanner}
+                    width="60vw"
+                    height="60vh"
+                >
+                    <ImageUploadPreview></ImageUploadPreview>
+                </Modal>
+            )}
+
             <div className={style.container_col}>
                 <div className={style.link_container}>
                     <Profile
@@ -122,7 +149,7 @@ const HomePage = () => {
             <h1>메인 페이지</h1>
             <h1>메인 페이지</h1>
             <h1>메인 페이지</h1>
-        </>
+        </article>
     )
 }
 

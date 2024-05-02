@@ -4,9 +4,13 @@ import style from './inquire.module.scss'
 import Profile from '@/component/Profile'
 import SimpleForm from '@/component/SimpleForm'
 
+import useDarkModeStore from '@/utils/store/useThemaStore'
+
 const InquirePage = () => {
+    const { isDarkMode } = useDarkModeStore()
+
     return (
-        <>
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <div className={style.container_col}>
                 <Profile
                     src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
@@ -18,7 +22,7 @@ const InquirePage = () => {
                 <div></div>
                 <SimpleForm />
             </div>
-        </>
+        </article>
     )
 }
 

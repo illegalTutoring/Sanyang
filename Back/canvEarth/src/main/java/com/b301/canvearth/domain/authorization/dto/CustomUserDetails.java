@@ -1,4 +1,4 @@
-package com.b301.canvearth.domain.user.dto;
+package com.b301.canvearth.domain.authorization.dto;
 
 import com.b301.canvearth.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,14 +20,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
-        collection.add(new GrantedAuthority() {
-
-            @Override
-            public String getAuthority() {
-
-                return userEntity.getRole();
-            }
-        });
+        collection.add((GrantedAuthority) userEntity::getRole);
 
         return collection;
     }
@@ -39,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userEntity.getId();
+        return userEntity.getUserName();
     }
 
     @Override
@@ -61,4 +54,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

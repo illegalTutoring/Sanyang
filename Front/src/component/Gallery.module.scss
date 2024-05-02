@@ -1,0 +1,13 @@
+.list {
+    display: flex;
+    width: auto;
+}
+
+.column {
+    padding-left: 10px;
+    background-clip: padding-box;
+}
+
+.column > div {
+    margin-bottom: 10px;
+}
