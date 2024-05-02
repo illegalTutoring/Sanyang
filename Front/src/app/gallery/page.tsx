@@ -1,122 +1,126 @@
-'use client'
-
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import { getGalleryList } from '@/utils/api/gallery'
+
+const defaultImages = getGalleryList().data
+/**
+ * @todo Error Handling
+ */
 
 const GalleryPage = () => {
     const { isDarkMode } = useDarkModeStore()
 
-    const defaultImages = [
-        {
-            galleryId: 1,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 2,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 3,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 4,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 5,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 6,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 7,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 8,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            watermark: 's3 path watermark',
-        },
-    ]
+    // const defaultImages = [
+    //     {
+    //         galleryId: 1,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 2,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 3,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 4,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 5,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 6,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 7,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
+    //         watermark: 's3 path watermark',
+    //     },
+    //     {
+    //         galleryId: 8,
+    //         userId: 'sanyang',
+    //         title: 'd&f 캐릭터 작업',
+    //         startDate: '2024-04-01',
+    //         endDate: '2024-04-30',
+    //         uploadDate: '2024-04-12 12:12:12',
+    //         tags: ['d&f', '캐릭터'],
+    //         original: 's3 path',
+    //         thumbnail:
+    //             'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+    //         watermark: 's3 path watermark',
+    //     },
+    // ]
 
     const defaultImages2 = defaultImages.slice(0, 4)
 
