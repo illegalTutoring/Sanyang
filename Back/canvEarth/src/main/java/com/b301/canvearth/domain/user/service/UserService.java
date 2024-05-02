@@ -119,22 +119,20 @@ public class UserService {
         refreshService.saveRefreshToken(username, newRefresh, 86400000L);
 
         response.setHeader("accessToken", newAccess);
-        response.addHeader("Set-Cookie", createCookie(newRefresh) + "; SameSite=None");
+        response.addCookie(createCookie(refreshToken));
 
         return "refresh 토큰 재발행 성공";
     }
 
-    private String createCookie(String value) {
+    private Cookie createCookie(String value) {
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
-                .path("/")
-                .maxAge(24*60*60)
-//                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .build();
+        Cookie cookie = new Cookie("refreshToken", value);
+        cookie.setPath("/");
+        cookie.setMaxAge(24*60*60);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
 
-        return cookie.toString();
+        return cookie;
     }
 
 }

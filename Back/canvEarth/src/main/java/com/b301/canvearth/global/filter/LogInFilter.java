@@ -8,6 +8,7 @@ import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +76,7 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
         // 토큰 발행
         response.setHeader("accessToken", accessToken);
-        response.addHeader("Set-Cookie", createCookie(refreshToken) + "; SameSite=None");
+        response.addCookie(createCookie(refreshToken));
 
         Map<String, String> data = new HashMap<>();
         data.put("message", "로그인 성공");
@@ -89,17 +90,15 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.OK.value());
     }
 
-    private String createCookie(String value) {
+    private Cookie createCookie(String value) {
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
-                .path("/")
-                .maxAge(24*60*60)
-//                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .build();
+        Cookie cookie = new Cookie("refreshToken", value);
+        cookie.setPath("/");
+        cookie.setMaxAge(24*60*60);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
 
-        return cookie.toString();
+        return cookie;
     }
 
     @Override
