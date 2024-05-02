@@ -93,6 +93,14 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        // Swagger
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/webjars/**",
+                                "/swagger-resources/**"
+                        ).permitAll()
+                        // Spring Security
                         .requestMatchers("/",
                                 /*
                                     로그인을 통한 토큰 발행 JWT(access, refresh)없이
@@ -109,7 +117,6 @@ public class SecurityConfig {
                                 "/api/banner",
                                 "/api/embed",
                                 "/api/support"
-
                         ).permitAll()
                         // 2. 배포용 : ADMIN 권한 확인
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
