@@ -40,6 +40,17 @@ const Header: React.FC = () => {
             </h2>
             <div></div>
 
+            <img
+                onClick={toggleDarkMode}
+                className={styles.toggleDarkModeButton}
+                src={
+                    isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
+                }
+                alt={
+                    isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+                }
+            />
+
             {isLoggedIn ? (
                 <>
                     <div
@@ -68,28 +79,20 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <img
-                    onClick={toggleLogin}
-                    className={styles.toggleLoginButton}
-                    src={
-                        isDarkMode
-                            ? '/svgs/key_white.svg'
-                            : '/svgs/key_black.svg'
-                    }
-                    alt="login"
-                />
+                <div className={styles.profile}>
+                    <img
+                        onClick={toggleLogin}
+                        className={styles.toggleLoginButton}
+                        src={
+                            isDarkMode
+                                ? '/svgs/key_white.svg'
+                                : '/svgs/key_black.svg'
+                        }
+                        alt="login"
+                    />
+                    <h3>login</h3>
+                </div>
             )}
-
-            <img
-                onClick={toggleDarkMode}
-                className={styles.toggleDarkModeButton}
-                src={
-                    isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
-                }
-                alt={
-                    isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
-                }
-            />
 
             {loginVisible && (
                 <>
