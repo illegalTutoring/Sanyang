@@ -60,7 +60,6 @@ const SupportPage: React.FC = () => {
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <h1>서포트 페이지</h1>
             {domains.map((domain, index) => {
                 const Component = components[domain.key]
                 return (
