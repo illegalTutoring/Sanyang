@@ -37,7 +37,8 @@ public class LogoutFilter extends GenericFilterBean {
 
         // 1. URI, RestAPI 검증
         String requestUri = request.getRequestURI();
-        if (!requestUri.matches("^/api/user/logout$")) {
+        String requestMethod = request.getMethod();
+        if (!requestUri.matches("^/api/user/logout$") || !requestMethod.equals("POST")) {
 
             filterChain.doFilter(request, response);
             return;

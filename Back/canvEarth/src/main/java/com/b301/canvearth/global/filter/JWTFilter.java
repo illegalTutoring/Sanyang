@@ -64,8 +64,6 @@ public class JWTFilter extends OncePerRequestFilter {
         // 3. 토큰 카테고리가 access 인지 대조
         String category = jwtUtil.getCategory(accessToken);
 
-        System.out.println("access = " + accessToken);
-
         if(!category.equals("access")){
 
             data.put("message", "잘못된 access 토큰입니다");

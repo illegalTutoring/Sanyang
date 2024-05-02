@@ -33,8 +33,8 @@ public class UserService {
 
         // 1. 회원중복 조회
         String id = signinDto.getId();
-        String userName = signinDto.getUsername();
-        String userPassword = signinDto.getPassword();
+        String username = signinDto.getUsername();
+        String password = signinDto.getPassword();
 
         // 1-1. Id 중복검사
         boolean isExist = userRepository.existsById(id);
@@ -53,8 +53,8 @@ public class UserService {
         // 회원 등록
         User data = new User();
         data.setId(id);
-        data.setUserName(userName);
-        data.setUserPassword(bCryptPasswordEncoder.encode(userPassword));
+        data.setUserName(username);
+        data.setUserPassword(bCryptPasswordEncoder.encode(password));
         data.setRole("ROLE_USER");
 
         userRepository.save(data);

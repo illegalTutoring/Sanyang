@@ -44,7 +44,7 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 로그인 시도
-        String username = obtainUsername(request);
+        String username = obtainUsername(request);  // username => id
         String password = obtainPassword(request);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -112,8 +112,6 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(jsonData);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-
-//        throw new CustomException(ErrorCode.CHECK_THE_ID_OR_PASS);
 
     }
 }
