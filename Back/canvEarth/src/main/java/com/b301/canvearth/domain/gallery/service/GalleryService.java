@@ -68,7 +68,7 @@ public class GalleryService {
         }
 
         Gallery changeGallery = galleryRepository.findById(galleryId)
-                .orElseThrow(() -> new IllegalArgumentException("Gallery not found with id: " + galleryId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 galleryId로 데이터를 조회할 수 없습니다. galleryId: " + galleryId));
 
         changeGallery.setTitle(requestPutDto.getTitle());
         changeGallery.setCreateDate(requestPutDto.getCreateDate());
@@ -91,7 +91,7 @@ public class GalleryService {
     public void deleteGallery(Long galleryId) {
         log.info("===== [GalleryService] deleteGallery start =====");
         Gallery gallery = galleryRepository.findById(galleryId)
-                .orElseThrow(() -> new IllegalArgumentException("Gallery not found with id: " + galleryId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 galleryId로 데이터를 조회할 수 없습니다. galleryId: " + galleryId));
 
         // S3 이미지들 삭제
         s3Service.deleteImage(gallery.getOriginalPath());
