@@ -69,8 +69,8 @@ public class EmbedService {
     }
 
     public Boolean isValidLink(String link){
-        String regex = "^(https?|ftp):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$/i$";
-        return true;
+        String expr = "https?://[\\w\\-.]+/?([\\w\\-./@]+)?";
+        return link.matches(expr);
     }
 
 }
