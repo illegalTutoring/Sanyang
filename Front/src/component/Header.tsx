@@ -79,9 +79,8 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <div className={styles.profile}>
+                <div className={styles.profile} onClick={toggleLogin}>
                     <img
-                        onClick={toggleLogin}
                         className={styles.toggleLoginButton}
                         src={
                             isDarkMode
