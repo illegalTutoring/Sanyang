@@ -8,6 +8,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 import Profile from '@/component/Profile'
 import Modal from '@/component/Modal'
+import { login } from '@/utils/api/user'
 
 const Header: React.FC = () => {
     const [loginVisible, setLoginVisible] = useState(false)
@@ -21,15 +22,21 @@ const Header: React.FC = () => {
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
+        {
+            const { statusCode, message } = await login({ username, password })
 
-        if (username === 'ssafy' && password === 'ssafy') {
-            logIn()
-        } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
+            if (statusCode == 200) {
+                logIn()
+            } else if (statusCode == 400) {
+                /**
+                 * @todo 입력값을 확인하세요. 등의 BAD_REQUEST 핸들링
+                 */
+            }
         }
     }
 

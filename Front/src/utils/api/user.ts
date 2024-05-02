@@ -33,15 +33,17 @@ export function login(data: loginRequestDTO): loginResponseDTO {
             })
 
             userStore.getState().setId(data.username)
+            userStore.getState().setUsername(response.data.username)
             userStore.getState().setAccessToken(response.headers.accesstoken)
             console.info(
                 'Login >> Access Token: ' + userStore.getState().accessToken,
                 'Login >> User ID: ' + userStore.getState().id,
+                'Login >> User Name: ' + userStore.getState().username,
             )
 
             return {
+                statusCode: response.status,
                 message: response.data.message,
-                accessToken: response.headers.accesstoken,
             }
         },
         [data],
@@ -66,7 +68,10 @@ export function logout() {
 
         userStore.getState().destroyAll()
 
-        return { message: response.data.message }
+        return {
+            statusCode: response.status,
+            message: response.data.message,
+        }
     }, [])
 }
 
@@ -85,7 +90,10 @@ export function signin(data: signinRequestDTO): signinResponseDTO {
                 data: data,
             })
 
-            return { message: response.data.message }
+            return {
+                statusCode: response.status,
+                message: response.data.message,
+            }
         },
         [data],
     )
@@ -107,6 +115,9 @@ export function reIssue(accessToken: string): reIssueResponseDTO {
             'ReIssue >> AccessToken: ' + userStore.getState().accessToken,
         )
 
-        return { message: response.data.message }
+        return {
+            statusCode: response.status,
+            message: response.data.message,
+        }
     }, [])
 }
