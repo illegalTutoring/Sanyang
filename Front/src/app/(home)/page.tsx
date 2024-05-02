@@ -105,9 +105,9 @@ const HomePage = () => {
                         pageSize={10}
                         columns={['userId', 'client', 'title']}
                         tagActions={{
-                            All: () => getDummyOutsourcingList(2024, 4),
-                            Active: () => getDummyOutsourcingList(2024, 4),
-                            Completed: () => getDummyOutsourcingList(2024, 4),
+                            All: () => getDummyOutsourcingList(2024, 4), // 이게 기본동작이면 합치는게 맞고
+                            Update: () => getDummyOutsourcingList(2024, 4), // 이게 기본동작이면 나누는게 맞다
+                            Notice: () => getDummyOutsourcingList(2024, 4),
                         }}
                     />
                 </div>

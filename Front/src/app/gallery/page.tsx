@@ -162,7 +162,7 @@ const GalleryPage = () => {
             <div
                 className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
             >
-                <div style={{ fontSize: '20px', marginBottom: '5px' }}>
+                <div style={{ fontSize: '25px', marginBottom: '5px' }}>
                     최신 업데이트
                 </div>
                 <GridGallery

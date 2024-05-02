@@ -150,18 +150,20 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                         placeholder="Add a tag..."
                         style={{
                             height: '35px',
-                            margin: '0 5px 0 5px',
                             width: '150px',
                             fontSize: '18px',
-                            borderRadius: '20px',
+                            marginLeft: '5px',
+                            borderTopLeftRadius: '20px',
+                            borderBottomLeftRadius: '20px',
                             paddingLeft: '10px',
                         }}
                     />
+
                     <div
                         className={`${styles.resetButton} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
                         onClick={() => deleteAllTag()}
                     >
-                        Reset
+                        초기화
                     </div>
                 </div>
                 {tags.map((tag, index) => (
@@ -180,7 +182,6 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                     </div>
                 ))}
             </div>
-
             <div className={styles.inputBox}>
                 {suggestions.length > 0 && (
                     <ul className={styles.suggestions}>

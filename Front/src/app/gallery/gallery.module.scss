@@ -4,11 +4,10 @@
     gap: 10px;
     height: 100%;
     width: 100%;
-    padding: 10px;
 }
 
 .lightGalleryWrapper {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgb(222, 237, 240);
     border-radius: 5px;
     padding: 15px;
     display: flex;
@@ -16,7 +15,7 @@
 }
 
 .darkGalleryWrapper {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(115, 196, 203, 0.2);
     border-radius: 5px;
     padding: 15px;
     display: flex;
