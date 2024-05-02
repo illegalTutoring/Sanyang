@@ -2,15 +2,15 @@ import { serverResponseDTO } from './common'
 
 interface galleryInfo {
     galleryId: number
-    userId: String
-    title: String
-    startDate: String
-    endDate: String
-    uploadDate: String
-    tags: Array<String>
-    original: String
-    thumbnail: String
-    watermark: String
+    userId: string
+    title: string
+    startDate: string
+    endDate: string
+    uploadDate: string
+    tags: Array<string>
+    original: string
+    thumbnail: string
+    watermark: string
 }
 
 export interface getGalleryListResponseDTO extends serverResponseDTO {
@@ -18,18 +18,18 @@ export interface getGalleryListResponseDTO extends serverResponseDTO {
 }
 
 export interface registGalleryRequestDTO {
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
+    userId: string
+    title: string
+    createDate: string
+    tags: Array<string>
 }
 
 export interface modifyGalleryRequestDTO {
+    userId: string
     galleryId: number
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
+    title: string
+    createDate: string
+    tags: Array<string>
 }
 
 export interface registGalleryResponseDTO extends serverResponseDTO {}

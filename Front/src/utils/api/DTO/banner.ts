@@ -7,7 +7,7 @@ interface imageInfo {
 
 interface bannerInfo {
     bannerId: number
-    imagePath: String
+    imagePath: string
     coordinateX: number
     coordinateY: number
 }

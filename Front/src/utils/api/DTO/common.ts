@@ -1,3 +1,4 @@
 export interface serverResponseDTO {
-    message: String
+    statusCode: number
+    message: string
 }

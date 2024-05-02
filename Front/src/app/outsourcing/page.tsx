@@ -1,48 +1,117 @@
 'use client'
 
-import styles from './outsourcing.module.scss'
+import Gallery from '@/component/Gallery'
+import GridGallery from '@/component/GridGallery'
+import TagInput from '@/component/TagInput'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
-import Calendar from '@/component/Calender'
-import { getCalendar } from '@/utils/api/calendar'
-import { useEffect, useState } from 'react'
-
-export interface Schedule {
-    calendarId: number
-    userId: string
-    company: string
-    title: string
-    startDate: string
-    endDate: string
-}
-
-const OutsourcingPage: React.FC = () => {
-    const [schedules, setSchedules] = useState<Schedule[]>([])
-
-    useEffect(() => {
-        const fetchSchedules = async () => {
-            const year = new Date().getFullYear()
-            const month = new Date().getMonth() + 1
-            const response = await getCalendar(year, month)
-
-            setSchedules(response.data)
-        }
-
-        fetchSchedules()
-    }, [])
-
+const OutsourcingPage = () => {
     const { isDarkMode } = useDarkModeStore()
+
+    const defaultImages = [
+        {
+            workId: 2,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
+        },
+        {
+            company: 'd&f 캐릭터 작업',
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
+        },
+        {
+            company: '메이플 캐릭터 작업',
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+            watermark: 's3 path watermark',
+        },
+        {
+            workId: 2,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+            watermark: 's3 path watermark',
+        },
+    ]
+
+    const tags = [
+        'apple',
+        'alalal',
+        'apricot',
+        'avocado',
+        'acai',
+        'acerola',
+        'anchovy',
+        'antelope',
+        'ant',
+        'anaconda',
+        'asteroid',
+        'aster',
+        'aspen',
+        'amethyst',
+        'amber',
+        'arrow',
+        'armor',
+        'amphibian',
+        'aluminum',
+        'arsenic',
+        'apartment',
+        'avenue',
+        'answer',
+        'astronomy',
+        'algebra',
+        'artifact',
+        'alchemy',
+        'angle',
+        'argyle',
+        'ascot',
+        'artifact',
+        'aviation',
+        'aviary',
+        'axis',
+    ]
+
     return (
-        <article
-            className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
-        >
-            <Calendar
-                width="80vw"
-                height="90vh"
-                year={new Date().getFullYear()}
-                month={new Date().getMonth() + 1}
-                schedules={schedules}
-            />
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
+            <div>
+                <div>
+                    <GridGallery
+                        images={defaultImages}
+                        width={'100%'}
+                        height={'100%'}
+                        colCount={2}
+                    />
+                </div>
+            </div>
         </article>
     )
 }

@@ -13,7 +13,7 @@ const Profile: React.FC<ProfileProps> = ({
     size = 100,
     border = '0px solid black',
     alt = '',
-    radius = 50,
+    radius = 0,
 }) => {
     const styles = {
         width: `${size}px`,
