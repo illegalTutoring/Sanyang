@@ -9,7 +9,7 @@ import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseCookie;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -68,9 +68,6 @@ public class UserService {
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
 
-//        System.out.println("cookie length:" + cookies.length);
-
-
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("refreshToken")) {
@@ -119,7 +116,7 @@ public class UserService {
         refreshService.saveRefreshToken(username, newRefresh, 86400000L);
 
         response.setHeader("accessToken", newAccess);
-        response.addCookie(createCookie(refreshToken));
+        response.addCookie(createCookie(newRefresh));
 
         return "refresh 토큰 재발행 성공";
     }
