@@ -76,9 +76,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 4. Redis 에서 access 토큰 2차 검증
         String username = jwtUtil.getUsername(accessToken);
-        boolean isExist = accessService.isAccessTokenValid(username, accessToken);
+        boolean isValid = accessService.isAccessTokenValid(username, accessToken);
 
-        if(!isExist){
+        if(!isValid){
 
             data.put("message", "사용하지 않는 access 토큰입니다");
             String jsonData = objectMapper.writeValueAsString(data);

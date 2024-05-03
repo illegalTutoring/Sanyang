@@ -100,8 +100,8 @@ public class UserService {
         // 4. Redis 에서 refresh 토큰 2차 검증
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        boolean isExist = refreshService.isRefreshTokenValid(username, refreshToken);
-        if(!isExist){
+        boolean isVaild = refreshService.isRefreshTokenValid(username, refreshToken);
+        if(!isVaild){
             return "사용하지 않는 refresh 토큰입니다";
         }
 
