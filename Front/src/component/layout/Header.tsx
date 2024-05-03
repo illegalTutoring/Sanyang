@@ -75,12 +75,53 @@ const Header: React.FC = () => {
                     </div>
 
                     {profileMenuVisible && (
-                        <div className={styles.profileMenu}>
-                            <button onClick={logOut}>Log out</button>
+                        <div
+                            className={`${styles.profileMenu} ${isDarkMode ? 'dark' : 'light'}`}
+                        >
+                            <div className={styles.profile} onClick={logOut}>
+                                <img
+                                    className={styles.toggleLoginButton}
+                                    src={
+                                        isDarkMode
+                                            ? '/svgs/key_white.svg'
+                                            : '/svgs/key_black.svg'
+                                    }
+                                    alt="login"
+                                />
+                                <h3>logout</h3>
+                            </div>
                             {isEditMode ? (
-                                <button onClick={toggleEditMode}>edit</button>
+                                <div
+                                    className={styles.profile}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/edit_white.svg'
+                                                : '/svgs/edit_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>edit</h3>
+                                </div>
                             ) : (
-                                <button onClick={toggleEditMode}>view</button>
+                                <div
+                                    className={styles.profile}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/view_white.svg'
+                                                : '/svgs/view_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>view</h3>
+                                </div>
                             )}
                         </div>
                     )}
