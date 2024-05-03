@@ -7,29 +7,38 @@ import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 import Profile from '@/component/Profile'
-import Modal from '@/component/Modal'
+import Modal from '@/component/layout/Modal'
+import { login } from '@/utils/api/user'
 
 const Header: React.FC = () => {
-    const [loginVisible, setLoginVisible] = useState(false)
+    // 상태관리
+    const [loginModalVisible, setLoginModalVisible] = useState(false)
     const [profileMenuVisible, setProfileMenuVisible] = useState(false)
 
+    // 전역 상태관리
     const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn, logOut } = useAuthStore()
     const { isEditMode, toggleEditMode } = useEditModeStore()
 
-    const toggleLogin = () => setLoginVisible(!loginVisible)
+    // 함수
+    const toggleLoginModal = () => setLoginModalVisible(!loginModalVisible)
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
+        {
+            const { statusCode, message } = await login({ username, password })
 
-        if (username === 'ssafy' && password === 'ssafy') {
-            logIn()
-        } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
+            if (statusCode == 200) {
+                logIn()
+            } else if (statusCode == 400) {
+                /**
+                 * @todo 입력값을 확인하세요. 등의 BAD_REQUEST 핸들링
+                 */
+            }
         }
     }
 
@@ -39,6 +48,17 @@ const Header: React.FC = () => {
                 <Link href="/">CanvEarth</Link>
             </h2>
             <div></div>
+
+            <img
+                onClick={toggleDarkMode}
+                className={styles.toggleDarkModeButton}
+                src={
+                    isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
+                }
+                alt={
+                    isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+                }
+            />
 
             {isLoggedIn ? (
                 <>
@@ -68,34 +88,25 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <img
-                    onClick={toggleLogin}
-                    className={styles.toggleLoginButton}
-                    src={
-                        isDarkMode
-                            ? '/svgs/key_white.svg'
-                            : '/svgs/key_black.svg'
-                    }
-                    alt="login"
-                />
+                <div className={styles.profile} onClick={toggleLoginModal}>
+                    <img
+                        className={styles.toggleLoginButton}
+                        src={
+                            isDarkMode
+                                ? '/svgs/key_white.svg'
+                                : '/svgs/key_black.svg'
+                        }
+                        alt="login"
+                    />
+                    <h3>login</h3>
+                </div>
             )}
 
-            <img
-                onClick={toggleDarkMode}
-                className={styles.toggleDarkModeButton}
-                src={
-                    isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
-                }
-                alt={
-                    isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
-                }
-            />
-
-            {loginVisible && (
+            {loginModalVisible && (
                 <>
                     <Modal
-                        isVisible={loginVisible}
-                        toggleModal={toggleLogin}
+                        isVisible={loginModalVisible}
+                        toggleModal={toggleLoginModal}
                         width="40vw"
                         height="60vh"
                     >

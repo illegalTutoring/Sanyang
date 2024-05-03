@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import styles from './gallery.module.scss'
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
-import Modal from '@/component/Modal'
+import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
@@ -162,7 +162,7 @@ const GalleryPage = () => {
             <div
                 className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
             >
-                <div style={{ fontSize: '20px', marginBottom: '5px' }}>
+                <div style={{ fontSize: '25px', marginBottom: '5px' }}>
                     최신 업데이트
                 </div>
                 <GridGallery

@@ -3,18 +3,18 @@
     display: flex;
     flex-wrap: wrap;
     max-width: 100%;
-    margin-bottom: 5px;
+    margin: 0 5px 0 5px;
     gap: 5px;
     min-height: 40px;
     border-radius: 20px;
 }
 
 .lightBox {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .darkBox {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .tag {
@@ -27,16 +27,17 @@
     align-items: center;
     text-align: center;
     cursor: default;
+    border: 2px solid black;
 }
 
 .lightTag {
-    background-color: #666666;
-    color: #eeeeee;
+    background-color: #eeeeee;
+    color: #222222;
 }
 
 .darkTag {
-    background-color: #eeeeee;
-    color: #222222;
+    background-color: #222222;
+    color: #eeeeee;
 }
 
 // 태그 내부, 삭제 버튼
@@ -49,11 +50,11 @@
 }
 
 .lightDeleteButton {
-    color: #eeeeee;
+    color: black;
 }
 
 .darkDeleteButton {
-    color: #666666;
+    color: white;
 }
 
 .deleteButton:hover {
@@ -69,8 +70,15 @@
     align-items: center;
     cursor: pointer;
     justify-content: center;
-    border-radius: 10px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding-right: 10px;
+    border: 2px outset black;
     user-select: none;
+
+    &:hover {
+        border: 2px inset black;
+    }
 }
 
 // 인풋 박스
@@ -84,6 +92,7 @@
 
     .suggestions {
         position: absolute;
+        margin-left: 10px;
         z-index: 1000;
         background: white;
         color: #222222;

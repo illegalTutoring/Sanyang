@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from './TagList.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface DataItem {
     [key: string]: any
@@ -28,6 +29,7 @@ const List: React.FC<ListProps> = ({
 }) => {
     const [data, setData] = useState<DataItem[]>([])
     const [currentPage, setCurrentPage] = useState(0)
+    const [activeTag, setActiveTag] = useState<string>('All')
 
     useEffect(() => {
         fetchData('All')
@@ -36,7 +38,7 @@ const List: React.FC<ListProps> = ({
     const fetchData = async (tag: string) => {
         try {
             const response = await tagActions[tag]()
-            //console.log('Fetched data:', response.outsourcingInfo)
+            setActiveTag(tag)
             setData(response.outsourcingInfo)
         } catch (error) {
             console.error('Failed to fetch data:', error)
@@ -44,19 +46,32 @@ const List: React.FC<ListProps> = ({
     }
 
     const tags = Object.keys(tagActions)
+    const { isDarkMode } = useDarkModeStore()
 
     return (
         <div style={{ width, height }}>
             <div className={styles.tags}>
                 {tags.map((tag) => (
-                    <button key={tag} onClick={() => fetchData(tag)}>
+                    <button
+                        className={
+                            activeTag === tag
+                                ? isDarkMode
+                                    ? styles.darkActive
+                                    : styles.lightActive
+                                : ''
+                        }
+                        key={tag}
+                        onClick={() => fetchData(tag)}
+                    >
                         {tag}
                     </button>
                 ))}
             </div>
             <table className={styles.table}>
                 <thead>
-                    <tr>
+                    <tr
+                        className={`${isDarkMode ? styles.dark : styles.light}`}
+                    >
                         {columns.map((column) => (
                             <th key={column}>{column}</th>
                         ))}
