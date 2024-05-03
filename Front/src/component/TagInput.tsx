@@ -139,6 +139,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                     style={{
                         display: 'flex',
                         alignItems: 'center',
+                        height: '42px',
                     }}
                 >
                     <input
@@ -147,7 +148,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
-                        placeholder="Add a tag..."
+                        placeholder="검색할 태그..."
                         style={{
                             height: '35px',
                             width: '150px',
@@ -155,7 +156,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                             marginLeft: '5px',
                             borderTopLeftRadius: '20px',
                             borderBottomLeftRadius: '20px',
-                            paddingLeft: '10px',
+                            paddingLeft: '15px',
                         }}
                     />
 

@@ -24,12 +24,69 @@ if (!defaultImages) {
             endDate: '',
             uploadDate: '',
             tags: [],
-            original:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
-            thumbnail:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
-            watermark:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXe_Eo4HYEX6Ar1EOR3uZcth_gfwoHVR18AiHRaOvxyw&s',
+            original: 'https://placehold.co/600x400',
+            thumbnail: 'https://placehold.co/600x400',
+            watermark: 'https://placehold.co/600x400',
+        },
+        {
+            galleryId: 1,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original: 'https://placehold.co/900x400',
+            thumbnail: 'https://placehold.co/900x400',
+            watermark: 'https://placehold.co/900x400',
+        },
+        {
+            galleryId: 2,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original: 'https://placehold.co/900x1200',
+            thumbnail: 'https://placehold.co/900x1200',
+            watermark: 'https://placehold.co/900x1200',
+        },
+        {
+            galleryId: 3,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original: 'https://placehold.co/600x1100',
+            thumbnail: 'https://placehold.co/600x1100',
+            watermark: 'https://placehold.co/600x1100',
+        },
+        {
+            galleryId: 4,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original: 'https://placehold.co/350X750',
+            thumbnail: 'https://placehold.co/350X750',
+            watermark: 'https://placehold.co/350X750',
+        },
+        {
+            galleryId: 5,
+            userId: '',
+            title: '이미지가 존재하지 않습니다.',
+            startDate: '',
+            endDate: '',
+            uploadDate: '',
+            tags: [],
+            original: 'https://placehold.co/350X650',
+            thumbnail: 'https://placehold.co/350X650',
+            watermark: 'https://placehold.co/350X650',
         },
     ]
 }
@@ -187,31 +244,51 @@ const GalleryPage = () => {
         'axis',
     ]
 
+    const [isGalleryVisible, setIsGalleryVisible] = useState(false)
+
+    const toggleGallery = () => {
+        setIsGalleryVisible((prev) => !prev)
+    }
+
     return (
         <div className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}>
             <div
                 className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
             >
-                <div style={{ fontSize: '25px', marginBottom: '5px' }}>
-                    최신 업데이트
+                <div className={`${styles.gridGalleryHeader}`}>
+                    <div style={{ fontSize: '25px' }}>최신 업데이트</div>
+                    <div onClick={toggleGallery}>
+                        <img
+                            className={`${isGalleryVisible ? styles.rotate180 : styles.rotate360}`}
+                            style={{ width: '25px' }}
+                            src={`${isDarkMode ? '/svgs/double_down_white.svg' : '/svgs/double_down_black.svg'}`}
+                            alt=""
+                        />
+                    </div>
                 </div>
-                <GridGallery
-                    images={defaultImages2}
-                    width={'100%'}
-                    height={'300px'}
-                    colCount={defaultImages2.length}
-                />
+                <div
+                    style={{ height: isGalleryVisible ? '300px' : '0' }}
+                    className={styles.galleryContainer}
+                >
+                    <GridGallery
+                        images={defaultImages2}
+                        width={'100%'}
+                        height={'300px'}
+                        colCount={defaultImages2.length}
+                    />
+                </div>
             </div>
             <div>
                 <TagInput availableTags={tags} />
             </div>
+            <div
+                style={{
+                    paddingTop: '15px',
+                    borderBottom: '1px solid #aaaaaa',
+                }}
+            ></div>
             <div>
-                <Gallery
-                    images={defaultImages}
-                    width={'100%'}
-                    height={'400px'}
-                    colCount={4}
-                />
+                <Gallery images={defaultImages} colCount={4} />
             </div>
         </div>
     )
