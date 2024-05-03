@@ -21,9 +21,11 @@ public class Support {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(name="support_thumbnail")
     private String supportThumbnail;
 
+    @Setter
     @Column(name="title")
     private String title;
 
@@ -34,10 +36,12 @@ public class Support {
 
 //    @Convert(converter = SupportLink.class)
 //    @Column(name="support_link", length=500)
+    @Setter
     @Type(JsonBinaryType.class)
     @Column(name="support_link", columnDefinition = "jsonb")
     private List<SupportLink> supportLink;
 
+    @Setter
     @Column(name="content")
     private String content;
 
