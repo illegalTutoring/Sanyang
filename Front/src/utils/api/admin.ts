@@ -29,9 +29,7 @@ import {
     modifyEmbedLinkRequestDTO,
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
-
-// TODO: redux에서 값을 가져오도록 수정할 것.
-let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
+import { userStore } from '../store/useUserStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -65,7 +63,7 @@ export function registWork(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -101,7 +99,7 @@ export function modifyWork(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -123,7 +121,7 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/work/${workId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -164,7 +162,7 @@ export function registGallery(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -200,7 +198,7 @@ export function modifyGallery(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -222,7 +220,7 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/gallery/${galleryId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -253,7 +251,7 @@ export function registCalendar(
                 url: `${SERVER_URL}/admin/calendar`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -278,7 +276,7 @@ export function modifyCalendar(
                 url: `${SERVER_URL}/admin/calendar/${data.calendarId}`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -300,7 +298,7 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/calendar/${calendarId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -331,7 +329,7 @@ export function modifyBannerList(
                 url: `${SERVER_URL}/admin/banner`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -362,7 +360,7 @@ export function modifyEmbedLink(
                 url: `${SERVER_URL}/admin/embed`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
