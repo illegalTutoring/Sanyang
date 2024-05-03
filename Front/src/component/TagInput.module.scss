@@ -2,69 +2,84 @@
 .tagBox {
     display: flex;
     flex-wrap: wrap;
-    max-width: 100%;
-    gap: 5px;
-    min-height: 40px;
-}
 
-.tag {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    padding: 0 10px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    cursor: default;
-}
+    .searchBox {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 42px;
 
-.lightTag {
-    background-color: #eeeeee;
-    color: #222222;
-    border: 1px solid #222222;
-}
+        input {
+            height: 35px;
+            width: 100%;
+            font-size: 18px;
+            border-radius: 10px;
+            padding-left: 5px;
+        }
 
-.darkTag {
-    background-color: #222222;
-    color: #eeeeee;
-    border: 1px solid #eeeeee;
-}
+        .resetButton {
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+        }
+    }
 
-// 태그 내부, 삭제 버튼
-.deleteButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 25px;
-}
+    .tagContainer {
+        min-height: 34px;
+        width: 100%;
+        background-color: #ccc;
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 0 0 5px 0;
+        display: flex;
+        flex-wrap: wrap;
 
-.lightDeleteButton {
-    color: black;
-}
+        .tag {
+            font-size: 16px;
+            width: fit-content;
+            height: 24px;
+            margin: 5px 0px 0px 5px;
+            padding: 0 10px;
+            display: flex;
+            border-radius: 20px;
+            align-items: center;
+            cursor: default;
 
-.darkDeleteButton {
-    color: white;
-}
+            // 태그 내부, 삭제 버튼
+            .deleteButton {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 24px;
+            }
 
-.deleteButton:hover {
-    font-weight: bold;
-}
+            .lightDeleteButton {
+                color: black;
+            }
 
-// Reset button
-.resetButton {
-    height: 35px;
-    width: 100%;
-    padding: 0 10px 0 5px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    justify-content: center;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border: 2px solid black;
-    user-select: none;
+            .darkDeleteButton {
+                color: white;
+            }
+
+            .deleteButton:hover {
+                font-weight: bold;
+            }
+        }
+
+        .lightTag {
+            background-color: #eeeeee;
+            color: #222222;
+            border: 1px solid #222222;
+        }
+
+        .darkTag {
+            background-color: #222222;
+            color: #eeeeee;
+            border: 1px solid #eeeeee;
+        }
+    }
 }
 
 // 인풋 박스
@@ -77,16 +92,16 @@
     }
 
     .suggestions {
+        font-size: 16px;
         position: absolute;
-        margin-left: 20px;
-        margin-top: -px;
-        z-index: 1000;
+        z-index: 1;
         background: white;
         color: #222222;
-        width: 134px;
+        margin-left: 10px;
+        width: 80%;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border: 1px solid #ccc;
-        max-height: 200px;
+        max-height: 120px;
         overflow-y: auto;
     }
 }

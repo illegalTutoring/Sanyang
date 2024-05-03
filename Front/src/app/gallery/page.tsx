@@ -219,16 +219,6 @@ const GalleryPage = () => {
         'ant',
         'anaconda',
         'asteroid',
-        'aster',
-        'aspen',
-        'amethyst',
-        'amber',
-        'arrow',
-        'armor',
-        'amphibian',
-        'aluminum',
-        'arsenic',
-        'apartment',
         'avenue',
         'answer',
         'astronomy',
@@ -245,9 +235,17 @@ const GalleryPage = () => {
     ]
 
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [btnText, setBtnText] = useState('태그검색')
 
     const toggleGallery = () => {
         setIsGalleryVisible((prev) => !prev)
+    }
+
+    const toggleModal = () => {
+        setIsModalOpen((prev) => !prev)
+
+        btnText === '태그검색' ? setBtnText('검색하기') : setBtnText('태그검색')
     }
 
     return (
@@ -283,21 +281,31 @@ const GalleryPage = () => {
                 className={`${styles.box} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
             ></div>
 
-            {/* <div>
-                <TagInput availableTags={tags} />
-            </div> */}
-
             <div>
                 <Gallery images={defaultImages} colCount={4} />
             </div>
 
-            <div id="searchButton" className={styles.searchButton}>
-                <img
-                    style={{ width: '30px' }}
-                    src={`${isDarkMode ? '/svgs/magnifier_white.svg' : '/svgs/magnifier_black.svg'}`}
-                    alt=""
-                />
-                검색하기
+            <div
+                id="searchButton"
+                className={styles.searchButton}
+                style={{
+                    width: isModalOpen ? '300px' : '120px',
+                }}
+                onClick={toggleModal}
+            >
+                <img src="/svgs/magnifier_white.svg" alt="" />
+                {btnText}
+            </div>
+
+            <div
+                className={styles.modalBackdrop}
+                style={{
+                    height: isModalOpen ? '190px' : '0',
+                }}
+            >
+                <div className={styles.modalContent}>
+                    <TagInput availableTags={tags} />
+                </div>
             </div>
         </div>
     )
