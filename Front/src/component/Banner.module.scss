@@ -16,3 +16,17 @@
     height: 100%;
     object-fit: cover;
 }
+
+.editButton {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+    z-index: 10;
+    background-color: rgba(131, 131, 131, 0.5);
+    border-radius: 10%;
+}

@@ -114,6 +114,7 @@ const HomePage = () => {
                 yindex={[0, 0, 0]}
                 height="80vh"
                 isEditMode={isEditMode}
+                isDarkMode={isDarkMode}
             />
 
             <div
