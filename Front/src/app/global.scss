@@ -15,15 +15,17 @@ body {
     grid-template-columns: 200px 1fr;
     grid-template-rows: 60px 1fr;
 
-    font-family: 'Freesentation-9Black', sans-serif;
+    font-family: 'Pretendard-Bold', sans-serif;
 }
 
 header {
     grid-area: header;
+    z-index: 1002;
 }
 
 aside {
     grid-area: sidebar;
+    z-index: 1001;
 }
 
 main {
@@ -57,6 +59,9 @@ a {
         color: lightblue;
     }
 }
+[data-theme='dark'] {
+    color: #ffffff;
+}
 
 @media (max-width: 768px) {
     body {
@@ -68,8 +73,67 @@ a {
 }
 
 @font-face {
-    font-family: 'Freesentation-9Black';
-    src: url('/fonts/Freesentation-9Black.ttf') format('woff2');
+    font-family: 'Stalemate-Regular';
+    src: url('/fonts/Stalemate-Regular.ttf') format('woff2');
     font-weight: 900;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pacifico-Regular';
+    src: url('/fonts/Pacifico-Regular.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('/fonts/Pretendard-Bold.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSans-Regular';
+    src: url('/fonts/NotoSansKR-Regular.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSans-Bold';
+    src: url('/fonts/NotoSansKR-Bold.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumMyeongjo-Regular';
+    src: url('/fonts/NanumMyeongjo-Regular.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumMyeongjo-Bold';
+    src: url('/fonts/NanumMyeongjo-Bold.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+.light {
+    background-color: #f5f5f5;
+    color: #333333;
+
+    a {
+        color: #333333;
+    }
+}
+.dark {
+    background-color: #333333;
+    color: #f5f5f5;
+
+    a {
+        color: #f5f5f5;
+    }
 }

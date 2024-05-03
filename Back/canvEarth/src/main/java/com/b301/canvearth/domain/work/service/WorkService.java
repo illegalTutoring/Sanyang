@@ -38,7 +38,7 @@ public class WorkService {
     public Work insertWork(MultipartFile image, WorkRequestPostDto requestPostDto) {
         log.info("===== [WorkService] insertWork start =====");
 
-        Map<String, String> paths = uploadS3AndGetPath(image);
+        Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
         Work work = Work.builder().userId(requestPostDto.getUserId()).company(requestPostDto.getCompany())
                 .title(requestPostDto.getTitle()).startDate(requestPostDto.getStartDate())
@@ -67,12 +67,12 @@ public class WorkService {
         boolean changeImage = false;
         Map<String, String> paths = new HashMap<>();
         if(image != null && !image.isEmpty()) {
-            paths = uploadS3AndGetPath(image);
+            paths = s3Service.uploadS3AndGetPath(image);
             changeImage = true;
         }
 
         Work changeWork = workRepository.findById(workId)
-                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 workId로 데이터를 찾을 수 없습니다. workId: " + workId));
 
         changeWork.setCompany(requestPutDto.getCompany());
         changeWork.setTitle(requestPutDto.getTitle());
@@ -81,6 +81,11 @@ public class WorkService {
         changeWork.setTags(requestPutDto.getTags());
 
         if(changeImage) {
+            // 기존 S3 이미지는 삭제
+            s3Service.deleteImage(changeWork.getOriginalPath());
+            s3Service.deleteImage(changeWork.getThumbnailPath());
+            s3Service.deleteImage(changeWork.getWatermarkPath());
+
             changeWork.setOriginalPath(paths.get("originalPath"));
             changeWork.setThumbnailPath(paths.get("thumbnailPath"));
             changeWork.setWatermarkPath(paths.get("watermarkPath"));
@@ -92,28 +97,14 @@ public class WorkService {
     public void deleteWork(Long workId) {
         log.info("===== [WorkService] deleteWork start =====");
         Work work = workRepository.findById(workId)
-                .orElseThrow(() -> new IllegalArgumentException("Work not found with id: " + workId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 workId로 데이터를 찾을 수 없습니다. workId: " + workId));
 
+        // S3 이미지들 삭제
+        s3Service.deleteImage(work.getOriginalPath());
+        s3Service.deleteImage(work.getThumbnailPath());
+        s3Service.deleteImage(work.getWatermarkPath());
+        
+        // DB에서 삭제
         workRepository.delete(work);
-    }
-
-    public Map<String, String> uploadS3AndGetPath(MultipartFile image) {
-        log.info("===== [WorkService] uploadS3AndGetPath start =====");
-        Map<String, String> paths = new HashMap<>();
-        UUID uuid = UUID.randomUUID();
-        // originalPath
-        String originalPath = s3Service.uploadImage(image, uuid, "original");
-        paths.put("originalPath", originalPath);
-
-        // TODO: 썸네일, 워터마크 해줘야함.
-        // thumbnailPath
-        String thumbnailPath = s3Service.uploadImage(image, uuid, "thumbnail");
-        paths.put("thumbnailPath", thumbnailPath);
-
-        // watermarkPath
-        String watermarkPath = s3Service.uploadImage(image, uuid, "watermark");
-        paths.put("watermarkPath", watermarkPath);
-
-        return paths;
     }
 }

@@ -1,0 +1,50 @@
+.link_container {
+    display: flex;
+    width: 60%;
+    margin-bottom: 50px;
+    grid-template-columns: repeat(4, 1fr);
+    justify-content: space-around;
+    align-items: center;
+    gap: 30px;
+}
+
+.colLine {
+    margin: 100px 0 100px 0;
+    width: 50%;
+    height: 80px;
+}
+
+.colLineDark {
+    border-right: 1px solid white;
+}
+
+.colLineLight {
+    border-right: 1px solid black;
+}
+
+.notice {
+    text-align: center;
+    white-space: pre-line;
+    line-height: 2;
+}
+
+@media (max-width: 768px) {
+    .container_col {
+        grid-template-columns: 1fr;
+        grid-template-rows: '1fr' '1fr';
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateY(-5px);
+    }
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+.shake {
+    animation: shake 1s ease-in-out infinite;
+}

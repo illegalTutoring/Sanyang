@@ -1,30 +1,52 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
-
-const SERVER_URL = process.env.SERVER_URL
+import {
+    deleteWorkResponseDTO,
+    modifyWorkRequestDTO,
+    modifyWorkResponseDTO,
+    registWorkRequestDTO,
+    reigstWorkResponseDTO,
+} from './DTO/work'
+import {
+    deleteGalleryResponseDTO,
+    modifyGalleryRequestDTO,
+    modifyGalleryResponseDTO,
+    registGalleryRequestDTO,
+    registGalleryResponseDTO,
+} from './DTO/gallery'
+import {
+    deleteCalendarResponseDTO,
+    modifyCalendarRequestDTO,
+    modifyCalendarResponseDTO,
+    registCalendarRequestDTO,
+    registCalendarResponseDTO,
+} from './DTO/calendar'
+import {
+    modifyBannerListRequestDTO,
+    modifyBannerListResponseDTO,
+} from './DTO/banner'
+import {
+    modifyEmbedLinkRequestDTO,
+    modifyEmbedLinkResponseDTO,
+} from './DTO/embed'
 
 // TODO: redux에서 값을 가져오도록 수정할 것.
 let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
 
-interface registWorkDTO {
-    userId: String
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
-}
-export function registWork(data: registWorkDTO, image: File) {
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
+
+// #########################################################
+// Start - Work API
+
+export function registWork(
+    data: registWorkRequestDTO,
+    image: File,
+): reigstWorkResponseDTO {
     /**
      * 외주 등록
      *
      * @param data - 외주 정보
      * @param image - 이미지
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
      *
      */
 
@@ -52,25 +74,15 @@ export function registWork(data: registWorkDTO, image: File) {
     )
 }
 
-interface modifyWorkDTO {
-    company: String
-    title: String
-    startDate: String
-    endDate: String
-    tags: Array<String>
-}
-export function modifyWork(data: Object, image: File | null) {
+export function modifyWork(
+    data: modifyWorkRequestDTO,
+    image: File | null,
+): modifyWorkResponseDTO {
     /**
      * 외주 수정
      *
      * @param data - 외주 정보
      * @param image - 이미지 (수정되지 않으면 null)
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -98,17 +110,11 @@ export function modifyWork(data: Object, image: File | null) {
     )
 }
 
-export function deleteWork(workId: number) {
+export function deleteWork(workId: number): deleteWorkResponseDTO {
     /**
      * 외주 삭제
      *
      * @param workId - 외주 id
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -126,24 +132,21 @@ export function deleteWork(workId: number) {
     )
 }
 
-interface registGalleryDTO {
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
-}
-export function registGallery(data: registGalleryDTO, image: File) {
+// End - Work API
+// #########################################################
+
+// #########################################################
+// Start - Gallery API
+
+export function registGallery(
+    data: registGalleryRequestDTO,
+    image: File,
+): registGalleryResponseDTO {
     /**
      * 갤러리 등록
      *
      * @param data - 갤러리 정보
      * @param image - 이미지
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -170,25 +173,15 @@ export function registGallery(data: registGalleryDTO, image: File) {
     )
 }
 
-interface modifyGalleryDTO {
-    galleryId: number
-    title: String
-    content: String
-    createDate: String
-    tags: Array<String>
-}
-export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
+export function modifyGallery(
+    data: modifyGalleryRequestDTO,
+    image: File | null,
+): modifyGalleryResponseDTO {
     /**
      * 갤러리 수정
      *
      * @param data - 갤러리 정보
      * @param image - 이미지 (수정되지 않으면 null)
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -216,17 +209,11 @@ export function modifyGallery(data: modifyGalleryDTO, image: File | null) {
     )
 }
 
-export function deleteGallery(galleryId: number) {
+export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
     /**
      * 갤러리 삭제
      *
      * @param galleryId - 갤러리 id
-     * @returns 서버 응답 메시지
-     *
-     * @beta
-     * @todo
-     * 테스트
-     *
      */
 
     return axiosRequestHandler(
@@ -244,19 +231,19 @@ export function deleteGallery(galleryId: number) {
     )
 }
 
-interface registCalendarDTO {
-    userId: String
-    title: String
-    startDate: String
-    endDate: String
-}
-export function registCalendar(data: registCalendarDTO) {
+// End - Gallery API
+// #########################################################
+
+// #########################################################
+// Start - Calendar API
+
+export function registCalendar(
+    data: registCalendarRequestDTO,
+): registCalendarResponseDTO {
     /**
      * 일정 등록
      *
      * @param data - 일정 정보
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -275,20 +262,13 @@ export function registCalendar(data: registCalendarDTO) {
     )
 }
 
-interface modifyCalendarDTO {
-    calendarId: number
-    userId: String
-    title: String
-    startDate: String
-    endDate: String
-}
-export function modifyCalendar(data: modifyCalendarDTO) {
+export function modifyCalendar(
+    data: modifyCalendarRequestDTO,
+): modifyCalendarResponseDTO {
     /**
      * 일정 수정
      *
      * @param data - 일정 정보
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -307,13 +287,11 @@ export function modifyCalendar(data: modifyCalendarDTO) {
     )
 }
 
-export function deleteCalendar(calendarId: number) {
+export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
     /**
      * 일정 수정
      *
      * @param calendarId - 일정 id
-     * @returns 서버 응답 메시지
-     *
      */
 
     return axiosRequestHandler(
@@ -330,3 +308,68 @@ export function deleteCalendar(calendarId: number) {
         [calendarId],
     )
 }
+
+// End - Calendar API
+// #########################################################
+
+// #########################################################
+// Start - Banner API
+
+export function modifyBannerList(
+    data: modifyBannerListRequestDTO,
+): modifyBannerListResponseDTO {
+    /**
+     * 배너 수정
+     *
+     * @param data - 배너 이미지 및 이미지의 정보
+     */
+
+    return axiosRequestHandler(
+        async (data: modifyBannerListRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/banner`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+// End - Banner API
+// #########################################################
+
+// #########################################################
+// Start - Embed API
+
+export function modifyEmbedLink(
+    data: modifyEmbedLinkRequestDTO,
+): modifyEmbedLinkResponseDTO {
+    /**
+     * 임베드 링크 수정
+     *
+     * @param data - 임베드 링크 목록 정보
+     */
+
+    return axiosRequestHandler(
+        async (data: modifyEmbedLinkRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/embed`,
+                data: data,
+                headers: {
+                    Authorization: accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [data],
+    )
+}
+
+// End - Embed API
+// #########################################################
