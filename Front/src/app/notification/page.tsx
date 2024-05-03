@@ -2,7 +2,7 @@
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import List from '@/component/TagList'
-import style from './notification.module.scss'
+import styles from './notification.module.scss'
 
 const NotificationPage = () => {
     const { isDarkMode } = useDarkModeStore()
@@ -67,40 +67,42 @@ const NotificationPage = () => {
                     startDate: '2025-02-01',
                     endDate: '2025-02-28',
                 },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 봄 축제 일러스트 작업',
-                    startDate: '2025-03-01',
-                    endDate: '2025-03-31',
-                },
             ],
         }
     }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <div className={style.container}>
-                <div className={style.banner}>
-                    <h1>공지사항 페이지</h1>
+            <div className={styles.container}>
+                <div
+                    className={`${styles.banner} ${isDarkMode ? styles.darkBanner : styles.lightBanner}`}
+                >
+                    <div style={{ fontSize: '46px' }}>공지사항</div>
+                    <br></br>
+                    <h3 style={{ fontSize: '16px' }}>
+                        작품의 업데이트 정보 등 관련된 다양한 소식을
+                        알려드립니다.
+                    </h3>
                 </div>
-                <List
-                    width="100%"
-                    height="40vh"
-                    pageSize={10}
-                    columns={[
-                        'userId',
-                        'client',
-                        'title',
-                        'startDate',
-                        'endDate',
-                    ]}
-                    tagActions={{
-                        All: () => getDummyOutsourcingList(2024, 4),
-                        Active: () => getDummyOutsourcingList(2024, 4),
-                        Completed: () => getDummyOutsourcingList(2024, 4),
-                    }}
-                />
+                <div className={styles.list}>
+                    <List
+                        width="100%"
+                        height="40vh"
+                        pageSize={10}
+                        columns={[
+                            'userId',
+                            'client',
+                            'title',
+                            'startDate',
+                            'endDate',
+                        ]}
+                        tagActions={{
+                            All: () => getDummyOutsourcingList(2024, 4),
+                            Update: () => getDummyOutsourcingList(2024, 4),
+                            Notice: () => getDummyOutsourcingList(2024, 4),
+                        }}
+                    />
+                </div>
             </div>
         </article>
     )

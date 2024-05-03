@@ -1,5 +1,6 @@
 package com.b301.canvearth.domain.work.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ public class WorkResponseGetDto {
     private String company;
     private String startDate;
     private String endDate;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul") //날짜 포멧 바꾸기
     private Date uploadDate;
     private List<String> tags;
     private String original;
