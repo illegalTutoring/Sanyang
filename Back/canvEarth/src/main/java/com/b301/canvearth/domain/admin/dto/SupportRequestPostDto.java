@@ -30,7 +30,7 @@ public class SupportRequestPostDto {
         String isValid = "valid";
 
         if(title == null || title.isEmpty()) {
-            isValid = "userId";
+            isValid = "title";
         }
 
         return isValid;
