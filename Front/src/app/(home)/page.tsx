@@ -88,12 +88,12 @@ const HomePage = () => {
             link: 'https://example.com/link3',
         },
         {
-            type: 3,
-            link: 'https://example.com/link4',
-        },
-        {
             type: 4,
             link: 'https://example.com/link5',
+        },
+        {
+            type: 3,
+            link: 'https://example.com/link4',
         },
         {
             type: 5,
