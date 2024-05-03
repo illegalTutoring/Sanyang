@@ -7,9 +7,7 @@ import {
     signinRequestDTO,
     signinResponseDTO,
 } from './DTO/user'
-
-// TODO: redux에서 값을 가져오도록 수정할 것.
-let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
+import { userStore } from '../store/useUserStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -34,12 +32,18 @@ export function login(data: loginRequestDTO): loginResponseDTO {
                 },
             })
 
-            // TODO: AccessToken, Refresh Token 전역 관리 코드 추가
-            // console.log('Access Token: ', response.headers.accesstoken)
+            userStore.getState().setId(data.username)
+            userStore.getState().setUsername(response.data.username)
+            userStore.getState().setAccessToken(response.headers.accesstoken)
+            console.info(
+                'Login >> Access Token: ' + userStore.getState().accessToken,
+                'Login >> User ID: ' + userStore.getState().id,
+                'Login >> User Name: ' + userStore.getState().username,
+            )
 
             return {
+                statusCode: response.status,
                 message: response.data.message,
-                accessToken: response.headers.accesstoken,
             }
         },
         [data],
@@ -58,13 +62,16 @@ export function logout() {
             method: 'GET',
             url: `${SERVER_URL}/user/logout`,
             headers: {
-                Authorization: accessToken,
+                Authorization: userStore.getState().accessToken,
             },
         })
 
-        // TODO: AccessToken, Refresh Token 전역 관리 코드 추가
+        userStore.getState().destroyAll()
 
-        return { message: response.data.message }
+        return {
+            statusCode: response.status,
+            message: response.data.message,
+        }
     }, [])
 }
 
@@ -83,7 +90,10 @@ export function signin(data: signinRequestDTO): signinResponseDTO {
                 data: data,
             })
 
-            return { message: response.data.message }
+            return {
+                statusCode: response.status,
+                message: response.data.message,
+            }
         },
         [data],
     )
@@ -100,6 +110,14 @@ export function reIssue(accessToken: string): reIssueResponseDTO {
             },
         })
 
-        return { message: response.data.message }
+        userStore.getState().setAccessToken(response.headers.accesstoken)
+        console.info(
+            'ReIssue >> AccessToken: ' + userStore.getState().accessToken,
+        )
+
+        return {
+            statusCode: response.status,
+            message: response.data.message,
+        }
     }, [])
 }

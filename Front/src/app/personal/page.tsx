@@ -25,6 +25,10 @@ const PersonalPage: React.FC = () => {
             const month = new Date().getMonth() + 1
             const response = await getCalendar(year, month)
 
+            /**
+             * @todo Error Handling
+             */
+
             setSchedules(response.data)
         }
 

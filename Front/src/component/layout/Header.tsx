@@ -8,6 +8,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
+import { login } from '@/utils/api/user'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -24,16 +25,18 @@ const Header: React.FC = () => {
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
 
-        // api call
-        if (username === 'ssafy' && password === 'ssafy') {
+        const { statusCode } = await login({ username, password })
+        if (statusCode == 200) {
             logIn()
-        } else {
-            alert('사용자가 다릅니다. 다시 시도해주세요.')
+        } else if (statusCode == 401) {
+            /**
+             * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
+             */
         }
     }
 

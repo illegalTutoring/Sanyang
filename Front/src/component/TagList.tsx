@@ -53,7 +53,13 @@ const List: React.FC<ListProps> = ({
             <div className={styles.tags}>
                 {tags.map((tag) => (
                     <button
-                        className={activeTag === tag ? styles.active : ''}
+                        className={
+                            activeTag === tag
+                                ? isDarkMode
+                                    ? styles.darkActive
+                                    : styles.lightActive
+                                : ''
+                        }
                         key={tag}
                         onClick={() => fetchData(tag)}
                     >
