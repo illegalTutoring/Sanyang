@@ -1,6 +1,10 @@
 package com.b301.canvearth.domain.admin.controller;
 
+import com.b301.canvearth.domain.admin.dto.GalleryResponsePutDto;
 import com.b301.canvearth.domain.admin.dto.SupportRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.SupportRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.SupportResponsePutDto;
+import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.service.SupportService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -65,6 +66,34 @@ public class AdminSupportController {
         responseBody.put(MESSAGE, "후원 등록을 완료하였습니다.");
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
 
+    @PutMapping("{supportId}")
+    public ResponseEntity<Object> modifySupport(@PathVariable("supportId") Long supportId,
+                                                @RequestPart(value = "image", required = false) MultipartFile image,
+                                                @RequestPart("data") SupportRequestPutDto requestPutDto) {
+        log.info("===== [AdminSupportController] modifySupport start =====");
+        log.info("[path variable]: {}", supportId);
+        log.info("[requestData]: {}", requestPutDto);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        String isValidSupportDto = requestPutDto.isValid();
+        if(!isValidSupportDto.equals("valid")) {
+            String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
+            log.error(errorMessage);
+            responseBody.put(MESSAGE, errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
+
+        Support modifySupport = supportService.modifySupport(supportId, image, requestPutDto);
+
+        SupportResponsePutDto responsePutDto = SupportResponsePutDto.builder()
+                .thumbnail(modifySupport.getSupportThumbnail()).build();
+
+        responseBody.put(MESSAGE, "후원 수정이 완료되었습니다.");
+        responseBody.put("data", responsePutDto);
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }
