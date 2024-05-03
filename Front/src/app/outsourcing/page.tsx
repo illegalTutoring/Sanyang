@@ -1,50 +1,118 @@
-import Calendar from '@/component/Calender'
-import style from './outsourcing.module.scss'
+'use client'
+
+import Gallery from '@/component/Gallery'
+import GridGallery from '@/component/GridGallery'
+import TagInput from '@/component/TagInput'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 const OutsourcingPage = () => {
-    const schedules = [
+    const { isDarkMode } = useDarkModeStore()
+
+    const defaultImages = [
         {
-            title: 'Conference',
-            startDate: new Date(2023, 3, 10),
-            endDate: new Date(2023, 3, 12),
+            workId: 2,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
         },
         {
-            title: 'Vacation1',
-            startDate: new Date(2023, 3, 12),
-            endDate: new Date(2023, 3, 20),
+            company: 'd&f 캐릭터 작업',
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
+            watermark: 's3 path watermark',
         },
         {
-            title: 'Vacation2',
-            startDate: new Date(2023, 3, 15),
-            endDate: new Date(2023, 3, 25),
+            company: '메이플 캐릭터 작업',
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+            watermark: 's3 path watermark',
         },
         {
-            title: 'Vacation3',
-            startDate: new Date(2023, 3, 20),
-            endDate: new Date(2023, 3, 24),
-        },
-        {
-            title: 'Vacation4',
-            startDate: new Date(2023, 3, 24),
-            endDate: new Date(2023, 3, 28),
-        },
-        {
-            title: 'Vacation5',
-            startDate: new Date(2023, 3, 24),
-            endDate: new Date(2023, 3, 28),
+            workId: 2,
+            userId: 'sanyang',
+            title: 'd&f 캐릭터 작업',
+            startDate: '2024-04-01',
+            endDate: '2024-04-30',
+            uploadDate: '2024-04-12 12:12:12',
+            tags: ['d&f', '캐릭터'],
+            original: 's3 path',
+            thumbnail:
+                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
+            watermark: 's3 path watermark',
         },
     ]
 
+    const tags = [
+        'apple',
+        'alalal',
+        'apricot',
+        'avocado',
+        'acai',
+        'acerola',
+        'anchovy',
+        'antelope',
+        'ant',
+        'anaconda',
+        'asteroid',
+        'aster',
+        'aspen',
+        'amethyst',
+        'amber',
+        'arrow',
+        'armor',
+        'amphibian',
+        'aluminum',
+        'arsenic',
+        'apartment',
+        'avenue',
+        'answer',
+        'astronomy',
+        'algebra',
+        'artifact',
+        'alchemy',
+        'angle',
+        'argyle',
+        'ascot',
+        'artifact',
+        'aviation',
+        'aviary',
+        'axis',
+    ]
+
     return (
-        <div className={style.container}>
-            <Calendar
-                width="80vw" // 동적으로 크기 지정
-                height="90vh" // 동적으로 크기 지정
-                year={2023}
-                month={4}
-                schedules={schedules}
-            />
-        </div>
+        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
+            <div>
+                <div>
+                    <GridGallery
+                        images={defaultImages}
+                        width={'100%'}
+                        height={'100%'}
+                        colCount={2}
+                    />
+                </div>
+            </div>
+        </article>
     )
 }
 

@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
+import { getWorkListResponseDTO } from './DTO/work'
 
-const SERVER_URL = process.env.SERVER_URL
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getWorkList() {
+export function getWorkList(): getWorkListResponseDTO {
     /**
      * 외주 이미지 정보 목록을 반환한다.
      *
@@ -13,16 +14,16 @@ export function getWorkList() {
      *      data: [
      *          {
      *              workId: number,
-                    userId: String,
-                    title: String,
-                    company: String,
-                    startDate: String,
-                    endDate: String,
-                    uploadDate: String,
-                    tags: Array<String>,
-                    original: String,
-                    thumbnail: String,
-                    watermark: String,
+                    userId: string,
+                    title: string,
+                    company: string,
+                    startDate: string,
+                    endDate: string,
+                    uploadDate: string,
+                    tags: Array<string>,
+                    original: string,
+                    thumbnail: string,
+                    watermark: string,
      *          },
      *          ...
      *      ]

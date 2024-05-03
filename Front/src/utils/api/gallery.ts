@@ -1,31 +1,12 @@
 import axios, { AxiosResponse } from 'axios'
 import { axiosRequestHandler } from './interceptor'
+import { getGalleryListResponseDTO } from './DTO/gallery'
 
-const SERVER_URL = process.env.SERVER_URL
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getGalleryList() {
+export function getGalleryList(): getGalleryListResponseDTO {
     /**
      * 외주 이미지 정보 목록을 반환한다.
-     *
-     * @returns
-     * {
-     *      message: string,
-     *      data: [
-     *          {
-     *              galleryId: number,
-                    userId: String,
-                    title: String,
-                    startDate: String,
-                    endDate: String,
-                    uploadDate: String,
-                    tags: Array<String>,
-                    original: String,
-                    thumbnail: String,
-                    watermark: String,
-     *          },
-     *          ...
-     *      ]
-     * }
      */
 
     return axiosRequestHandler(async () => {
@@ -33,6 +14,8 @@ export function getGalleryList() {
             method: 'GET',
             url: `${SERVER_URL}/gallery`,
         })
+        console.log('asdfasdf', response.data.data)
+
         return {
             message: response.data.message,
             data: response.data.data,
