@@ -278,15 +278,14 @@ const GalleryPage = () => {
                     />
                 </div>
             </div>
+
+            <div
+                className={`${styles.box} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
+            ></div>
+
             <div>
                 <TagInput availableTags={tags} />
             </div>
-            <div
-                style={{
-                    paddingTop: '15px',
-                    borderBottom: '1px solid #aaaaaa',
-                }}
-            ></div>
             <div>
                 <Gallery images={defaultImages} colCount={4} />
             </div>

@@ -1,17 +1,21 @@
 .list {
+    margin: 0 10px 0 10px;
     display: flex;
 }
 
 .column {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 10px 5px 10px 5px;
     background-clip: padding-box;
 }
 
 .card {
+    height: 100%;
     position: relative;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    box-sizing: border-box;
+
+    img {
+        display: block;
+    }
 }
 
 .card::after {
