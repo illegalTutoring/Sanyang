@@ -39,7 +39,7 @@ public class AdminSupportController {
         Map<String, Object> responseBody = new HashMap<>();
 
         // image라는 form-data는 받았지만 빈 파일일 경우
-        if(image.isEmpty()) {
+        if (image.isEmpty()) {
             String errorMessage = "image가 비어있습니다.";
             log.error(errorMessage);
             responseBody.put(MESSAGE, errorMessage);
@@ -48,7 +48,7 @@ public class AdminSupportController {
 
 
         String isValidSupportDto = requestPostDto.isValid();
-        if(!isValidSupportDto.equals("valid")) {
+        if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
             responseBody.put(MESSAGE, errorMessage);
@@ -56,7 +56,7 @@ public class AdminSupportController {
         }
 
         Support insertSupport = supportService.insertSupport(image, requestPostDto);
-        if(insertSupport == null) {
+        if (insertSupport == null) {
             log.error("insertSupport 비어있음.");
             responseBody.put(MESSAGE, "후원 등록을 실패하였습니다.");
             // TODO: exception 바꿔야 함
@@ -79,7 +79,7 @@ public class AdminSupportController {
         Map<String, Object> responseBody = new HashMap<>();
 
         String isValidSupportDto = requestPutDto.isValid();
-        if(!isValidSupportDto.equals("valid")) {
+        if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
             responseBody.put(MESSAGE, errorMessage);
@@ -93,6 +93,20 @@ public class AdminSupportController {
 
         responseBody.put(MESSAGE, "후원 수정이 완료되었습니다.");
         responseBody.put("data", responsePutDto);
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    @DeleteMapping("/{supportId}")
+    public ResponseEntity<Object> deleteSupport(@PathVariable("supportId") Long supportId) {
+        log.info("===== [AdminSupportController] deleteSupport start =====");
+        log.info("[path variable]: {}", supportId);
+
+        Map<String, java.lang.Object> responseBody = new HashMap<>();
+
+        supportService.deleteSupport(supportId);
+
+        responseBody.put(MESSAGE, "후원 삭제가 완료되었습니다.");
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
