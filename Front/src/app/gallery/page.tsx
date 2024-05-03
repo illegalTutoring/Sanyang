@@ -283,11 +283,21 @@ const GalleryPage = () => {
                 className={`${styles.box} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
             ></div>
 
-            <div>
+            {/* <div>
                 <TagInput availableTags={tags} />
-            </div>
+            </div> */}
+
             <div>
                 <Gallery images={defaultImages} colCount={4} />
+            </div>
+
+            <div id="searchButton" className={styles.searchButton}>
+                <img
+                    style={{ width: '30px' }}
+                    src={`${isDarkMode ? '/svgs/magnifier_white.svg' : '/svgs/magnifier_black.svg'}`}
+                    alt=""
+                />
+                검색하기
             </div>
         </div>
     )

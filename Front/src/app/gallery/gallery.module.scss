@@ -59,3 +59,21 @@
 .darkBox {
     background: linear-gradient(to Bottom, rgb(100, 100, 100), rgb(51, 51, 51));
 }
+
+.searchButton {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    position: fixed;
+    bottom: 20px;
+    right: 28px;
+    width: 180px;
+    height: 50px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
