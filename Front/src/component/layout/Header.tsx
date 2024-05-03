@@ -29,16 +29,14 @@ const Header: React.FC = () => {
         event.preventDefault()
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
-        {
-            const { statusCode, message } = await login({ username, password })
 
-            if (statusCode == 200) {
-                logIn()
-            } else if (statusCode == 400) {
-                /**
-                 * @todo 입력값을 확인하세요. 등의 BAD_REQUEST 핸들링
-                 */
-            }
+        const { statusCode } = await login({ username, password })
+        if (statusCode == 200) {
+            logIn()
+        } else if (statusCode == 401) {
+            /**
+             * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
+             */
         }
     }
 
@@ -77,12 +75,53 @@ const Header: React.FC = () => {
                     </div>
 
                     {profileMenuVisible && (
-                        <div className={styles.profileMenu}>
-                            <button onClick={logOut}>Log out</button>
+                        <div
+                            className={`${styles.profileMenu} ${isDarkMode ? 'dark' : 'light'}`}
+                        >
+                            <div className={styles.profile} onClick={logOut}>
+                                <img
+                                    className={styles.toggleLoginButton}
+                                    src={
+                                        isDarkMode
+                                            ? '/svgs/key_white.svg'
+                                            : '/svgs/key_black.svg'
+                                    }
+                                    alt="login"
+                                />
+                                <h3>logout</h3>
+                            </div>
                             {isEditMode ? (
-                                <button onClick={toggleEditMode}>edit</button>
+                                <div
+                                    className={styles.profile}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/edit_white.svg'
+                                                : '/svgs/edit_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>edit</h3>
+                                </div>
                             ) : (
-                                <button onClick={toggleEditMode}>view</button>
+                                <div
+                                    className={styles.profile}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/view_white.svg'
+                                                : '/svgs/view_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>view</h3>
+                                </div>
                             )}
                         </div>
                     )}

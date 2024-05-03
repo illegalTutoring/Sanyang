@@ -88,12 +88,12 @@ const HomePage = () => {
             link: 'https://example.com/link3',
         },
         {
-            type: 3,
-            link: 'https://example.com/link4',
-        },
-        {
             type: 4,
             link: 'https://example.com/link5',
+        },
+        {
+            type: 3,
+            link: 'https://example.com/link4',
         },
         {
             type: 5,
@@ -111,7 +111,7 @@ const HomePage = () => {
                 images={images}
                 interval={5000}
                 width="100%"
-                yindex={[-60, -150, -450]}
+                yindex={[0, 0, 0]}
                 height="80vh"
                 isEditMode={isEditMode}
             />
@@ -141,7 +141,7 @@ const HomePage = () => {
                 )}
 
                 {showContent && (
-                    <div id="contentDiv">
+                    <div id="contentDiv" style={{ width: '100%' }}>
                         <div>
                             <div
                                 className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
@@ -186,7 +186,7 @@ const HomePage = () => {
                             {embedData.map((data, index) => (
                                 <div
                                     key={index}
-                                    className={styles.link_container}
+                                    style={{ marginBottom: '50px' }}
                                 >
                                     <Profile
                                         src={getImageSource(data.type)}
