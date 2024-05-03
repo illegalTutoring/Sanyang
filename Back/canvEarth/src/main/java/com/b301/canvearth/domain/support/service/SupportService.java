@@ -8,10 +8,12 @@ import com.b301.canvearth.domain.support.repository.SupportRepository;
 import com.b301.canvearth.domain.work.entity.Work;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +24,10 @@ public class SupportService {
 
     private final SupportRepository supportRepository;
     private final S3Service s3Service;
+
+    public List<Support> getSupportList() {
+        return supportRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
 
     public Support insertSupport(MultipartFile image, SupportRequestPostDto requestPostDto) {
         log.info("===== [SupportService] insertSupport start =====");
