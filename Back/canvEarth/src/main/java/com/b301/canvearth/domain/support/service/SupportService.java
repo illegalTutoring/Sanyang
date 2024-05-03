@@ -70,4 +70,14 @@ public class SupportService {
 
         return supportRepository.save(changeSupport);
     }
+
+    public void deleteSupport(Long supportId) {
+        log.info("===== [SupportService] deleteSupport start =====");
+
+        Support support = supportRepository.findById(supportId)
+                .orElseThrow(()->new IllegalArgumentException("해당 supportId로 데이터를 찾을 수 없습니다. supportId: " + supportId));
+
+        s3Service.deleteImage(support.getSupportThumbnail());
+        supportRepository.delete(support);
+    }
 }
