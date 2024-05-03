@@ -2,7 +2,9 @@
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import List from '@/component/TagList'
+import Pagination from '@/component/Pagination'
 import styles from './notification.module.scss'
+import React, { useState } from 'react'
 
 const NotificationPage = () => {
     const { isDarkMode } = useDarkModeStore()
@@ -71,6 +73,25 @@ const NotificationPage = () => {
         }
     }
 
+    // 데이터 예제
+    const data = Array.from({ length: 200 }, (_, index) => `Item ${index + 1}`)
+    const itemsPerPage = 10 // 한 페이지에 표시할 아이템 수
+
+    // 페이징 상태
+    const [currentPage, setCurrentPage] = useState(1)
+    const totalPage = Math.ceil(data.length / itemsPerPage)
+
+    // 현재 페이지에 따라 데이터를 잘라서 표시
+    const currentData = data.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    )
+
+    // 페이지 변경 핸들러
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page)
+    }
+
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <div className={styles.container}>
@@ -87,7 +108,7 @@ const NotificationPage = () => {
                 <div className={styles.list}>
                     <List
                         width="100%"
-                        height="40vh"
+                        height="100%"
                         pageSize={10}
                         columns={[
                             'userId',
@@ -103,6 +124,12 @@ const NotificationPage = () => {
                         }}
                     />
                 </div>
+                <Pagination
+                    totalPage={totalPage}
+                    limit={itemsPerPage}
+                    page={currentPage}
+                    setPage={handlePageChange}
+                />
             </div>
         </article>
     )
