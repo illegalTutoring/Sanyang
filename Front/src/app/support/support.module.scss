@@ -11,26 +11,24 @@
 .darkBanner {
     background: linear-gradient(
         to right,
-        rgb(51, 87, 157),
-        rgb(108, 138, 246),
-        rgb(164, 177, 250)
+        rgb(97, 44, 97),
+        rgb(196, 98, 152),
+        rgb(196, 98, 126)
     );
+
+    // background: linear-gradient(
+    //     to right,
+    //     rgb(72, 25, 141),
+    //     rgb(164, 35, 200),
+    //     rgb(176, 30, 203)
+    // );
 }
 
 .lightBanner {
     background: linear-gradient(
         to right,
-        rgb(187, 251, 225),
-        rgb(123, 239, 228),
-        rgb(75, 211, 238)
+        rgb(246, 247, 202),
+        rgb(208, 204, 146),
+        rgb(143, 179, 92)
     );
-}
-
-.container {
-    height: 100%;
-    gap: 10px;
-}
-
-.list {
-    padding: 0 20px 0 20px;
 }
