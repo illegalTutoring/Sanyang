@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LogoutFilter extends GenericFilterBean {
+public class CustomLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
 
@@ -118,6 +118,11 @@ public class LogoutFilter extends GenericFilterBean {
         cookie.setPath("/");
 
         response.addCookie(cookie);
+
+        data.put("message", "로그아웃 성공");
+        String jsonData = objectMapper.writeValueAsString(data);
+
+        response.getWriter().write(jsonData);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
