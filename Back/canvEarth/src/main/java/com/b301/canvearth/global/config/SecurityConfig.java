@@ -2,9 +2,11 @@ package com.b301.canvearth.global.config;
 
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
+import com.b301.canvearth.global.filter.CustomLogoutFilter;
+import com.b301.canvearth.global.filter.ExceptionHandlerFilter;
 import com.b301.canvearth.global.filter.JWTFilter;
-import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.filter.LogInFilter;
+import com.b301.canvearth.global.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -84,7 +86,6 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-
         http
                 .authorizeHttpRequests((auth) -> auth
                         // Swagger
@@ -117,14 +118,16 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
+                        UsernamePasswordAuthenticationFilter.class);
+        http
                 .addFilterBefore(new JWTFilter(jwtUtil, accessService), LogInFilter.class);
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService), LogoutFilter.class);
 
         http
-                .addFilterBefore(new com.b301.canvearth.global.filter.LogoutFilter(jwtUtil, refreshService, accessService), LogoutFilter.class);
+                .addFilterBefore(new ExceptionHandlerFilter(), CustomLogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session
