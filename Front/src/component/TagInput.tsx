@@ -130,81 +130,73 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
         setInput('')
     }
 
+    const searchByTag = () => {}
+
     return (
         <div ref={containerRef}>
             <div
                 className={`${styles.tagBox} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
             >
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}
-                >
+                <div className={styles.searchBox}>
                     <input
                         ref={inputRef}
                         type="text"
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
-                        placeholder="Add a tag..."
-                        style={{
-                            height: '35px',
-                            width: '150px',
-                            fontSize: '18px',
-                            marginLeft: '5px',
-                            borderTopLeftRadius: '20px',
-                            borderBottomLeftRadius: '20px',
-                            paddingLeft: '10px',
-                        }}
+                        placeholder="검색할 태그..."
                     />
-
                     <div
-                        className={`${styles.resetButton} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
+                        className={styles.resetButton}
                         onClick={() => deleteAllTag()}
                     >
-                        초기화
+                        <img
+                            style={{ height: '40px' }}
+                            src="/svgs/restart.svg"
+                        ></img>
                     </div>
                 </div>
-                {tags.map((tag, index) => (
-                    <div
-                        className={`${styles.tag} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
-                        key={index}
-                    >
-                        #{tag}
-                        <button
-                            className={`${styles.deleteButton} ${isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton}`}
-                            onClick={() => deleteTag(tag)}
-                            aria-label="Delete tag"
+                <div className={styles.inputBox}>
+                    {suggestions.length > 0 && (
+                        <ul className={styles.suggestions}>
+                            {suggestions.map((suggestion, index) => (
+                                <li
+                                    id={`suggestion-item-${index}`}
+                                    key={index}
+                                    onClick={() => selectTag(suggestion, index)}
+                                    style={{
+                                        cursor: 'pointer',
+                                        backgroundColor:
+                                            index === selectedIndex
+                                                ? 'lightgray'
+                                                : 'transparent',
+                                        padding: '10px',
+                                        borderBottom: '1px solid #eee',
+                                    }}
+                                >
+                                    {suggestion}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <div className={styles.tagContainer}>
+                    {tags.map((tag, index) => (
+                        <div
+                            className={`${styles.tag} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
+                            key={index}
                         >
-                            ×
-                        </button>
-                    </div>
-                ))}
-            </div>
-            <div className={styles.inputBox}>
-                {suggestions.length > 0 && (
-                    <ul className={styles.suggestions}>
-                        {suggestions.map((suggestion, index) => (
-                            <li
-                                id={`suggestion-item-${index}`}
-                                key={index}
-                                onClick={() => selectTag(suggestion, index)}
-                                style={{
-                                    cursor: 'pointer',
-                                    backgroundColor:
-                                        index === selectedIndex
-                                            ? 'lightgray'
-                                            : 'transparent',
-                                    padding: '10px',
-                                    borderBottom: '1px solid #eee',
-                                }}
+                            #{tag}
+                            <button
+                                className={`${styles.deleteButton} ${isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton}`}
+                                onClick={() => deleteTag(tag)}
+                                aria-label="Delete tag"
                             >
-                                {suggestion}
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     )

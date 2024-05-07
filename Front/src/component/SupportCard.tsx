@@ -31,9 +31,11 @@ const SupportCard: React.FC<SupportProps> = ({
     isDarkMode,
     width = '100%',
     height = 'auto',
-    cardMinWidth = '250px',
+    cardMinWidth = '350px',
     cardMaxWidth = '1fr',
 }) => {
+    const currentDate = new Date().toISOString().slice(0, 7)
+
     return (
         <div
             className={`${isDarkMode ? 'dark' : 'light'}`}
@@ -72,26 +74,44 @@ const SupportCard: React.FC<SupportProps> = ({
                             style={{ width: '50px', height: '50px' }}
                         />
                         <div>
-                            {item.title}
-                            Uploaded: {item.uploadDate}
+                            <div style={{ fontSize: '20px' }}>{item.title}</div>
+                            <hr></hr>
+                            <div className={styles.dateBox}>
+                                <div>{item.uploadDate}</div>
+                                {item.uploadDate === currentDate && (
+                                    <div
+                                        className={`${styles.supportTag} ${isDarkMode ? styles.supportTagDark : styles.supportTagLight}`}
+                                    >
+                                        New!
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                    <br />
-                    <small>{item.content}</small>
-                    <br />
-                    <ul>
+                    <div className={styles.contentBox}>{item.content}</div>
+                    <div
+                        className={`${styles.linkBox} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                    >
                         {item.supportLink.map((link, index) => (
-                            <ol key={index}>
+                            <div className={styles.link} key={index}>
                                 <a
                                     href={link.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    - {link.name}
+                                    <img
+                                        style={{ width: '13px' }}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/diamond_white.svg'
+                                                : '/svgs/diamond_black.svg'
+                                        }
+                                    ></img>{' '}
+                                    {link.name}
                                 </a>
-                            </ol>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             ))}
         </div>

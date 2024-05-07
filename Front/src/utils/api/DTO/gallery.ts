@@ -10,7 +10,6 @@ interface galleryInfo {
     tags: Array<string>
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface getGalleryListResponseDTO extends serverResponseDTO {

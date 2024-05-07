@@ -5,10 +5,11 @@ import styles from './Header.module.scss'
 import Link from 'next/link'
 import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import useEditModeStore from '@/utils/store/useEditModeStore '
+import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login } from '@/utils/api/user'
+import { WiDayCloudy } from 'react-icons/wi'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -22,9 +23,11 @@ const Header: React.FC = () => {
 
     // 함수
     const toggleLoginModal = () => setLoginModalVisible(!loginModalVisible)
+
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
+
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const username = event.currentTarget.username.value
@@ -32,6 +35,7 @@ const Header: React.FC = () => {
 
         const { statusCode } = await login({ username, password })
         if (statusCode == 200) {
+            toggleLoginModal()
             logIn()
         } else if (statusCode == 401) {
             /**
@@ -53,6 +57,7 @@ const Header: React.FC = () => {
                 src={
                     isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
                 }
+                style={isDarkMode ? { width: '30px' } : { width: '35px' }}
                 alt={
                     isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
                 }
@@ -61,24 +66,27 @@ const Header: React.FC = () => {
             {isLoggedIn ? (
                 <>
                     <div
-                        className={styles.profile}
+                        className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
                         onClick={handleProfileClick}
                     >
                         <Profile
                             src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
-                            size={40}
+                            size={35}
                             border="2px solid black"
                             alt="profile image"
                             radius={50}
                         />
-                        <h3>sanyamg</h3>
+                        <h3 style={{ marginLeft: '10px' }}>admin</h3>
                     </div>
 
                     {profileMenuVisible && (
                         <div
                             className={`${styles.profileMenu} ${isDarkMode ? 'dark' : 'light'}`}
                         >
-                            <div className={styles.profile} onClick={logOut}>
+                            <div
+                                className={styles.profileItem}
+                                onClick={logOut}
+                            >
                                 <img
                                     className={styles.toggleLoginButton}
                                     src={
@@ -92,7 +100,7 @@ const Header: React.FC = () => {
                             </div>
                             {isEditMode ? (
                                 <div
-                                    className={styles.profile}
+                                    className={styles.profileItem}
                                     onClick={toggleEditMode}
                                 >
                                     <img
@@ -108,7 +116,7 @@ const Header: React.FC = () => {
                                 </div>
                             ) : (
                                 <div
-                                    className={styles.profile}
+                                    className={styles.profileItem}
                                     onClick={toggleEditMode}
                                 >
                                     <img
@@ -127,9 +135,13 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <div className={styles.profile} onClick={toggleLoginModal}>
+                <div
+                    className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
+                    onClick={toggleLoginModal}
+                >
                     <img
                         className={styles.toggleLoginButton}
+                        style={{ width: '25px' }}
                         src={
                             isDarkMode
                                 ? '/svgs/key_white.svg'
@@ -137,7 +149,7 @@ const Header: React.FC = () => {
                         }
                         alt="login"
                     />
-                    <h3>login</h3>
+                    <h3 style={{ marginLeft: '10px' }}>로그인</h3>
                 </div>
             )}
 
@@ -146,35 +158,48 @@ const Header: React.FC = () => {
                     <Modal
                         isVisible={loginModalVisible}
                         toggleModal={toggleLoginModal}
-                        width="40vw"
-                        height="60vh"
+                        width="400px"
+                        height="310px"
                     >
                         <div className={styles.loginModal}>
-                            <h1>Login</h1>
+                            <h1 style={{ fontFamily: 'Pacifico-Regular' }}>
+                                CanvEarth
+                            </h1>
                             <form
                                 className={styles.loginForm}
                                 onSubmit={handleLogin}
                             >
-                                <label htmlFor="username">Username:</label>
+                                <label htmlFor="username">아이디</label>
                                 <input
                                     type="text"
                                     id="username"
                                     name="username"
                                     required
                                 />
-                                <label htmlFor="password">Password:</label>
+                                <label htmlFor="password">비밀번호</label>
                                 <input
                                     type="password"
                                     id="password"
                                     name="password"
                                     required
                                 />
-                                <button type="submit">Login</button>
+                                <button type="submit">로그인</button>
                             </form>
-                            <p>
-                                Need an account?{' '}
-                                <Link href="/signup">Sign up</Link>
-                            </p>
+                            <div
+                                style={{
+                                    marginTop: '5px',
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                계정 생성을 원한다면{' '}
+                                <Link
+                                    style={{ color: '#0051b8' }}
+                                    href="/signup"
+                                >
+                                    이곳을 클릭하세요
+                                </Link>
+                            </div>
                         </div>
                     </Modal>
                 </>

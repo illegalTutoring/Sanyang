@@ -14,7 +14,6 @@ export interface ImageData {
     tags: string[]
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface GalleryProps {
@@ -22,9 +21,18 @@ export interface GalleryProps {
     colCount: number
     width?: string
     height?: string
+    isEditMode: boolean
+    addTogle: () => void
 }
 
-const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
+const Gallery: React.FC<GalleryProps> = ({
+    images,
+    colCount,
+    isEditMode,
+    addTogle,
+}) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
     const breakpointColumnsObj = {
         default: colCount,
         1100: colCount > 3 ? 3 : colCount,
@@ -32,26 +40,86 @@ const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
         500: 1,
     }
 
+    const handleImageClick = (image: string) => {
+        setSelectedImage(image)
+    }
+
+    const handleClose = () => {
+        setSelectedImage(null)
+    }
+
+    const handleRightClick = (event: React.MouseEvent) => {
+        event.preventDefault()
+    }
+
+    const deleteImage = (id: number) => {
+        console.log('delete image', id)
+    }
+
     return (
-        <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className={styles.list}
-            columnClassName={styles.column}
-        >
-            {images.map((image) => (
-                <div key={image.workId ? image.workId : image.galleryId}>
-                    <img
-                        src={image.thumbnail}
-                        alt={image.title}
-                        style={{
-                            width: '100%',
-                            objectFit: 'cover',
-                        }}
-                        className={styles.card}
-                    />
+        <div>
+            {selectedImage && (
+                <div
+                    className={styles.galleryModal}
+                    onClick={handleClose}
+                    onContextMenu={handleRightClick}
+                >
+                    <img src={selectedImage} className={styles.expandedImg} />
                 </div>
-            ))}
-        </Masonry>
+            )}
+            <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className={styles.list}
+                columnClassName={styles.column}
+            >
+                {isEditMode && (
+                    <div key={-1} className={styles.column} onClick={addTogle}>
+                        <div className={styles.card}>
+                            <img
+                                src={'/svgs/add.svg'}
+                                alt={'addButton'}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+                {images.map((image) => (
+                    <div
+                        key={image.workId ? image.workId : image.galleryId}
+                        className={styles.column}
+                        onClick={() => handleImageClick(image.original)}
+                    >
+                        <div className={styles.card}>
+                            {isEditMode && (
+                                <img
+                                    className={styles.deleteButton}
+                                    src={'/svgs/delete.svg'}
+                                    alt="Delete"
+                                    onClick={(event) =>
+                                        deleteImage(
+                                            image.workId || image.galleryId!,
+                                        )
+                                    }
+                                />
+                            )}
+                            <img
+                                src={image.thumbnail}
+                                alt={image.title}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </Masonry>
+        </div>
     )
 }
 
