@@ -451,7 +451,7 @@ export function deleteNotice(noticeId: number): deleteNoticeResponseDTO {
             },
         })
         return { message: response.data.message }
-    })
+    }, [])
 }
 
 // End - Notice API
