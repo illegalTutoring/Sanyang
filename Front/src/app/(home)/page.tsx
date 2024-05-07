@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './home.module.scss'
-import Banner from '@/component/Banner'
+import EditableBanner from '@/component/banner/EditableBanner'
 import Profile from '@/component/Profile'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore '
@@ -18,9 +18,18 @@ const HomePage = () => {
     const [showContent, setShowContent] = useState(false)
     const [editBanner, setEditBanner] = useState(false)
     const [images, setImages] = useState([
-        'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-        'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-        'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+        {
+            url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
+            yindex: 0,
+        },
+        {
+            url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
+            yindex: 0,
+        },
+        {
+            url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+            yindex: 0,
+        },
     ])
     const [notice, setNotice] = useState(
         '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
@@ -107,13 +116,13 @@ const HomePage = () => {
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <Banner
+            <EditableBanner
+                width="100%"
+                height="80vh"
                 images={images}
                 interval={5000}
-                width="100%"
-                yindex={[0, 0, 0]}
-                height="80vh"
                 isEditMode={isEditMode}
+                isDarkMode={isDarkMode}
             />
 
             <div
