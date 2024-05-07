@@ -52,6 +52,10 @@ const Gallery: React.FC<GalleryProps> = ({
         event.preventDefault()
     }
 
+    const deleteImage = (id: number) => {
+        console.log('delete image', id)
+    }
+
     return (
         <div>
             {selectedImage && (
@@ -90,6 +94,18 @@ const Gallery: React.FC<GalleryProps> = ({
                         onClick={() => handleImageClick(image.original)}
                     >
                         <div className={styles.card}>
+                            {isEditMode && (
+                                <img
+                                    className={styles.deleteButton}
+                                    src={'/svgs/delete.svg'}
+                                    alt="Delete"
+                                    onClick={(event) =>
+                                        deleteImage(
+                                            image.workId || image.galleryId!,
+                                        )
+                                    }
+                                />
+                            )}
                             <img
                                 src={image.thumbnail}
                                 alt={image.title}
