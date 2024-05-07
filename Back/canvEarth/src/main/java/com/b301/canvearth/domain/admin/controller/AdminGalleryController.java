@@ -1,9 +1,10 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.*;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryResponsePutDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.service.GalleryService;
-import com.b301.canvearth.domain.work.entity.Work;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

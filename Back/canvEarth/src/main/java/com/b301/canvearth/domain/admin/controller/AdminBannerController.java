@@ -1,6 +1,6 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.BannerRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.BannerRequestPutDto;
 import com.b301.canvearth.domain.banner.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
