@@ -90,7 +90,7 @@ public class AdminWorkController {
         WorkResponsePutDto responsePutDto = WorkResponsePutDto.builder()
                 .original(modifyWork.getOriginalPath())
                 .thumbnail(modifyWork.getThumbnailPath())
-                .watermark(modifyWork.getWatermarkPath()).build();
+                .build();
 
         responseBody.put(MESSAGE, "외주 작품 수정이 완료되었습니다.");
         responseBody.put("data", responsePutDto);

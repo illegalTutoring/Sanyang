@@ -35,7 +35,6 @@ public class WorkService {
                 .endDate(requestPostDto.getEndDate()).tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))
                 .thumbnailPath(paths.get("thumbnailPath"))
-                .watermarkPath(paths.get("watermarkPath"))
                 .build();
 
         // DB에 저장
@@ -74,11 +73,9 @@ public class WorkService {
             // 기존 S3 이미지는 삭제
             s3Service.deleteImage(changeWork.getOriginalPath());
             s3Service.deleteImage(changeWork.getThumbnailPath());
-            s3Service.deleteImage(changeWork.getWatermarkPath());
 
             changeWork.setOriginalPath(paths.get("originalPath"));
             changeWork.setThumbnailPath(paths.get("thumbnailPath"));
-            changeWork.setWatermarkPath(paths.get("watermarkPath"));
         }
 
         return workRepository.save(changeWork);
@@ -92,7 +89,6 @@ public class WorkService {
         // S3 이미지들 삭제
         s3Service.deleteImage(work.getOriginalPath());
         s3Service.deleteImage(work.getThumbnailPath());
-        s3Service.deleteImage(work.getWatermarkPath());
         
         // DB에서 삭제
         workRepository.delete(work);

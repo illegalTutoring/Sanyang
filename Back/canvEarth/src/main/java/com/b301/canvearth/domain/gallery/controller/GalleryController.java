@@ -42,7 +42,7 @@ public class GalleryController {
             GalleryListResponseGetDto getGallery = GalleryListResponseGetDto.builder()
                     .galleryId(g.getId()).userId(g.getUserId()).title(g.getTitle()).uploadDate(g.getUploadDate())
                     .createDate(g.getCreateDate()).tags(g.getTags()).originalPath(g.getOriginalPath())
-                    .thumbnailPath(g.getThumbnailPath()).watermarkPath(g.getWatermarkPath())
+                    .thumbnailPath(g.getThumbnailPath())
                     .build();
             responseList.add(getGallery);
         }
