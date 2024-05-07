@@ -74,12 +74,10 @@ public class S3Service {
             return amazonS3Client.getUrl(bucket, saveFileName).toString();
         } catch (AmazonServiceException e) {
             log.error("AmazonServiceException 발생");
-//            throw new AmazonServiceException("AmazonServiceException 발생", e);
-            return null;
+            throw new AmazonServiceException("s3 접근 권한이 없습니다.");
         } catch (SdkClientException e) {
             log.error("SdkClientException 발생");
-//            throw new SdkClientException("SdkClientException 발생", e);
-            return null;
+            throw new SdkClientException("SdkClientException 발생", e);
         } catch (IOException e) {
             log.error("IOException 발생");
             throw new RuntimeException(e);
