@@ -8,6 +8,7 @@ import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
+import useEditModeStore from '@/utils/store/useEditModeStore '
 
 let defaultImages = getGalleryList().data
 if (!defaultImages) {
@@ -91,6 +92,7 @@ console.log(defaultImages)
 
 const GalleryPage = () => {
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
     // const defaultImages = [
     //     {
@@ -223,6 +225,12 @@ const GalleryPage = () => {
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [btnText, setBtnText] = useState('태그검색')
+    const [addMode, setAddMode] = useState(false)
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+    const toggleAddMode = () => {
+        setAddMode((prev) => !prev)
+    }
 
     const toggleGallery = () => {
         setIsGalleryVisible((prev) => !prev)
@@ -232,6 +240,15 @@ const GalleryPage = () => {
         setIsModalOpen((prev) => !prev)
 
         btnText === '태그검색' ? setBtnText('검색하기') : setBtnText('태그검색')
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = () => setPreviewUrl(reader.result as string)
+            reader.readAsDataURL(file)
+        }
     }
 
     return (
@@ -268,8 +285,37 @@ const GalleryPage = () => {
             ></div>
 
             <div>
-                <Gallery images={defaultImages} colCount={4} />
+                <Gallery
+                    images={defaultImages}
+                    colCount={4}
+                    isEditMode={isEditMode}
+                    addTogle={() => {
+                        toggleAddMode()
+                    }}
+                />
             </div>
+
+            <Modal
+                isVisible={addMode}
+                toggleModal={toggleAddMode}
+                width="60vw"
+                height="60vh"
+            >
+                <div>
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                    />
+                    {previewUrl && (
+                        <img
+                            src={previewUrl}
+                            alt="Image Preview"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
+                    )}
+                </div>
+            </Modal>
 
             <div
                 id="searchButton"

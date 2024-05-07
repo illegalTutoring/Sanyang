@@ -21,9 +21,16 @@ export interface GalleryProps {
     colCount: number
     width?: string
     height?: string
+    isEditMode: boolean
+    addTogle: () => void
 }
 
-const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
+const Gallery: React.FC<GalleryProps> = ({
+    images,
+    colCount,
+    isEditMode,
+    addTogle,
+}) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
     const breakpointColumnsObj = {
@@ -61,6 +68,21 @@ const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
                 className={styles.list}
                 columnClassName={styles.column}
             >
+                {isEditMode && (
+                    <div key={-1} className={styles.column} onClick={addTogle}>
+                        <div className={styles.card}>
+                            <img
+                                src={'/svgs/add.svg'}
+                                alt={'addButton'}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
                 {images.map((image) => (
                     <div
                         key={image.workId ? image.workId : image.galleryId}
