@@ -15,6 +15,7 @@ interface ListProps {
     tagActions: {
         [tag: string]: () => void
     }
+    isEditMode: boolean
 }
 
 const List: React.FC<ListProps> = ({
@@ -24,6 +25,7 @@ const List: React.FC<ListProps> = ({
     columns,
     data,
     tagActions,
+    isEditMode,
 }) => {
     const tags = Object.keys(tagActions)
     const { isDarkMode } = useDarkModeStore()
