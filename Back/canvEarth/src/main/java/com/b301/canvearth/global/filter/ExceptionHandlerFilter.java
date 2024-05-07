@@ -1,37 +1,37 @@
 package com.b301.canvearth.global.filter;
 
 import com.b301.canvearth.global.error.CustomException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
+@RequiredArgsConstructor
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
+    private final ResponseUtil responseUtil;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) {
 
         try{
             filterChain.doFilter(request, response);
-        }catch(CustomException e){
+        } catch (CustomException e){
             handleExceptionInternal(e, e.getErrorCode().getHttpStatus(), e.getErrorCode().getErrorMessage(), request, response);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e){
             handleExceptionInternal(e, HttpStatus.BAD_REQUEST, e.getMessage(), request, response);
-        }catch(Exception e){
+        }catch (Exception e){
             handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR,"서버에러", request, response);
         }
     }
 
-    protected void handleExceptionInternal(Exception ex, HttpStatus httpStatus, String message, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void handleExceptionInternal(Exception ex, HttpStatus httpStatus, String message, HttpServletRequest request, HttpServletResponse response) {
 
         log.info("=========================== START EXCEPTION INFO ===============================");
 
@@ -63,16 +63,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         log.info("================================================================================");
 
         if(response != null){
-            Map<String, String> data = new HashMap<>();
-            data.put("message", message);
-
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json;charset=utf-8");
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            response.getWriter().write(objectMapper.writeValueAsString(data));
-            response.setStatus(httpStatus.value());
-
+            try{
+                responseUtil.sendMessage(response, false, "", httpStatus, message);
+            }catch(Exception e){
+                log.error("Exception cause: ", e);
+            }
         }
 
     }

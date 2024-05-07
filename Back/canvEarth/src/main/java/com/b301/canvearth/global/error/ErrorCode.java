@@ -6,7 +6,22 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
-    CHECK_THE_ID_OR_PASS(HttpStatus.BAD_REQUEST,"ID나 비밀번호를 확인해주세요."),
+    // Membership Management
+    LOGIN_FAIL(HttpStatus.UNAUTHORIZED,"로그인 실패"),
+    ID_DUPLICATE(HttpStatus.CONFLICT,"중복된 ID 입니다"),
+    USERNAME_DUPLICATE(HttpStatus.CONFLICT,"중복된 이름 입니다"),
+
+    // JWT(Access Token)
+    ACCESS_TOKEN_HAS_EXPIRED(HttpStatus.UNAUTHORIZED,"만료된 access 토큰 입니다"),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"잘못된 access 토큰 입니다"),
+    UNUSED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"사용하지 않는 access 토큰입니다"),
+
+    // JWT(Refresh Token)
+    REFRESH_TOKEN_DOES_NOT_EXIST(HttpStatus.UNAUTHORIZED,"refresh 토큰이 존재하지 않습니다"),
+    REFRESH_TOKEN_HAS_EXPIRED(HttpStatus.UNAUTHORIZED,"만료된 refresh 토큰 입니다"),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"잘못된 refresh 토큰 입니다"),
+    UNUSED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"사용하지 않는 refresh 토큰입니다"),
+
     CHECK_THE_YEAR_OR_MONTH(HttpStatus.BAD_REQUEST, "년, 월을 확인해주세요."),
     NO_TITLE(HttpStatus.BAD_REQUEST, "제목이 없습니다."),
     NO_CONTENT(HttpStatus.BAD_REQUEST, "내용이 없습니다."),

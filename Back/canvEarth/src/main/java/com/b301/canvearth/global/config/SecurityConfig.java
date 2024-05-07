@@ -7,6 +7,7 @@ import com.b301.canvearth.global.filter.ExceptionHandlerFilter;
 import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.filter.LogInFilter;
 import com.b301.canvearth.global.util.JWTUtil;
+import com.b301.canvearth.global.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,8 @@ public class SecurityConfig {
     private final RefreshService refreshService;
 
     private final AccessService accessService;
+
+    private final ResponseUtil responseUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -124,10 +127,10 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil, accessService), LogInFilter.class);
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService, responseUtil), LogoutFilter.class);
 
         http
-                .addFilterBefore(new ExceptionHandlerFilter(), CustomLogoutFilter.class);
+                .addFilterBefore(new ExceptionHandlerFilter(responseUtil), CustomLogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session
