@@ -1,6 +1,5 @@
 package com.b301.canvearth.domain.support.entity;
 
-import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

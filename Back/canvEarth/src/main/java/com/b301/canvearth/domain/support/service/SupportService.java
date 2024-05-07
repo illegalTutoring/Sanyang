@@ -1,20 +1,17 @@
 package com.b301.canvearth.domain.support.service;
 
-import com.b301.canvearth.domain.admin.dto.SupportRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.SupportRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.SupportRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.SupportRequestPutDto;
 import com.b301.canvearth.domain.s3.service.S3Service;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.repository.SupportRepository;
-import com.b301.canvearth.domain.work.entity.Work;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
