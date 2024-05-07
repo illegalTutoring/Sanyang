@@ -83,7 +83,7 @@ const SupportPage: React.FC = () => {
             supportId: 2,
             thumbnail: 'https://placehold.co/200X200',
             title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-06',
+            uploadDate: '2024-05',
             supportLink: [
                 {
                     name: '프로크리에이트',
@@ -119,7 +119,7 @@ const SupportPage: React.FC = () => {
             supportId: 0,
             thumbnail: 'https://placehold.co/200X200',
             title: '애니메이션 기초',
-            uploadDate: '2024-07',
+            uploadDate: '2024-03',
             supportLink: [
                 {
                     name: '애니메이션 워크샵',
@@ -137,7 +137,7 @@ const SupportPage: React.FC = () => {
             supportId: 3,
             thumbnail: 'https://placehold.co/200X200',
             title: '수채화 기법 마스터하기',
-            uploadDate: '2024-05',
+            uploadDate: '2024-03',
             supportLink: [
                 {
                     name: '아트스테이션',
@@ -155,7 +155,7 @@ const SupportPage: React.FC = () => {
             supportId: 4,
             thumbnail: 'https://placehold.co/200X200',
             title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-06',
+            uploadDate: '2024-02',
             supportLink: [
                 {
                     name: '프로크리에이트',
@@ -173,7 +173,7 @@ const SupportPage: React.FC = () => {
             supportId: 5,
             thumbnail: 'https://placehold.co/200X200',
             title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-04',
+            uploadDate: '2024-01',
             supportLink: [
                 {
                     name: '픽시브',
@@ -191,7 +191,7 @@ const SupportPage: React.FC = () => {
             supportId: 6,
             thumbnail: 'https://placehold.co/200X200',
             title: '애니메이션 기초',
-            uploadDate: '2024-07',
+            uploadDate: '2024-01',
             supportLink: [
                 {
                     name: '애니메이션 워크샵',
@@ -226,18 +226,6 @@ const SupportPage: React.FC = () => {
                     isDarkMode={isDarkMode}
                 />
             </div>
-
-            {/* {domains.map((domain, index) => {
-                const Component = components[domain.key]
-                return (
-                    <Component
-                        key={index}
-                        url={domain.url}
-                        height="50vh"
-                        text={domain.text}
-                    />
-                )
-            })} */}
         </article>
     )
 }
