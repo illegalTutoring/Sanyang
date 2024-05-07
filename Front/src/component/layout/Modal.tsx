@@ -5,6 +5,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 interface ModalProps {
     width?: string
     height?: string
+    minWidth?: string
     children: ReactNode
     isVisible: boolean
     toggleModal: () => void
@@ -13,6 +14,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
     width = '80vw',
     height = '80vh',
+    minWidth = '300px',
     children,
     isVisible,
     toggleModal,
@@ -25,16 +27,16 @@ const Modal: React.FC<ModalProps> = ({
                 <div className={styles.backdrop} onClick={toggleModal}>
                     <div
                         className={`${styles.modal} ${isDarkMode ? 'dark' : 'light'}`}
-                        style={{ width, height }}
+                        style={{ width, height, minWidth }}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {children}
-                        <button
+                        <div
                             onClick={toggleModal}
                             className={styles.closeButton}
                         >
                             X
-                        </button>
+                        </div>
                     </div>
                 </div>
             )}
