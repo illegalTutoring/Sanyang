@@ -37,6 +37,12 @@ import {
     registNoticeRequestDTO,
     registNoticeResponseDTO,
 } from './DTO/notice'
+import {
+    deleteSupportResponseDTO,
+    modifySupportRequestDTO,
+    modifySupportResponseDTO,
+    registSupportResponseDTO,
+} from './DTO/support'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -455,4 +461,99 @@ export function deleteNotice(noticeId: number): deleteNoticeResponseDTO {
 }
 
 // End - Notice API
+// #########################################################
+
+// #########################################################
+// START - Support API
+
+export function registSupport(
+    info: registSupportResponseDTO,
+    image: File,
+): registSupportResponseDTO {
+    /**
+     * 후원 등록
+     */
+    return axiosRequestHandler(
+        async (info: registSupportResponseDTO, image: File) => {
+            const blobData = new Blob([JSON.stringify(info)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+
+            if (image) formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/support`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [info, image],
+    )
+}
+
+export function modifySupport(
+    info: modifySupportResponseDTO,
+    image: File,
+): registSupportResponseDTO {
+    /**
+     * 후원 수정
+     */
+    return axiosRequestHandler(
+        async (info: modifySupportRequestDTO, image: File) => {
+            const blobData = new Blob([JSON.stringify(info)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+
+            if (image) formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/support/${info.supportId}`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [info, image],
+    )
+}
+
+export function deleteSupport(supportId: number): deleteSupportResponseDTO {
+    return axiosRequestHandler(
+        async (supportId: number) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/support/${supportId}`,
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [supportId],
+    )
+}
+
+// End - Support API
 // #########################################################
