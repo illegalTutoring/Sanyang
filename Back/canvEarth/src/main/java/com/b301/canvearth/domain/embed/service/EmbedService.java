@@ -1,9 +1,8 @@
 package com.b301.canvearth.domain.embed.service;
 
-import com.b301.canvearth.domain.admin.dto.EmbedRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.EmbedRequestPutDto;
 import com.b301.canvearth.domain.embed.dto.EmbedListResponseGetDto;
 import com.b301.canvearth.domain.embed.entity.Embed;
-import com.b301.canvearth.domain.embed.entity.EmbedType;
 import com.b301.canvearth.domain.embed.repository.EmbedRepository;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;

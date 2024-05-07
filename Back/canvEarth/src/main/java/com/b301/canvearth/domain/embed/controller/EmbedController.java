@@ -1,6 +1,5 @@
 package com.b301.canvearth.domain.embed.controller;
 
-import com.b301.canvearth.domain.banner.dto.BannerListResponseGetDto;
 import com.b301.canvearth.domain.embed.dto.EmbedListResponseGetDto;
 import com.b301.canvearth.domain.embed.service.EmbedService;
 import io.swagger.v3.oas.annotations.Operation;
