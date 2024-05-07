@@ -10,11 +10,7 @@ import lombok.*;
 public class Banner {
 
     @Id
-    @Column(name = "banner_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bannerId;
-
-    @Column(name="image_path", nullable = false)
+    @Column(name="image_path", nullable = false, unique = true)
     private String path;
 
     @Column(name = "coordinate_x")
@@ -23,10 +19,14 @@ public class Banner {
     @Column(name = "coordinate_y")
     private double coordinateY;
 
+    @Column(name = "banner_order")
+    private int order;
+
     @Builder
-    public Banner(String path, double coordinateX, double coordinateY) {
+    public Banner(String path, double coordinateX, double coordinateY, int order) {
         this.path = path;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
+        this.order = order;
     }
 }

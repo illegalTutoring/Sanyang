@@ -1,5 +1,6 @@
 package com.b301.canvearth.global.error;
 
+import com.amazonaws.AmazonServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
         return handleExceptionInternal(ex, errorResponse, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {AmazonServiceException.class})
+    public ResponseEntity<Object> handleAmazonException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
+        return handleExceptionInternal(ex, errorResponse, HttpStatus.UNAUTHORIZED, request);
     }
 
 
