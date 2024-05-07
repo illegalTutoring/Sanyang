@@ -5,6 +5,8 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
@@ -14,11 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class S3Service {
             return amazonS3Client.getUrl(bucket, saveFileName).toString();
         } catch (AmazonServiceException e) {
             log.error("AmazonServiceException 발생");
-            throw new AmazonServiceException("s3 접근 권한이 없습니다.");
+            throw new CustomException(ErrorCode.NO_S3_UNAUTHORIZED);
         } catch (SdkClientException e) {
             log.error("SdkClientException 발생");
             throw new SdkClientException("SdkClientException 발생", e);
