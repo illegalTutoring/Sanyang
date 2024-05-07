@@ -15,4 +15,10 @@ public class CustomException extends RuntimeException{
         this.errorCode = errorCode;
     }
 
+    public CustomException(ErrorCode erroCode, String errorMessage) {
+        super("Custom Exception 발생 " + erroCode + ".");
+        this.errorCode = erroCode;
+        this.errorCode.updateErrorMessage(errorMessage);
+    }
+
 }
