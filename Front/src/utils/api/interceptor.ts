@@ -23,7 +23,7 @@ export function axiosRequestHandler(
             if (userStore.getState().accessToken === '') {
                 /**
                  * @beta
-                 * @todo 로그아웃
+                 * @todo 로그아웃 화면 전환
                  */
                 userStore.getState().destroyAll()
                 return logout()
@@ -50,6 +50,14 @@ export function axiosRequestHandler(
              */
             userStore.getState().destroyAll()
             return logout()
+        } else if (
+            statusCode === 401 &&
+            message === 'S3 접근 권한이 없습니다.'
+        ) {
+            /**
+             * @beta
+             * @todo S3 접근 권한에 대한 화면 전환
+             */
         }
 
         /**
