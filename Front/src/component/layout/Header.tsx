@@ -9,6 +9,7 @@ import useEditModeStore from '@/utils/store/useEditModeStore '
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login } from '@/utils/api/user'
+import { WiDayCloudy } from 'react-icons/wi'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -53,6 +54,7 @@ const Header: React.FC = () => {
                 src={
                     isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
                 }
+                style={isDarkMode ? { width: '30px' } : { width: '35px' }}
                 alt={
                     isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
                 }
@@ -61,24 +63,27 @@ const Header: React.FC = () => {
             {isLoggedIn ? (
                 <>
                     <div
-                        className={styles.profile}
+                        className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
                         onClick={handleProfileClick}
                     >
                         <Profile
                             src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
-                            size={40}
+                            size={35}
                             border="2px solid black"
                             alt="profile image"
                             radius={50}
                         />
-                        <h3>sanyamg</h3>
+                        <h3 style={{ marginLeft: '10px' }}>admin</h3>
                     </div>
 
                     {profileMenuVisible && (
                         <div
                             className={`${styles.profileMenu} ${isDarkMode ? 'dark' : 'light'}`}
                         >
-                            <div className={styles.profile} onClick={logOut}>
+                            <div
+                                className={styles.profileItem}
+                                onClick={logOut}
+                            >
                                 <img
                                     className={styles.toggleLoginButton}
                                     src={
@@ -92,7 +97,7 @@ const Header: React.FC = () => {
                             </div>
                             {isEditMode ? (
                                 <div
-                                    className={styles.profile}
+                                    className={styles.profileItem}
                                     onClick={toggleEditMode}
                                 >
                                     <img
@@ -108,7 +113,7 @@ const Header: React.FC = () => {
                                 </div>
                             ) : (
                                 <div
-                                    className={styles.profile}
+                                    className={styles.profileItem}
                                     onClick={toggleEditMode}
                                 >
                                     <img
@@ -127,9 +132,13 @@ const Header: React.FC = () => {
                     )}
                 </>
             ) : (
-                <div className={styles.profile} onClick={toggleLoginModal}>
+                <div
+                    className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
+                    onClick={toggleLoginModal}
+                >
                     <img
                         className={styles.toggleLoginButton}
+                        style={{ width: '25px' }}
                         src={
                             isDarkMode
                                 ? '/svgs/key_white.svg'
@@ -137,7 +146,7 @@ const Header: React.FC = () => {
                         }
                         alt="login"
                     />
-                    <h3>login</h3>
+                    <h3 style={{ marginLeft: '10px' }}>로그인</h3>
                 </div>
             )}
 
@@ -147,15 +156,15 @@ const Header: React.FC = () => {
                         isVisible={loginModalVisible}
                         toggleModal={toggleLoginModal}
                         width="40vw"
-                        height="60vh"
+                        height="350px"
                     >
                         <div className={styles.loginModal}>
-                            <h1>Login</h1>
+                            <h1>로그인</h1>
                             <form
                                 className={styles.loginForm}
                                 onSubmit={handleLogin}
                             >
-                                <label htmlFor="username">Username:</label>
+                                <label htmlFor="username">ID</label>
                                 <input
                                     type="text"
                                     id="username"
