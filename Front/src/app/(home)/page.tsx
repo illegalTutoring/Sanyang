@@ -4,7 +4,7 @@ import styles from './home.module.scss'
 import Banner from '@/component/Banner'
 import Profile from '@/component/Profile'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import useEditModeStore from '@/utils/store/useEditModeStore '
+import useEditModeStore from '@/utils/store/useEditModeStore'
 
 import { useEffect, useState } from 'react'
 

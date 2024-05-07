@@ -1,6 +1,7 @@
 'use client'
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore'
 import List from '@/component/TagList'
 import Pagination from '@/component/Pagination'
 import styles from './notification.module.scss'
@@ -9,6 +10,7 @@ import React, { useState, useEffect } from 'react'
 const NotificationPage = () => {
     // 전역 변수
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
     // 지역 변수
     const [data, setData] = useState([])
@@ -125,6 +127,7 @@ const NotificationPage = () => {
                             Update: () => fetchData(currentPage),
                             Notice: () => fetchData(currentPage),
                         }}
+                        isEditMode={isEditMode}
                     />
                 </div>
                 <Pagination
