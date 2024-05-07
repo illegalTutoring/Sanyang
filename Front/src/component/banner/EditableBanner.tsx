@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import styles from './EditableBanner.module.scss'
 
+// 컴포넌트
 import Banner from '@/component/banner/Banner'
 import Modal from '@/component/layout/Modal'
-import ImageUploadPreview from '@/component/ImageUploadPreview'
+import BannerEditor from '@/component/banner/BannerEditor'
 
 interface Images {
     url: string
@@ -56,7 +57,7 @@ const EditableBanner: React.FC<EditableBannerProps> = ({
                         width="60vw"
                         height="60vh"
                     >
-                        <ImageUploadPreview />
+                        <BannerEditor />
                     </Modal>
                 </>
             )}

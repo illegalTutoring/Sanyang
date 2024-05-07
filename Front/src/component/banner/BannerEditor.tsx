@@ -6,11 +6,9 @@ type PreviewImg = {
     yindex: number
 }
 
-interface MultipleImageUploadPreviewProps {}
+interface BannerEditorProps {}
 
-const MultipleImageUploadPreview: React.FC<
-    MultipleImageUploadPreviewProps
-> = () => {
+const BannerEditor: React.FC<BannerEditorProps> = () => {
     const [files, setFiles] = useState<File[]>([])
     const [dragIndex, setDragIndex] = useState<number>(0)
 
@@ -81,7 +79,7 @@ const MultipleImageUploadPreview: React.FC<
         }
 
         const onMouseUp = () => {
-            setDragIndex(null)
+            setDragIndex(0)
             window.removeEventListener('mousemove', onMouseMove)
             window.removeEventListener('mouseup', onMouseUp)
         }
@@ -136,4 +134,4 @@ const MultipleImageUploadPreview: React.FC<
     )
 }
 
-export default MultipleImageUploadPreview
+export default BannerEditor
