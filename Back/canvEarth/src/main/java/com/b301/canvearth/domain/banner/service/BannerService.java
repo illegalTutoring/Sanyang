@@ -28,6 +28,10 @@ public class BannerService {
     private final BannerRepository bannerRepository;
     private final S3Service s3Service;
 
+    /**
+     * 전체 배너 정보를 반환 하는 함수
+     * @return List(BannerListResponseGetDto)
+     */
     public List<BannerListResponseGetDto> findAllBanner() {
         log.info("===== [BannerService] findAllBanner START =====");
 
@@ -47,7 +51,12 @@ public class BannerService {
         return result;
     }
 
-
+    /**
+     * 배너 정보를 업데이트 하는 함수
+     * @param images List(multipartFile)
+     * @param infos List(BannerRequestPutDto)
+     * @return String
+     */
     @Transactional
     public String updateBanner(List<MultipartFile> images, List<BannerRequestPutDto> infos) {
         log.info("===== [BannerService] updateBanner START =====");
