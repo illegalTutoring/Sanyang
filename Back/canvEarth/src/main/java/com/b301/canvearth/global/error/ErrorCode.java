@@ -34,13 +34,22 @@ public enum ErrorCode {
     INVALID_LINK_FORMAT(HttpStatus.BAD_REQUEST, "옳지 않은 URL 형식 입니다."),
     INVALID_LINK_TYPE(HttpStatus.BAD_REQUEST, "옳지 않은 Link 타입입니다."),
     NO_POST(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
-    NO_S3_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S3 접근 권한이 없습니다.");
+    NO_S3_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S3 접근 권한이 없습니다."),
+    NO_REQUIRE_ARUGUMENT(HttpStatus.BAD_REQUEST);
 
     private final HttpStatus httpStatus;
-    private final String errorMessage;
+    private String errorMessage;
 
     ErrorCode(HttpStatus httpStatus, String errorMessage) {
         this.httpStatus = httpStatus;
+        this.errorMessage = errorMessage;
+    }
+
+    ErrorCode(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public void updateErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 }
