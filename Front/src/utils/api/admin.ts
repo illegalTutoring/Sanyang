@@ -30,6 +30,13 @@ import {
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
 import { userStore } from '../store/useUserStore'
+import {
+    deleteNoticeResponseDTO,
+    modifyNoticeRequestDTO,
+    modifyNoticeResponseDTO,
+    registNoticeRequestDTO,
+    registNoticeResponseDTO,
+} from './DTO/notice'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -370,4 +377,82 @@ export function modifyEmbedLink(
 }
 
 // End - Embed API
+// #########################################################
+
+// #########################################################
+// START - Notice API
+
+export function registNotice(
+    info: registNoticeRequestDTO,
+): registNoticeResponseDTO {
+    /**
+     * 공지사항 등록
+     *
+     * @param info - 공지사항 정보
+     */
+
+    return axiosRequestHandler(
+        async (info: registNoticeRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/notice`,
+                data: info,
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [info],
+    )
+}
+
+export function modifyNotice(
+    info: modifyNoticeRequestDTO,
+): modifyNoticeResponseDTO {
+    /**
+     * 공지사항 수정
+     *
+     * @param info - 공지사항 정보
+     */
+
+    return axiosRequestHandler(
+        async (info: modifyNoticeRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/notice/${info.noticeId}`,
+                data: {
+                    title: info.title,
+                    content: info.content,
+                },
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [info],
+    )
+}
+
+export function deleteNotice(noticeId: number): deleteNoticeResponseDTO {
+    /**
+     * 공지사항 삭제
+     *
+     * @param noticeId - 공지 사항 id
+     */
+
+    return axiosRequestHandler(async (noticeId: number) => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'DELETE',
+            url: `${SERVER_URL}/admin/notice/${noticeId}`,
+            headers: {
+                Authorization: userStore.getState().accessToken,
+            },
+        })
+        return { message: response.data.message }
+    })
+}
+
+// End - Notice API
 // #########################################################
