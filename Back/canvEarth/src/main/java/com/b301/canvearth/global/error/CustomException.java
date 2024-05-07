@@ -2,7 +2,6 @@ package com.b301.canvearth.global.error;
 
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public class CustomException extends RuntimeException{
