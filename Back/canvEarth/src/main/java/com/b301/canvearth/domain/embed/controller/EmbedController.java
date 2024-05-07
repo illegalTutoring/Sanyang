@@ -3,7 +3,9 @@ package com.b301.canvearth.domain.embed.controller;
 import com.b301.canvearth.domain.embed.dto.EmbedListResponseGetDto;
 import com.b301.canvearth.domain.embed.service.EmbedService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +27,22 @@ import java.util.Map;
 public class EmbedController {
 
     private final EmbedService embedService;
-    private static final String MESSAGE ="message";
+    private static final String MESSAGE = "message";
 
     @GetMapping()
     @Operation(summary = "REQ-EMBED-01", description = "임베드 링크 보기")
-    @ApiResponse(responseCode = "200", description = "")
-    public ResponseEntity<Object> getEmbedLink(){
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "배너 목록 전달 완료", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EmbedListResponseGetDto.class)))
+            }),
+            @ApiResponse(responseCode = "500", description = "서버에러", content = {
+                    @Content(mediaType = "application/json", schemaProperties = {
+                            @SchemaProperty(name = "message", schema = @Schema(implementation = String.class))
+                    })
+            })
+
+    })
+    public ResponseEntity<Object> getEmbedLink() {
         Map<String, Object> responseBody = new HashMap<>();
 
         log.info("===== [EmbedController] getEmbedLink START =====");
