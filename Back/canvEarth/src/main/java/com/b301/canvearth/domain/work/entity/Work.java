@@ -62,13 +62,9 @@ public class Work {
     @Column(name="thumbnail_path")
     private String thumbnailPath;
 
-    @Setter
-    @Column(name="watermark_path")
-    private String watermarkPath;
-
     @Builder
     public Work(Long id, String userId, String title, String company, String startDate, String endDate,
-                Date uploadDate, List<String> tags, String originalPath, String thumbnailPath, String watermarkPath) {
+                Date uploadDate, List<String> tags, String originalPath, String thumbnailPath) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -79,6 +75,5 @@ public class Work {
         this.tags = tags;
         this.originalPath = originalPath;
         this.thumbnailPath = thumbnailPath;
-        this.watermarkPath = watermarkPath;
     }
 }
