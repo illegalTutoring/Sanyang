@@ -28,7 +28,7 @@ public class BannerService {
     private final BannerRepository bannerRepository;
     private final S3Service s3Service;
 
-    public List<BannerListResponseGetDto> findAllBanner(){
+    public List<BannerListResponseGetDto> findAllBanner() {
         log.info("===== [BannerService] findAllBanner START =====");
 
         List<Banner> bannerList = bannerRepository.findAll(Sort.by(Sort.Direction.DESC, "order"));
@@ -52,14 +52,18 @@ public class BannerService {
     public String updateBanner(List<MultipartFile> images, List<BannerRequestPutDto> infos) {
         log.info("===== [BannerService] updateBanner START =====");
 
+        List<Banner> bannerList = bannerRepository.findAll();
         // null 검사
-        if(images == null || infos == null){
+        if (images == null || infos == null) {
+            for (Banner banner : bannerList) {
+                s3Service.deleteImage(banner.getPath());
+            }
             bannerRepository.deleteAll();
             return "배너 변경 완료";
         }
 
         // 개수 불일치
-        if(images.size() != infos.size()){
+        if (images.size() != infos.size()) {
             throw new CustomException(ErrorCode.IMAGE_AND_INFO_SIZE_MISMATCH);
         }
 
@@ -67,14 +71,17 @@ public class BannerService {
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
 
-            if(!(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()),"png")
-                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()),"jpg")
-                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()),"jpeg"))){
+            if (!(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "png")
+                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "jpg")
+                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "jpeg"))) {
                 throw new CustomException(ErrorCode.UNSUPPORTED_IMAGE_TYPE);
             }
         }
 
-
+        // 0. s3 이미지 삭제
+        for (Banner value : bannerList) {
+            s3Service.deleteImage(value.getPath());
+        }
 
         // 1. banner 테이블 내용 삭제
         bannerRepository.deleteAll();
@@ -86,7 +93,7 @@ public class BannerService {
             // S3 업로드
             MultipartFile mf = images.get(i);
             UUID uuid = UUID.randomUUID();
-            String path = s3Service.uploadImage(mf,uuid,"");
+            String path = s3Service.uploadImage(mf, uuid, "");
 
             // 좌표 얻기
             BannerRequestPutDto c = infos.get(i);
