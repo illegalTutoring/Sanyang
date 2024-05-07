@@ -4,14 +4,31 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import List from '@/component/TagList'
 import Pagination from '@/component/Pagination'
 import styles from './notification.module.scss'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const NotificationPage = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
 
-    const getDummyOutsourcingList = async (year: number, month: number) => {
+    // 지역 변수
+    const [data, setData] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+    // 데이터 가져오기
+    const fetchData = async (page: number) => {
+        console.log('fetchData:', page)
+
+        // try {
+        //     const response = await axios.get(
+        //         `https://your-api-url.com/notifications?page=${page}`,
+        //     )
+        //     setData(response.data.notifications)
+        // } catch (error) {
+        //     console.error('Failed to fetch data:', error)
+        // }
+
         return {
-            message: `${year}년 ${month}월 외주 목록입니다.`,
             outsourcingInfo: [
                 {
                     userId: 'sanyang',
@@ -73,24 +90,9 @@ const NotificationPage = () => {
         }
     }
 
-    // 데이터 예제
-    const data = Array.from({ length: 200 }, (_, index) => `Item ${index + 1}`)
-    const itemsPerPage = 10 // 한 페이지에 표시할 아이템 수
-
-    // 페이징 상태
-    const [currentPage, setCurrentPage] = useState(1)
-    const totalPage = Math.ceil(data.length / itemsPerPage)
-
-    // 현재 페이지에 따라 데이터를 잘라서 표시
-    const currentData = data.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-    )
-
-    // 페이지 변경 핸들러
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page)
-    }
+    useEffect(() => {
+        fetchData(currentPage)
+    }, [currentPage])
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -117,18 +119,19 @@ const NotificationPage = () => {
                             'startDate',
                             'endDate',
                         ]}
+                        data={data}
                         tagActions={{
-                            All: () => getDummyOutsourcingList(2024, 4),
-                            Update: () => getDummyOutsourcingList(2024, 4),
-                            Notice: () => getDummyOutsourcingList(2024, 4),
+                            All: () => fetchData(currentPage),
+                            Update: () => fetchData(currentPage),
+                            Notice: () => fetchData(currentPage),
                         }}
                     />
                 </div>
                 <Pagination
-                    totalPage={totalPage}
+                    totalPage={100}
                     limit={itemsPerPage}
                     page={currentPage}
-                    setPage={handlePageChange}
+                    setPage={setCurrentPage}
                 />
             </div>
         </article>
