@@ -39,16 +39,21 @@ const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
             columnClassName={styles.column}
         >
             {images.map((image) => (
-                <div key={image.workId ? image.workId : image.galleryId}>
-                    <img
-                        src={image.thumbnail}
-                        alt={image.title}
-                        style={{
-                            width: '100%',
-                            objectFit: 'cover',
-                        }}
-                        className={styles.card}
-                    />
+                <div
+                    key={image.workId ? image.workId : image.galleryId}
+                    className={styles.column}
+                >
+                    <div className={styles.card}>
+                        <img
+                            src={image.thumbnail}
+                            alt={image.title}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    </div>
                 </div>
             ))}
         </Masonry>

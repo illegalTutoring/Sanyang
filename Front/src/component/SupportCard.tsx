@@ -31,7 +31,7 @@ const SupportCard: React.FC<SupportProps> = ({
     isDarkMode,
     width = '100%',
     height = 'auto',
-    cardMinWidth = '250px',
+    cardMinWidth = '350px',
     cardMaxWidth = '1fr',
 }) => {
     return (
@@ -72,8 +72,8 @@ const SupportCard: React.FC<SupportProps> = ({
                             style={{ width: '50px', height: '50px' }}
                         />
                         <div>
-                            {item.title}
-                            Uploaded: {item.uploadDate}
+                            <div>{item.title}</div>
+                            <div>Uploaded: {item.uploadDate}</div>
                         </div>
                     </div>
                     <br />
