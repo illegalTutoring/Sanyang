@@ -4,6 +4,9 @@ import com.b301.canvearth.domain.admin.dto.request.CalendarRequestPostDto;
 import com.b301.canvearth.domain.admin.dto.request.CalendarRequestPutDto;
 import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.calendar.service.CalendarService;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +26,9 @@ public class AdminCalendarController {
 
     private final CalendarService calendarService;
     private static final String MESSAGE = "message";
-    private String errorMessage;
 
     @PostMapping
+    @Operation(summary = "REQ-ADMIN-07", description = "일정 등록")
     public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto) {
         log.info("===== [AdminCalendarController] registCalendar start =====");
         log.info("[requestData]: {}", requestPostDto);
@@ -34,10 +37,9 @@ public class AdminCalendarController {
 
         String isValidCalendarDto = requestPostDto.isValid();
         if(!isValidCalendarDto.equals("valid")) {
-            errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidCalendarDto);
+            String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidCalendarDto);
             log.error(errorMessage);
-            responseBody.put(MESSAGE, errorMessage);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
         Calendar calendar = Calendar.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
@@ -52,6 +54,7 @@ public class AdminCalendarController {
     }
 
     @PutMapping("/{calendarId}")
+    @Operation(summary = "REQ-ADMIN-07", description = "일정 수정")
     public ResponseEntity<Object> modifyCalendar(@PathVariable("calendarId") Long calendarId,
                                                  @RequestBody CalendarRequestPutDto requestPutDto) {
         log.info("===== [AdminCalendarController] modifyCalendar start =====");
@@ -68,6 +71,7 @@ public class AdminCalendarController {
     }
 
     @DeleteMapping("/{calendarId}")
+    @Operation(summary = "REQ-ADMIN-07", description = "일정 삭제")
     public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId) {
         log.info("===== [AdminCalendarController] deleteCalendar start =====");
         log.info("[path variable]: {}", calendarId);
