@@ -1,7 +1,9 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.EmbedRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.EmbedRequestPutDto;
 import com.b301.canvearth.domain.embed.service.EmbedService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ public class AdminEmbedController {
     private static final String MESSAGE = "message";
 
     @PutMapping
+    @Operation(summary = "REQ-ADMIN-04", description = "임베드 링크 변경")
     public ResponseEntity<Object> modifyEmbedLink(@RequestBody List<EmbedRequestPutDto> data){
 
         log.info("===== [AdminEmbedController] modifyEmbedLink START =====");

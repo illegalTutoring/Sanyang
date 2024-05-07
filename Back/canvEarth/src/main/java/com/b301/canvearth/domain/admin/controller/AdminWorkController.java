@@ -1,13 +1,12 @@
 package com.b301.canvearth.domain.admin.controller;
 
 
-import com.b301.canvearth.domain.admin.dto.WorkRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
-import com.b301.canvearth.domain.admin.dto.WorkResponsePutDto;
+import com.b301.canvearth.domain.admin.dto.request.WorkRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.WorkRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.response.WorkResponsePutDto;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.service.WorkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -91,7 +90,7 @@ public class AdminWorkController {
         WorkResponsePutDto responsePutDto = WorkResponsePutDto.builder()
                 .original(modifyWork.getOriginalPath())
                 .thumbnail(modifyWork.getThumbnailPath())
-                .watermark(modifyWork.getWatermarkPath()).build();
+                .build();
 
         responseBody.put(MESSAGE, "외주 작품 수정이 완료되었습니다.");
         responseBody.put("data", responsePutDto);

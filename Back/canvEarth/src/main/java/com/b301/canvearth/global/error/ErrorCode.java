@@ -32,7 +32,9 @@ public enum ErrorCode {
     SIZE_IS_NOT_CORRECT(HttpStatus.BAD_REQUEST, "이미지 크기가 맞지 않습니다."),
     IMAGE_AND_INFO_SIZE_MISMATCH(HttpStatus.BAD_REQUEST, "배너이미지와 좌표 정보 길이가 일치하지 않습니다."),
     INVALID_LINK_FORMAT(HttpStatus.BAD_REQUEST, "옳지 않은 URL 형식 입니다."),
-    INVALID_LINK_TYPE(HttpStatus.BAD_REQUEST, "옳지 않은 Link 타입입니다.");
+    INVALID_LINK_TYPE(HttpStatus.BAD_REQUEST, "옳지 않은 Link 타입입니다."),
+    NO_POST(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
+    NO_S3_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S3 접근 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String errorMessage;

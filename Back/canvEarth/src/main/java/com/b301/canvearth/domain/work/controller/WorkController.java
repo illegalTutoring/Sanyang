@@ -41,7 +41,7 @@ public class WorkController {
             WorkResponseGetDto getWork = WorkResponseGetDto.builder().workId(w.getId()).userId(w.getUserId()).title(w.getTitle())
                     .company(w.getCompany()).startDate(w.getStartDate()).endDate(w.getEndDate())
                     .uploadDate(w.getUploadDate()).tags(w.getTags()).original(w.getOriginalPath())
-                    .thumbnail(w.getThumbnailPath()).watermark(w.getWatermarkPath()).build();
+                    .thumbnail(w.getThumbnailPath()).build();
             responseList.add(getWork);
         }
 

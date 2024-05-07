@@ -1,7 +1,7 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.CalendarRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.CalendarRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.CalendarRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.CalendarRequestPutDto;
 import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.calendar.service.CalendarService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
