@@ -43,7 +43,6 @@ public class GalleryService {
                 .tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))
                 .thumbnailPath(paths.get("thumbnailPath"))
-                .watermarkPath(paths.get("watermarkPath"))
                 .build();
 
         Gallery insertGallery = galleryRepository.save(gallery);
@@ -76,11 +75,9 @@ public class GalleryService {
             // 기존 S3 이미지는 삭제
             s3Service.deleteImage(changeGallery.getOriginalPath());
             s3Service.deleteImage(changeGallery.getThumbnailPath());
-            s3Service.deleteImage(changeGallery.getWatermarkPath());
 
             changeGallery.setOriginalPath(paths.get("originalPath"));
             changeGallery.setThumbnailPath(paths.get("thumbnailPath"));
-            changeGallery.setWatermarkPath(paths.get("watermarkPath"));
         }
 
         return galleryRepository.save(changeGallery);
@@ -94,7 +91,6 @@ public class GalleryService {
         // S3 이미지들 삭제
         s3Service.deleteImage(gallery.getOriginalPath());
         s3Service.deleteImage(gallery.getThumbnailPath());
-        s3Service.deleteImage(gallery.getWatermarkPath());
 
         // DB에서 삭제
         galleryRepository.delete(gallery);

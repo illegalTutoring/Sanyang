@@ -10,12 +10,10 @@ public class GalleryResponsePutDto {
 
     private final String original;
     private final String thumbnail;
-    private final String watermark;
 
     @Builder
-    public GalleryResponsePutDto(String original, String thumbnail, String watermark) {
+    public GalleryResponsePutDto(String original, String thumbnail) {
         this.original = original;
         this.thumbnail = thumbnail;
-        this.watermark = watermark;
     }
 }

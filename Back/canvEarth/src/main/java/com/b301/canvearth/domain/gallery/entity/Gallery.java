@@ -52,14 +52,10 @@ public class Gallery {
     @Column(name = "thumbnail_path")
     private String thumbnailPath;
 
-    @Setter
-    @Column(name = "watermark_path")
-    private String watermarkPath;
-
     @Builder
 
     public Gallery(Long id, String userId, String title, Date uploadDate, String createDate, List<String> tags,
-                   String originalPath, String thumbnailPath, String watermarkPath) {
+                   String originalPath, String thumbnailPath) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -68,6 +64,5 @@ public class Gallery {
         this.tags = tags;
         this.originalPath = originalPath;
         this.thumbnailPath = thumbnailPath;
-        this.watermarkPath = watermarkPath;
     }
 }

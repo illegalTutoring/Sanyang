@@ -89,7 +89,7 @@ public class AdminGalleryController {
         GalleryResponsePutDto responsePutDto = GalleryResponsePutDto.builder()
                 .original(modifyGallery.getOriginalPath())
                 .thumbnail(modifyGallery.getThumbnailPath())
-                .watermark(modifyGallery.getWatermarkPath()).build();
+                .build();
 
         responseBody.put(MESSAGE, "갤러리 수정이 완료되었습니다.");
         responseBody.put("data", responsePutDto);
