@@ -7,6 +7,7 @@ import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.domain.user.repository.UserRepository;
 import com.b301.canvearth.global.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -85,6 +86,8 @@ public class UserService {
             jwtUtil.isExpired(refreshToken);
         }catch (ExpiredJwtException e){
             return "만료된 refresh 토큰입니다";
+        }catch (SignatureException e){
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         // 3. 토큰 카테고리가 refresh 인지 대조

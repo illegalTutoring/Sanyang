@@ -6,6 +6,7 @@ import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +60,8 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write(jsonData);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+        }catch(SignatureException e){
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
 
         // 3. 토큰 카테고리가 access 인지 대조

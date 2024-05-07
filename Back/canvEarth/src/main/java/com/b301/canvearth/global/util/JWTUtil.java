@@ -35,7 +35,7 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-    public void isExpired(String token) throws ExpiredJwtException {
+    public void isExpired(String token) throws ExpiredJwtException, SignatureException {
 
         Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }

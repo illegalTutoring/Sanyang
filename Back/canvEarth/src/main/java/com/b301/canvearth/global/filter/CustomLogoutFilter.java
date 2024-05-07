@@ -5,6 +5,7 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -83,6 +84,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
             response.getWriter().write(jsonData);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+        } catch(SignatureException e){
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         // 4. 토큰 카테고리가 refresh 인지 대조
