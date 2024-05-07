@@ -1,34 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './Banner.module.scss'
-import Modal from '@/component/layout/Modal'
-import ImageUploadPreview from '@/component/ImageUploadPreview'
 
-interface BannerProps {
-    images: string[]
-    yindex: number[]
-    interval: number
-    width?: string
-    height?: string
-    isEditMode: boolean
-    isDarkMode: boolean
+interface Images {
+    url: string
+    yindex: number
 }
 
-const Banner: React.FC<BannerProps> = ({
-    images,
-    yindex,
-    interval,
-    width = '100%',
-    height = '300px',
-    isEditMode = false,
-    isDarkMode,
-}) => {
+interface BannerProps {
+    width: string
+    height: string
+    images: Images[]
+    interval: number
+}
+
+const Banner: React.FC<BannerProps> = ({ width, height, images, interval }) => {
     const extendedImages = [...images, images[0]]
-    const extendedYIndex = [...yindex, yindex[0]]
+
     const [currentIdx, setCurrentIdx] = useState(0)
     const [transitionEnabled, setTransitionEnabled] = useState(true)
-    const [editBanner, setEditBanner] = useState(false)
-
-    const toggleEditBanner = () => setEditBanner(!editBanner)
 
     useEffect(() => {
         const timer = setInterval(
@@ -47,10 +36,13 @@ const Banner: React.FC<BannerProps> = ({
         )
 
         return () => clearInterval(timer)
-    }, [currentIdx, extendedImages.length, interval, transitionEnabled])
+    }, [currentIdx, extendedImages, interval, transitionEnabled])
 
     return (
-        <div className={styles.bannerContainer} style={{ width, height }}>
+        <div
+            className={styles.container}
+            style={{ width, height, backgroundColor: '#bbb' }}
+        >
             <div
                 className={styles.imagesWrapper}
                 style={{
@@ -66,8 +58,8 @@ const Banner: React.FC<BannerProps> = ({
                         key={index}
                         className={styles.imageItem}
                         style={{
-                            backgroundImage: `url(${image})`,
-                            backgroundPositionY: `${extendedYIndex[index]}px`,
+                            backgroundImage: `url(${image.url})`,
+                            backgroundPositionY: `${image.yindex}px`,
                             backgroundSize: 'cover',
                             backgroundRepeat: 'no-repeat',
                             width: `${100 / images.length}%`,
@@ -76,28 +68,6 @@ const Banner: React.FC<BannerProps> = ({
                     />
                 ))}
             </div>
-            {isEditMode && (
-                <>
-                    <img
-                        className={styles.editButton}
-                        src={
-                            isDarkMode
-                                ? '/svgs/edit_white.svg'
-                                : '/svgs/edit_black.svg'
-                        }
-                        alt="Edit"
-                        onClick={toggleEditBanner}
-                    />
-                    <Modal
-                        isVisible={editBanner}
-                        toggleModal={toggleEditBanner}
-                        width="60vw"
-                        height="60vh"
-                    >
-                        <ImageUploadPreview />
-                    </Modal>
-                </>
-            )}
         </div>
     )
 }

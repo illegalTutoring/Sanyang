@@ -1,31 +1,44 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
-type PreviewUrl = {
+type PreviewImg = {
     name: string
     url: string
+    yindex: number
 }
 
-const MultipleImageUploadPreview = () => {
+interface MultipleImageUploadPreviewProps {}
+
+const MultipleImageUploadPreview: React.FC<
+    MultipleImageUploadPreviewProps
+> = () => {
     const [files, setFiles] = useState<File[]>([])
-    const [previewUrls, setPreviewUrls] = useState<PreviewUrl[]>([])
+    const [dragIndex, setDragIndex] = useState<number>(0)
+
+    const [previewImgs, setPreviewImgs] = useState<PreviewImg[]>([])
+
+    const [startY, setStartY] = useState<number>(0)
+    const [startTopOffset, setStartTopOffset] = useState<number>(0)
 
     useEffect(() => {
         if (!files.length) {
-            setPreviewUrls([])
+            setPreviewImgs([])
             return
         }
 
-        const newPreviewUrls: PreviewUrl[] = []
-        files.forEach((file) => {
+        const newPreviewImgs = files.map((file) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            return {
+                name: file.name,
+                url: '',
+                yindex: 0,
+            }
+        })
+        files.forEach((file, index) => {
             const fileReader = new FileReader()
             fileReader.onload = () => {
-                newPreviewUrls.push({
-                    name: file.name,
-                    url: fileReader.result as string,
-                })
-                if (newPreviewUrls.length === files.length) {
-                    setPreviewUrls(newPreviewUrls)
-                }
+                newPreviewImgs[index].url = fileReader.result as string
+                setPreviewImgs([...newPreviewImgs])
             }
             fileReader.readAsDataURL(file)
         })
@@ -39,7 +52,50 @@ const MultipleImageUploadPreview = () => {
         }
     }
 
-    const gridTemplateColumns = `repeat(${files.length}, 1fr)`
+    const startDrag = (
+        index: number,
+        event: React.MouseEvent<HTMLImageElement>,
+    ) => {
+        setDragIndex(index)
+        setStartY(event.clientY)
+        setStartTopOffset(previewImgs[index].yindex)
+        event.preventDefault()
+    }
+
+    useEffect(() => {
+        const onMouseMove = (event: MouseEvent) => {
+            if (dragIndex !== null) {
+                const deltaY = event.clientY - startY
+                setPreviewImgs((prev) =>
+                    prev.map((preview, idx) => {
+                        if (idx === dragIndex) {
+                            return {
+                                ...preview,
+                                yindex: startTopOffset + deltaY,
+                            }
+                        }
+                        return preview
+                    }),
+                )
+            }
+        }
+
+        const onMouseUp = () => {
+            setDragIndex(null)
+            window.removeEventListener('mousemove', onMouseMove)
+            window.removeEventListener('mouseup', onMouseUp)
+        }
+
+        if (dragIndex !== null) {
+            window.addEventListener('mousemove', onMouseMove)
+            window.addEventListener('mouseup', onMouseUp)
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove)
+            window.removeEventListener('mouseup', onMouseUp)
+        }
+    }, [dragIndex, startY, startTopOffset])
 
     return (
         <div>
@@ -52,16 +108,26 @@ const MultipleImageUploadPreview = () => {
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns,
+                    gridTemplateColumns: `repeat(${files.length}, 1fr)`,
                     gap: 10,
+                    position: 'relative',
                 }}
             >
-                {previewUrls.map((preview) => (
-                    <div key={preview.name}>
+                {previewImgs.map((preview, index) => (
+                    <div
+                        key={preview.name}
+                        style={{ position: 'relative', cursor: 'ns-resize' }}
+                    >
                         <img
                             src={preview.url}
                             alt={`Preview of ${preview.name}`}
-                            style={{ width: 100, height: 100 }}
+                            style={{
+                                width: 100,
+                                height: 100,
+                                position: 'relative',
+                                top: `${preview.yindex}px`,
+                            }}
+                            onMouseDown={(e) => startDrag(index, e)}
                         />
                     </div>
                 ))}
