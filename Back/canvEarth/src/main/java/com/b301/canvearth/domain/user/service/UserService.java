@@ -98,9 +98,6 @@ public class UserService {
         // 3. 토큰 카테고리가 refresh 인지 대조
         String category = jwtUtil.getCategory(refreshToken);
 
-        System.out.println("refresh = " + refreshToken);
-        System.out.println("category = " + category);
-
         if (!category.equals("refresh")) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
