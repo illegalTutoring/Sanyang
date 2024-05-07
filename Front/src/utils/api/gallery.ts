@@ -14,7 +14,6 @@ export function getGalleryList(): getGalleryListResponseDTO {
             method: 'GET',
             url: `${SERVER_URL}/gallery`,
         })
-        console.log('asdfasdf', response.data.data)
 
         return {
             message: response.data.message,
