@@ -35,17 +35,17 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${app.font.path}")
-    private String pretendardFont;
-
-    @Value("${app.font.size}")
-    private int fontSize;
-
-    @Value("${app.font.color}")
-    private String fontColor;
-
-    @Value("${app.text.watermark}")
-    private String watermarkText;
+    /////////////////////////////////
+    // 워터마크 관련 변수
+//    @Value("${app.font.path}")
+//    private String pretendardFont;
+//    @Value("${app.font.size}")
+//    private int fontSize;
+//    @Value("${app.font.color}")
+//    private String fontColor;
+//    @Value("${app.text.watermark}")
+//    private String watermarkText;
+    ////////////////////////////////
 
     public String uploadImage(MultipartFile image, UUID uuid, String uploadType) {
         log.info("===== [S3Service] uploadImage start =====");
@@ -61,9 +61,6 @@ public class S3Service {
                 ByteArrayInputStream byteArrayInputStream = convertImage(thumbnailImage, image.getContentType(),
                         fileFormat, metadata);
 
-                amazonS3Client.putObject(new PutObjectRequest(bucket, saveFileName, byteArrayInputStream, metadata));
-            } else if(uploadType.equals("watermark")) {
-                ByteArrayInputStream byteArrayInputStream = addWatermark(image, fileFormat);
                 amazonS3Client.putObject(new PutObjectRequest(bucket, saveFileName, byteArrayInputStream, metadata));
             } else {
                 metadata.setContentType(image.getContentType());
@@ -96,10 +93,6 @@ public class S3Service {
         String thumbnailPath = uploadImage(image, uuid, "thumbnail");
         paths.put("thumbnailPath", thumbnailPath);
 
-        // watermarkPath
-        String watermarkPath = uploadImage(image, uuid, "watermark");
-        paths.put("watermarkPath", watermarkPath);
-
         return paths;
     }
 
@@ -127,43 +120,43 @@ public class S3Service {
         return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
-    private ByteArrayInputStream addWatermark(MultipartFile image, String fileFormat) throws IOException {
-        BufferedImage originalImage = ImageIO.read(image.getInputStream());
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//    private ByteArrayInputStream addWatermark(MultipartFile image, String fileFormat) throws IOException {
+//        BufferedImage originalImage = ImageIO.read(image.getInputStream());
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//
+//        // 이미지에 그래픽 객체 생성
+//        Graphics2D g2d = (Graphics2D) originalImage.getGraphics();
+//
+//        // 폰트 파일 로드 및 폰트 객체 생성
+//        File fontFile = new File(pretendardFont);
+//        Font font = loadFont(fontFile);
+//        g2d.setFont(font);
+//        g2d.setColor(Color.getColor(fontColor));
+//
+//        int x = 20; // 왼쪽으로부터의 거리
+//        int y = originalImage.getHeight() - fontSize; // 아래쪽으로부터의 거리
+//        // 워터마크 텍스트 그리기
+//        g2d.drawString(watermarkText, x, y);
+//
+//        // 그래픽 객체 종료
+//        g2d.dispose();
+//
+//        ImageIO.write(originalImage, fileFormat, byteArrayOutputStream);
+//        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+//    }
 
-        // 이미지에 그래픽 객체 생성
-        Graphics2D g2d = (Graphics2D) originalImage.getGraphics();
-
-        // 폰트 파일 로드 및 폰트 객체 생성
-        File fontFile = new File(pretendardFont);
-        Font font = loadFont(fontFile);
-        g2d.setFont(font);
-        g2d.setColor(Color.getColor(fontColor));
-
-        int x = 20; // 왼쪽으로부터의 거리
-        int y = originalImage.getHeight() - fontSize; // 아래쪽으로부터의 거리
-        // 워터마크 텍스트 그리기
-        g2d.drawString(watermarkText, x, y);
-
-        // 그래픽 객체 종료
-        g2d.dispose();
-
-        ImageIO.write(originalImage, fileFormat, byteArrayOutputStream);
-        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-    }
-
-    private Font loadFont(File fontFile) {
-        try {
-            return Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(Font.PLAIN, fontSize);
-        } catch (FontFormatException e) {
-            log.error("FontFormatException 발생");
-            // 기본 폰트를 반환하거나 예외 처리를 진행할 수 있음
-            return new Font("Arial", Font.PLAIN, fontSize);
-        } catch (IOException e) {
-            log.error("IOException 발생");
-            return new Font("Arial", Font.PLAIN, fontSize);
-        }
-    }
+//    private Font loadFont(File fontFile) {
+//        try {
+//            return Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(Font.PLAIN, fontSize);
+//        } catch (FontFormatException e) {
+//            log.error("FontFormatException 발생");
+//            // 기본 폰트를 반환하거나 예외 처리를 진행할 수 있음
+//            return new Font("Arial", Font.PLAIN, fontSize);
+//        } catch (IOException e) {
+//            log.error("IOException 발생");
+//            return new Font("Arial", Font.PLAIN, fontSize);
+//        }
+//    }
 
     public void deleteImage(String url) {
         log.info("===== [S3Service] deleteImage start =====");
