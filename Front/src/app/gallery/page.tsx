@@ -8,7 +8,7 @@ import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
-import useEditModeStore from '@/utils/store/useEditModeStore '
+import useEditModeStore from '@/utils/store/useEditModeStore'
 
 let defaultImages = getGalleryList().data
 if (!defaultImages) {
