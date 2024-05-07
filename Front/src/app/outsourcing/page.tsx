@@ -20,7 +20,6 @@ const OutsourcingPage = () => {
             original: 's3 path',
             thumbnail:
                 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
         },
         {
             company: 'd&f 캐릭터 작업',
@@ -33,7 +32,6 @@ const OutsourcingPage = () => {
             original: 's3 path',
             thumbnail:
                 'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
         },
         {
             company: '메이플 캐릭터 작업',
@@ -46,7 +44,6 @@ const OutsourcingPage = () => {
             original: 's3 path',
             thumbnail:
                 'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            watermark: 's3 path watermark',
         },
         {
             workId: 2,
@@ -59,7 +56,6 @@ const OutsourcingPage = () => {
             original: 's3 path',
             thumbnail:
                 'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            watermark: 's3 path watermark',
         },
     ]
 
