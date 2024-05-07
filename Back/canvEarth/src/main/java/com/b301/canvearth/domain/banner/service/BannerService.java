@@ -1,6 +1,6 @@
 package com.b301.canvearth.domain.banner.service;
 
-import com.b301.canvearth.domain.admin.dto.BannerRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.BannerRequestPutDto;
 import com.b301.canvearth.domain.banner.dto.BannerListResponseGetDto;
 import com.b301.canvearth.domain.banner.entity.Banner;
 import com.b301.canvearth.domain.banner.repository.BannerRepository;
