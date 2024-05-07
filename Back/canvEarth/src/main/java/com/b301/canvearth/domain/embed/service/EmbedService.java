@@ -20,6 +20,10 @@ public class EmbedService {
 
     private final EmbedRepository embedRepository;
 
+    /**
+     * 전체 임베드 정보를 반환하는 함수
+     * @return List(EmbedListResponseGetDto)
+     */
     public List<EmbedListResponseGetDto> findAllEmbed(){
         List<Embed> embedList = embedRepository.findAll();
         List<EmbedListResponseGetDto> result = new ArrayList<>();
@@ -32,6 +36,11 @@ public class EmbedService {
         return result;
     }
 
+    /**
+     * 임베드 데이터를 업데이트 하는 함수
+     * @param data List(EmbedRequestPutDto)
+     * @return String
+     */
     public String updateEmbed(List<EmbedRequestPutDto> data){
 
         if(data == null){
@@ -52,9 +61,6 @@ public class EmbedService {
 
         }
 
-
-
-
         embedRepository.deleteAll();
 
         for (int i = 1; i <= data.size(); i++) {
@@ -67,6 +73,11 @@ public class EmbedService {
         return "링크 변경 완료";
     }
 
+    /**
+     * URL 형식이 맞는지 검사하는 함수
+     * @param link String
+     * @return Boolean
+     */
     public Boolean isValidLink(String link){
         String expr = "https?://[\\w\\-.]+/?([\\w\\-./@]+)?";
         return link.matches(expr);
