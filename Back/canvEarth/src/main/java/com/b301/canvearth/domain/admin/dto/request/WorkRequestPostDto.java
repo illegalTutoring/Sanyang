@@ -1,4 +1,4 @@
-package com.b301.canvearth.domain.admin.dto;
+package com.b301.canvearth.domain.admin.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,18 +8,23 @@ import java.util.List;
 
 @Getter
 @ToString
-public class GalleryRequestPostDto {
+public class WorkRequestPostDto {
 
     private final String userId;
+    private final String company;
     private final String title;
-    private final String createDate;
+    private final String startDate;
+    private final String endDate;
     private final List<String> tags;
 
     @Builder
-    public GalleryRequestPostDto(String userId, String title, String createDate, List<String> tags) {
+    public WorkRequestPostDto(String userId, String company, String title, String startDate, String endDate,
+                              List<String> tags) {
         this.userId = userId;
+        this.company = company;
         this.title = title;
-        this.createDate = createDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.tags = tags;
     }
 
@@ -28,10 +33,14 @@ public class GalleryRequestPostDto {
 
         if(userId == null || userId.isEmpty()) {
             isValid = "userId";
+        } else if(company == null || company.isEmpty()) {
+            isValid = "company";
         } else if(title == null || title.isEmpty()) {
             isValid = "title";
-        } else if(createDate == null || createDate.isEmpty()) {
+        } else if(startDate == null || startDate.isEmpty()) {
             isValid = "startDate";
+        } else if(endDate == null || endDate.isEmpty()) {
+            isValid = "endDate";
         } else if(tags == null || tags.isEmpty()) {
             isValid = "tags";
         }

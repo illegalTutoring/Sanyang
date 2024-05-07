@@ -1,13 +1,11 @@
 package com.b301.canvearth.domain.gallery.service;
 
 
-import com.b301.canvearth.domain.admin.dto.GalleryRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.GalleryRequestPutDto;
-import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPutDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.repository.GalleryRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
-import com.b301.canvearth.domain.work.entity.Work;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

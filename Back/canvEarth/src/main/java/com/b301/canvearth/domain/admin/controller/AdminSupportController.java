@@ -1,10 +1,8 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.GalleryResponsePutDto;
-import com.b301.canvearth.domain.admin.dto.SupportRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.SupportRequestPutDto;
-import com.b301.canvearth.domain.admin.dto.SupportResponsePutDto;
-import com.b301.canvearth.domain.gallery.entity.Gallery;
+import com.b301.canvearth.domain.admin.dto.request.SupportRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.SupportRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.response.SupportResponsePutDto;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.service.SupportService;
 import io.swagger.v3.oas.annotations.tags.Tag;

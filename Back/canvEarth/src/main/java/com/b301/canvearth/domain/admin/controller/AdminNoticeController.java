@@ -1,6 +1,6 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.NoticeRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.NoticeRequestPostDto;
 import com.b301.canvearth.domain.notice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

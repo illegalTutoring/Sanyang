@@ -1,6 +1,6 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.EmbedRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.EmbedRequestPutDto;
 import com.b301.canvearth.domain.embed.service.EmbedService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

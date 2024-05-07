@@ -3,8 +3,6 @@ package com.b301.canvearth.domain.support.controller;
 import com.b301.canvearth.domain.support.dto.SupportResponseGetDto;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.service.SupportService;
-import com.b301.canvearth.domain.work.dto.WorkResponseGetDto;
-import com.b301.canvearth.domain.work.entity.Work;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

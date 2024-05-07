@@ -1,6 +1,5 @@
-package com.b301.canvearth.domain.admin.dto;
+package com.b301.canvearth.domain.admin.dto.request;
 
-import com.b301.canvearth.domain.admin.entity.News;
 import lombok.Getter;
 import lombok.ToString;
 

@@ -1,4 +1,4 @@
-package com.b301.canvearth.domain.admin.dto;
+package com.b301.canvearth.domain.admin.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,14 +8,16 @@ import java.util.List;
 
 @Getter
 @ToString
-public class GalleryRequestPutDto {
+public class GalleryRequestPostDto {
 
+    private final String userId;
     private final String title;
     private final String createDate;
     private final List<String> tags;
 
     @Builder
-    public GalleryRequestPutDto(String title, String createDate, List<String> tags) {
+    public GalleryRequestPostDto(String userId, String title, String createDate, List<String> tags) {
+        this.userId = userId;
         this.title = title;
         this.createDate = createDate;
         this.tags = tags;
@@ -24,7 +26,9 @@ public class GalleryRequestPutDto {
     public String isValid() {
         String isValid = "valid";
 
-        if(title == null || title.isEmpty()) {
+        if(userId == null || userId.isEmpty()) {
+            isValid = "userId";
+        } else if(title == null || title.isEmpty()) {
             isValid = "title";
         } else if(createDate == null || createDate.isEmpty()) {
             isValid = "startDate";

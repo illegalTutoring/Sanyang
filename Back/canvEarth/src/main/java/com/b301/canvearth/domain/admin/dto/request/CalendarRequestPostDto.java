@@ -1,31 +1,24 @@
-package com.b301.canvearth.domain.admin.dto;
+package com.b301.canvearth.domain.admin.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @ToString
-public class WorkRequestPostDto {
+public class CalendarRequestPostDto {
 
     private final String userId;
-    private final String company;
     private final String title;
     private final String startDate;
     private final String endDate;
-    private final List<String> tags;
 
     @Builder
-    public WorkRequestPostDto(String userId, String company, String title, String startDate, String endDate,
-                              List<String> tags) {
+    public CalendarRequestPostDto(String userId, String title, String startDate, String endDate) {
         this.userId = userId;
-        this.company = company;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.tags = tags;
     }
 
     public String isValid() {
@@ -33,16 +26,12 @@ public class WorkRequestPostDto {
 
         if(userId == null || userId.isEmpty()) {
             isValid = "userId";
-        } else if(company == null || company.isEmpty()) {
-            isValid = "company";
         } else if(title == null || title.isEmpty()) {
             isValid = "title";
         } else if(startDate == null || startDate.isEmpty()) {
             isValid = "startDate";
         } else if(endDate == null || endDate.isEmpty()) {
             isValid = "endDate";
-        } else if(tags == null || tags.isEmpty()) {
-            isValid = "tags";
         }
         return isValid;
     }
