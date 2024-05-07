@@ -14,7 +14,6 @@ export interface ImageData {
     tags: string[]
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface GalleryProps {
@@ -25,6 +24,8 @@ export interface GalleryProps {
 }
 
 const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
     const breakpointColumnsObj = {
         default: colCount,
         1100: colCount > 3 ? 3 : colCount,
@@ -32,26 +33,55 @@ const Gallery: React.FC<GalleryProps> = ({ images, colCount }) => {
         500: 1,
     }
 
+    const handleImageClick = (image: string) => {
+        setSelectedImage(image)
+    }
+
+    const handleClose = () => {
+        setSelectedImage(null)
+    }
+
+    const handleRightClick = (event: React.MouseEvent) => {
+        event.preventDefault()
+    }
+
     return (
-        <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className={styles.list}
-            columnClassName={styles.column}
-        >
-            {images.map((image) => (
-                <div key={image.workId ? image.workId : image.galleryId}>
-                    <img
-                        src={image.thumbnail}
-                        alt={image.title}
-                        style={{
-                            width: '100%',
-                            objectFit: 'cover',
-                        }}
-                        className={styles.card}
-                    />
+        <div>
+            {selectedImage && (
+                <div
+                    className={styles.galleryModal}
+                    onClick={handleClose}
+                    onContextMenu={handleRightClick}
+                >
+                    <img src={selectedImage} className={styles.expandedImg} />
                 </div>
-            ))}
-        </Masonry>
+            )}
+            <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className={styles.list}
+                columnClassName={styles.column}
+            >
+                {images.map((image) => (
+                    <div
+                        key={image.workId ? image.workId : image.galleryId}
+                        className={styles.column}
+                        onClick={() => handleImageClick(image.original)}
+                    >
+                        <div className={styles.card}>
+                            <img
+                                src={image.thumbnail}
+                                alt={image.title}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </Masonry>
+        </div>
     )
 }
 

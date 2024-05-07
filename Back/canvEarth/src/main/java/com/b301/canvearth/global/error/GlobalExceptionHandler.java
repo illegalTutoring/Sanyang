@@ -2,24 +2,15 @@ package com.b301.canvearth.global.error;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -34,8 +25,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public ResponseEntity<Object> handleArgumentException(Exception ex, WebRequest request) {
 
-    @ExceptionHandler(value = {NullPointerException.class, Exception.class, ArrayIndexOutOfBoundsException.class})
+        ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
+        return handleExceptionInternal(ex, errorResponse, HttpStatus.BAD_REQUEST, request);
+    }
+
+
+    @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder().message("서버에러").build();

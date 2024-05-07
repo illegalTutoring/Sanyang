@@ -1,14 +1,9 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import styles from './TagList.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface DataItem {
     [key: string]: any
-}
-
-interface TagActionMap {
-    [tag: string]: () => Promise<any>
 }
 
 interface ListProps {
@@ -16,7 +11,10 @@ interface ListProps {
     height: string
     pageSize: number
     columns: string[]
-    tagActions: TagActionMap
+    data: DataItem[]
+    tagActions: {
+        [tag: string]: () => void
+    }
 }
 
 const List: React.FC<ListProps> = ({
@@ -24,49 +22,51 @@ const List: React.FC<ListProps> = ({
     height,
     pageSize,
     columns,
+    data,
     tagActions,
 }) => {
-    const [data, setData] = useState<DataItem[]>([])
-    const [currentPage, setCurrentPage] = useState(0)
-
-    useEffect(() => {
-        fetchData('All')
-    }, [])
-
-    const fetchData = async (tag: string) => {
-        try {
-            const response = await tagActions[tag]()
-            //console.log('Fetched data:', response.outsourcingInfo)
-            setData(response.outsourcingInfo)
-        } catch (error) {
-            console.error('Failed to fetch data:', error)
-        }
-    }
-
     const tags = Object.keys(tagActions)
+    const { isDarkMode } = useDarkModeStore()
+    const [activeTag, setActiveTag] = useState(tags[0])
 
     return (
         <div style={{ width, height }}>
             <div className={styles.tags}>
                 {tags.map((tag) => (
-                    <button key={tag} onClick={() => fetchData(tag)}>
+                    <button
+                        className={
+                            activeTag === tag
+                                ? isDarkMode
+                                    ? styles.darkActive
+                                    : styles.lightActive
+                                : ''
+                        }
+                        key={tag}
+                        onClick={() => {
+                            tagActions[tag]()
+                        }}
+                    >
                         {tag}
                     </button>
                 ))}
             </div>
             <table className={styles.table}>
                 <thead>
-                    <tr>
+                    <tr
+                        className={`${isDarkMode ? styles.dark : styles.light}`}
+                    >
                         {columns.map((column) => (
                             <th key={column}>{column}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, index) => (
+                    {data.slice(0, pageSize).map((item, index) => (
                         <tr key={index}>
                             {columns.map((column) => (
-                                <td key={column}>{item[column]}</td>
+                                <td key={`${index}-${column}`}>
+                                    {item[column]}
+                                </td>
                             ))}
                         </tr>
                     ))}

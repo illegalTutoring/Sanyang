@@ -2,14 +2,33 @@
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import List from '@/component/TagList'
-import style from './notification.module.scss'
+import Pagination from '@/component/Pagination'
+import styles from './notification.module.scss'
+import React, { useState, useEffect } from 'react'
 
 const NotificationPage = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
 
-    const getDummyOutsourcingList = async (year: number, month: number) => {
+    // 지역 변수
+    const [data, setData] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+    // 데이터 가져오기
+    const fetchData = async (page: number) => {
+        console.log('fetchData:', page)
+
+        // try {
+        //     const response = await axios.get(
+        //         `https://your-api-url.com/notifications?page=${page}`,
+        //     )
+        //     setData(response.data.notifications)
+        // } catch (error) {
+        //     console.error('Failed to fetch data:', error)
+        // }
+
         return {
-            message: `${year}년 ${month}월 외주 목록입니다.`,
             outsourcingInfo: [
                 {
                     userId: 'sanyang',
@@ -67,39 +86,52 @@ const NotificationPage = () => {
                     startDate: '2025-02-01',
                     endDate: '2025-02-28',
                 },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 봄 축제 일러스트 작업',
-                    startDate: '2025-03-01',
-                    endDate: '2025-03-31',
-                },
             ],
         }
     }
 
+    useEffect(() => {
+        fetchData(currentPage)
+    }, [currentPage])
+
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <div className={style.container}>
-                <div className={style.banner}>
-                    <h1>공지사항 페이지</h1>
+            <div className={styles.container}>
+                <div
+                    className={`${styles.banner} ${isDarkMode ? styles.darkBanner : styles.lightBanner}`}
+                >
+                    <div style={{ fontSize: '46px' }}>공지사항</div>
+                    <br></br>
+                    <h3 style={{ fontSize: '16px' }}>
+                        작품의 업데이트 정보 등 관련된 다양한 소식을
+                        알려드립니다.
+                    </h3>
                 </div>
-                <List
-                    width="100%"
-                    height="40vh"
-                    pageSize={10}
-                    columns={[
-                        'userId',
-                        'client',
-                        'title',
-                        'startDate',
-                        'endDate',
-                    ]}
-                    tagActions={{
-                        All: () => getDummyOutsourcingList(2024, 4),
-                        Active: () => getDummyOutsourcingList(2024, 4),
-                        Completed: () => getDummyOutsourcingList(2024, 4),
-                    }}
+                <div className={styles.list}>
+                    <List
+                        width="100%"
+                        height="100%"
+                        pageSize={10}
+                        columns={[
+                            'userId',
+                            'client',
+                            'title',
+                            'startDate',
+                            'endDate',
+                        ]}
+                        data={data}
+                        tagActions={{
+                            All: () => fetchData(currentPage),
+                            Update: () => fetchData(currentPage),
+                            Notice: () => fetchData(currentPage),
+                        }}
+                    />
+                </div>
+                <Pagination
+                    totalPage={100}
+                    limit={itemsPerPage}
+                    page={currentPage}
+                    setPage={setCurrentPage}
                 />
             </div>
         </article>

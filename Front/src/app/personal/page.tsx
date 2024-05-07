@@ -25,6 +25,10 @@ const PersonalPage: React.FC = () => {
             const month = new Date().getMonth() + 1
             const response = await getCalendar(year, month)
 
+            /**
+             * @todo Error Handling
+             */
+
             setSchedules(response.data)
         }
 
@@ -37,7 +41,7 @@ const PersonalPage: React.FC = () => {
             className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
         >
             <Calendar
-                width="80vw"
+                width="100%"
                 height="90vh"
                 year={new Date().getFullYear()}
                 month={new Date().getMonth() + 1}
