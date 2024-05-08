@@ -32,9 +32,15 @@ const List: React.FC<ListProps> = ({
     const { isDarkMode } = useDarkModeStore()
     const [activeTag, setActiveTag] = useState(tags[0])
     const [isAddMode, setIsAddMode] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<DataItem | null>(null)
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
 
     const toggleEditMode = () => {
         setIsAddMode(!isAddMode)
+    }
+
+    const toggleDetailModal = () => {
+        setIsDetailModalVisible(!isDetailModalVisible)
     }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -44,6 +50,11 @@ const List: React.FC<ListProps> = ({
 
         console.log('Submitting:', title, content)
         toggleEditMode()
+    }
+
+    const handleRowClick = (item: DataItem) => {
+        setSelectedItem(item)
+        setIsDetailModalVisible(true)
     }
 
     const handleDelete = (index: number) => {
@@ -86,6 +97,21 @@ const List: React.FC<ListProps> = ({
                     </button>
                 </form>
             </Modal>
+            <Modal
+                width="50%"
+                isVisible={isDetailModalVisible}
+                toggleModal={toggleDetailModal}
+            >
+                <div style={{ padding: '20px' }}>
+                    <h3>Details</h3>
+                    {selectedItem &&
+                        Object.entries(selectedItem).map(([key, value]) => (
+                            <p key={key}>
+                                <strong>{key}:</strong> {value}
+                            </p>
+                        ))}
+                </div>
+            </Modal>
             <div style={{ width, height }}>
                 <div className={styles.tags}>
                     {tags.map((tag) => (
@@ -124,7 +150,10 @@ const List: React.FC<ListProps> = ({
                     </thead>
                     <tbody>
                         {data.map((item, index) => (
-                            <tr key={index}>
+                            <tr
+                                key={index}
+                                onClick={() => handleRowClick(item)}
+                            >
                                 {columns.map((column) => (
                                     <td key={`${index}-${column}`}>
                                         {item[column]}
@@ -132,11 +161,15 @@ const List: React.FC<ListProps> = ({
                                 ))}
                                 {isEditMode && (
                                     <td>
-                                        <button
-                                            onClick={() => handleDelete(index)}
-                                        >
-                                            Delete
-                                        </button>
+                                        <img
+                                            className={styles.deleteButton}
+                                            style={{ height: '15px' }}
+                                            src={'/svgs/delete.svg'}
+                                            alt="Delete"
+                                            onClick={(event) =>
+                                                handleDelete(index)
+                                            }
+                                        />
                                     </td>
                                 )}
                             </tr>
