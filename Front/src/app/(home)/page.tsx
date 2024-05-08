@@ -93,8 +93,8 @@ const HomePage = () => {
                     : '/svgs/pixiv_black.svg'
             case 6:
                 return isDarkMode
-                    ? '/svgs/etc_white.svg'
-                    : '/svgs/etc_black.svg'
+                    ? '/svgs/add_embed_white.svg'
+                    : '/svgs/add_embed_black.svg'
             default:
                 return ''
         }
@@ -203,6 +203,15 @@ const HomePage = () => {
                                             />
                                         </div>
                                     ))}
+                                    <div
+                                        key={-1}
+                                        style={{ marginBottom: '50px' }}
+                                    >
+                                        <Profile
+                                            src={getImageSource(6)}
+                                            size={70}
+                                        />
+                                    </div>
                                 </div>
                             </DndProvider>
                         ) : (
