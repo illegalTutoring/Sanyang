@@ -38,36 +38,14 @@ $dark-blue-hover: #2980b9;
 .toggleButton {
     display: none;
     position: fixed;
-    top: 40px;
-    left: 20px;
+    top: 15px;
+    left: 140px;
     background: transparent;
     border: none;
     cursor: pointer;
-    z-index: 10;
-
-    &:hover {
-        &:before {
-            background-color: $dark-blue-hover;
-        }
-        &:after {
-            background-color: $dark-blue-hover;
-        }
-        & div {
-            background-color: $dark-blue-hover;
-        }
-    }
-
-    &.open {
-        &:before {
-            transform: translateY(9px) rotate(45deg);
-        }
-        &:after {
-            transform: translateY(-9px) rotate(-45deg);
-        }
-        & div {
-            transform: scale(0);
-        }
-    }
+    width: '30px';
+    height: '30px';
+    z-index: 1010;
 }
 
 @media (max-width: 768px) {

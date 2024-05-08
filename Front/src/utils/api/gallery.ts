@@ -14,7 +14,6 @@ export function getGalleryList(): getGalleryListResponseDTO {
             method: 'GET',
             url: `${SERVER_URL}/gallery`,
         })
-        console.log('asdfasdf', response.data.data)
 
         return {
             message: response.data.message,
@@ -37,7 +36,6 @@ export function getGalleryList(): getGalleryListResponseDTO {
                 tags: ["d&f", "캐릭터"],
                 original: "s3 path",
                 thumbnail: "s3 path thumbnail",
-                watermark: "s3 path watermark"
             },
             {
                 workId: 2,
@@ -50,7 +48,6 @@ export function getGalleryList(): getGalleryListResponseDTO {
                 tags: ["d&f", "캐릭터"],
                 original: "s3 path22",
                 thumbnail: "s3 path thumbnail",
-                watermark: "s3 path watermark"
             }
         ]
     }

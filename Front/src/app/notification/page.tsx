@@ -1,15 +1,36 @@
 'use client'
 
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore'
 import List from '@/component/TagList'
+import Pagination from '@/component/Pagination'
 import styles from './notification.module.scss'
+import React, { useState, useEffect } from 'react'
 
 const NotificationPage = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
-    const getDummyOutsourcingList = async (year: number, month: number) => {
+    // 지역 변수
+    const [data, setData] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+    // 데이터 가져오기
+    const fetchData = async (page: number) => {
+        console.log('fetchData:', page)
+
+        // try {
+        //     const response = await axios.get(
+        //         `https://your-api-url.com/notifications?page=${page}`,
+        //     )
+        //     setData(response.data.notifications)
+        // } catch (error) {
+        //     console.error('Failed to fetch data:', error)
+        // }
+
         return {
-            message: `${year}년 ${month}월 외주 목록입니다.`,
             outsourcingInfo: [
                 {
                     userId: 'sanyang',
@@ -71,6 +92,10 @@ const NotificationPage = () => {
         }
     }
 
+    useEffect(() => {
+        fetchData(currentPage)
+    }, [currentPage])
+
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <div className={styles.container}>
@@ -87,7 +112,7 @@ const NotificationPage = () => {
                 <div className={styles.list}>
                     <List
                         width="100%"
-                        height="40vh"
+                        height="100%"
                         pageSize={10}
                         columns={[
                             'userId',
@@ -96,13 +121,21 @@ const NotificationPage = () => {
                             'startDate',
                             'endDate',
                         ]}
+                        data={data}
                         tagActions={{
-                            All: () => getDummyOutsourcingList(2024, 4),
-                            Update: () => getDummyOutsourcingList(2024, 4),
-                            Notice: () => getDummyOutsourcingList(2024, 4),
+                            All: () => fetchData(currentPage),
+                            Update: () => fetchData(currentPage),
+                            Notice: () => fetchData(currentPage),
                         }}
+                        isEditMode={isEditMode}
                     />
                 </div>
+                <Pagination
+                    totalPage={100}
+                    limit={itemsPerPage}
+                    page={currentPage}
+                    setPage={setCurrentPage}
+                />
             </div>
         </article>
     )

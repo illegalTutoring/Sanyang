@@ -11,7 +11,6 @@ interface workInfo {
     tags: Array<string>
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface getWorkListResponseDTO extends serverResponseDTO {
