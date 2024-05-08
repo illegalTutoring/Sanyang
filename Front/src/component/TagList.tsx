@@ -32,8 +32,10 @@ const List: React.FC<ListProps> = ({
     const { isDarkMode } = useDarkModeStore()
     const [activeTag, setActiveTag] = useState(tags[0])
     const [isAddMode, setIsAddMode] = useState(false)
-    const [selectedItem, setSelectedItem] = useState<DataItem | null>(null)
     const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<DataItem | null>(null)
+    const [editableItem, setEditableItem] = useState<DataItem | null>(null)
 
     const toggleEditMode = () => {
         setIsAddMode(!isAddMode)
@@ -60,6 +62,12 @@ const List: React.FC<ListProps> = ({
     const handleDelete = (index: number) => {
         console.log(`Deleting item at index ${index}`)
         // Delete logic here
+    }
+
+    const handleEditClick = (event: React.MouseEvent, item: DataItem) => {
+        event.stopPropagation()
+        setEditableItem({ ...item })
+        setIsEditModalVisible(true)
     }
 
     return (
@@ -97,6 +105,7 @@ const List: React.FC<ListProps> = ({
                     </button>
                 </form>
             </Modal>
+
             <Modal
                 width="50%"
                 isVisible={isDetailModalVisible}
@@ -112,6 +121,38 @@ const List: React.FC<ListProps> = ({
                         ))}
                 </div>
             </Modal>
+
+            <Modal
+                width="50%"
+                isVisible={isEditModalVisible}
+                toggleModal={() => setIsEditModalVisible(false)}
+            >
+                <form onSubmit={handleSubmit} style={{ padding: '20px' }}>
+                    <h3>Edit Item</h3>
+                    {editableItem &&
+                        Object.keys(editableItem).map((key) => (
+                            <div key={key}>
+                                <label>{key}:</label>
+                                <input
+                                    type="text"
+                                    value={editableItem[key]}
+                                    onChange={(e) =>
+                                        setEditableItem({
+                                            ...editableItem,
+                                            [key]: e.target.value,
+                                        })
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        marginBottom: '10px',
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    <button type="submit">Save Changes</button>
+                </form>
+            </Modal>
+
             <div style={{ width, height }}>
                 <div className={styles.tags}>
                     {tags.map((tag) => (
@@ -145,7 +186,12 @@ const List: React.FC<ListProps> = ({
                             {columns.map((column) => (
                                 <th key={column}>{column}</th>
                             ))}
-                            {isEditMode && <th>Delete</th>}
+                            {isEditMode && (
+                                <>
+                                    <th>Delete</th>
+                                    <th>Edit</th>
+                                </>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -160,17 +206,30 @@ const List: React.FC<ListProps> = ({
                                     </td>
                                 ))}
                                 {isEditMode && (
-                                    <td>
-                                        <img
-                                            className={styles.deleteButton}
-                                            style={{ height: '15px' }}
-                                            src={'/svgs/delete.svg'}
-                                            alt="Delete"
-                                            onClick={(event) =>
-                                                handleDelete(index)
-                                            }
-                                        />
-                                    </td>
+                                    <>
+                                        <td>
+                                            <img
+                                                className={styles.deleteButton}
+                                                style={{ height: '15px' }}
+                                                src={'/svgs/delete.svg'}
+                                                alt="Delete"
+                                                onClick={(event) =>
+                                                    handleDelete(index)
+                                                }
+                                            />
+                                        </td>
+                                        <td>
+                                            <img
+                                                className={styles.deleteButton}
+                                                style={{ height: '15px' }}
+                                                src={'/svgs/delete.svg'}
+                                                alt="Edit"
+                                                onClick={(event) =>
+                                                    handleEditClick(event, item)
+                                                }
+                                            />
+                                        </td>
+                                    </>
                                 )}
                             </tr>
                         ))}
