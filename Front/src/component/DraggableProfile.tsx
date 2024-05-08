@@ -2,6 +2,8 @@ import React, { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import Profile from '@/component/Profile'
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import styles from './DraggableProfile.module.scss'
+import { motion } from 'framer-motion'
 
 interface ProfileData {
     type: number
@@ -97,10 +99,28 @@ const DraggableProfile: React.FC<ProfileComponentProps> = ({
     drag(drop(ref))
 
     const opacity = isDragging ? 0 : 1
+    const variants = {
+        first: { scale: 0.6 },
+        animationEnd: { scale: 1 },
+    }
+
     return (
-        <div ref={ref} style={{ marginBottom: '50px', opacity }}>
+        <motion.div
+            ref={ref}
+            variants={variants}
+            transition={{
+                ease: 'easeInOut',
+                duration: 0.3,
+            }}
+            initial="first"
+            animate="animationEnd"
+            drag="x"
+            dragConstraints={{ left: 0, right: 300 }}
+            style={{ opacity: opacity, cursor: cursorStyle }}
+            className={styles.embedLink}
+        >
             <Profile src={getImageSource(item.type)} size={70} />
-        </div>
+        </motion.div>
     )
 }
 
