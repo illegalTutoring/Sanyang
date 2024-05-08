@@ -41,7 +41,7 @@ public class WorkRequestPostDto {
             isValid = "startDate";
         } else if(endDate == null || endDate.isEmpty()) {
             isValid = "endDate";
-        } else if(tags == null || tags.isEmpty()) {
+        } else if(tags == null) {
             isValid = "tags";
         }
         return isValid;
