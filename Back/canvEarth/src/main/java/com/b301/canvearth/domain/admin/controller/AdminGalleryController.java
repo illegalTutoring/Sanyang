@@ -2,7 +2,7 @@ package com.b301.canvearth.domain.admin.controller;
 
 import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPostDto;
 import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPutDto;
-import com.b301.canvearth.domain.admin.dto.request.GalleryResponsePutDto;
+import com.b301.canvearth.domain.admin.dto.response.GalleryResponsePutDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.service.GalleryService;
 import com.b301.canvearth.global.error.CustomException;
