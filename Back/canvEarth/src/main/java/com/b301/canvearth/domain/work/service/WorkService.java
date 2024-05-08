@@ -1,27 +1,17 @@
 package com.b301.canvearth.domain.work.service;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.b301.canvearth.domain.admin.dto.WorkRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
-import com.b301.canvearth.domain.calendar.entity.Calendar;
+import com.b301.canvearth.domain.admin.dto.request.WorkRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.WorkRequestPutDto;
 import com.b301.canvearth.domain.s3.service.S3Service;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.repository.WorkRepository;
-import com.b301.canvearth.global.error.CustomException;
-import com.b301.canvearth.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -45,7 +35,6 @@ public class WorkService {
                 .endDate(requestPostDto.getEndDate()).tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))
                 .thumbnailPath(paths.get("thumbnailPath"))
-                .watermarkPath(paths.get("watermarkPath"))
                 .build();
 
         // DB에 저장
@@ -84,11 +73,9 @@ public class WorkService {
             // 기존 S3 이미지는 삭제
             s3Service.deleteImage(changeWork.getOriginalPath());
             s3Service.deleteImage(changeWork.getThumbnailPath());
-            s3Service.deleteImage(changeWork.getWatermarkPath());
 
             changeWork.setOriginalPath(paths.get("originalPath"));
             changeWork.setThumbnailPath(paths.get("thumbnailPath"));
-            changeWork.setWatermarkPath(paths.get("watermarkPath"));
         }
 
         return workRepository.save(changeWork);
@@ -102,7 +89,6 @@ public class WorkService {
         // S3 이미지들 삭제
         s3Service.deleteImage(work.getOriginalPath());
         s3Service.deleteImage(work.getThumbnailPath());
-        s3Service.deleteImage(work.getWatermarkPath());
         
         // DB에서 삭제
         workRepository.delete(work);
