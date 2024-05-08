@@ -15,7 +15,6 @@ export interface ImageData {
     tags: string[]
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface GalleryProps {

@@ -8,6 +8,7 @@ import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
+import useEditModeStore from '@/utils/store/useEditModeStore'
 
 let defaultImages = getGalleryList().data
 if (!defaultImages) {
@@ -26,7 +27,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/600x400',
             thumbnail: 'https://placehold.co/600x400',
-            watermark: 'https://placehold.co/600x400',
         },
         {
             galleryId: 1,
@@ -38,7 +38,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/900x400',
             thumbnail: 'https://placehold.co/900x400',
-            watermark: 'https://placehold.co/900x400',
         },
         {
             galleryId: 2,
@@ -50,7 +49,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/900x1200',
             thumbnail: 'https://placehold.co/900x1200',
-            watermark: 'https://placehold.co/900x1200',
         },
         {
             galleryId: 3,
@@ -62,7 +60,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/600x1100',
             thumbnail: 'https://placehold.co/600x1100',
-            watermark: 'https://placehold.co/600x1100',
         },
         {
             galleryId: 4,
@@ -74,7 +71,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/350X750',
             thumbnail: 'https://placehold.co/350X750',
-            watermark: 'https://placehold.co/350X750',
         },
         {
             galleryId: 5,
@@ -86,7 +82,6 @@ if (!defaultImages) {
             tags: [],
             original: 'https://placehold.co/350X650',
             thumbnail: 'https://placehold.co/350X650',
-            watermark: 'https://placehold.co/350X650',
         },
     ]
 }
@@ -97,6 +92,7 @@ console.log(defaultImages)
 
 const GalleryPage = () => {
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
     // const defaultImages = [
     //     {
@@ -110,7 +106,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 2,
@@ -123,7 +118,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 3,
@@ -136,7 +130,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 4,
@@ -149,7 +142,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 5,
@@ -162,7 +154,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 6,
@@ -175,7 +166,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 7,
@@ -188,7 +178,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-    //         watermark: 's3 path watermark',
     //     },
     //     {
     //         galleryId: 8,
@@ -201,7 +190,6 @@ const GalleryPage = () => {
     //         original: 's3 path',
     //         thumbnail:
     //             'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-    //         watermark: 's3 path watermark',
     //     },
     // ]
 
@@ -237,6 +225,12 @@ const GalleryPage = () => {
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [btnText, setBtnText] = useState('태그검색')
+    const [addMode, setAddMode] = useState(false)
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+    const toggleAddMode = () => {
+        setAddMode((prev) => !prev)
+    }
 
     const toggleGallery = () => {
         setIsGalleryVisible((prev) => !prev)
@@ -246,6 +240,15 @@ const GalleryPage = () => {
         setIsModalOpen((prev) => !prev)
 
         btnText === '태그검색' ? setBtnText('검색하기') : setBtnText('태그검색')
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = () => setPreviewUrl(reader.result as string)
+            reader.readAsDataURL(file)
+        }
     }
 
     return (
@@ -282,8 +285,37 @@ const GalleryPage = () => {
             ></div>
 
             <div>
-                <Gallery images={defaultImages} colCount={4} />
+                <Gallery
+                    images={defaultImages}
+                    colCount={4}
+                    isEditMode={isEditMode}
+                    addTogle={() => {
+                        toggleAddMode()
+                    }}
+                />
             </div>
+
+            <Modal
+                isVisible={addMode}
+                toggleModal={toggleAddMode}
+                width="60vw"
+                height="60vh"
+            >
+                <div>
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                    />
+                    {previewUrl && (
+                        <img
+                            src={previewUrl}
+                            alt="Image Preview"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
+                    )}
+                </div>
+            </Modal>
 
             <div
                 id="searchButton"
