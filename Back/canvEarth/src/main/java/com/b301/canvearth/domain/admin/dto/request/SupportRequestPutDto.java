@@ -27,6 +27,8 @@ public class SupportRequestPutDto {
 
         if(title == null || title.isEmpty()) {
             isValid = "title";
+        } else if(supportLink == null || supportLink.isEmpty()) {
+            isValid = "supportLink";
         }
 
         return isValid;
