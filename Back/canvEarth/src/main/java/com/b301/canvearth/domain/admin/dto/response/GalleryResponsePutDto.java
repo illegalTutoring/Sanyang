@@ -1,4 +1,4 @@
-package com.b301.canvearth.domain.admin.dto.request;
+package com.b301.canvearth.domain.admin.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
