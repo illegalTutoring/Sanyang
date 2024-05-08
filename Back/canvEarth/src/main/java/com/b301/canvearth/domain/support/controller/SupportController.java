@@ -29,7 +29,7 @@ public class SupportController {
 
     private final SupportService supportService;
 
-    @Operation(summary = "REQ-ADMIN-06", description = "후원 목록 보기")
+    @Operation(summary = "REQ-SUPPORT-01", description = "후원 목록 보기")
     @GetMapping
     public ResponseEntity<Object> getSupportList() {
         log.info("===== [SupportController] getSupportList start =====");
