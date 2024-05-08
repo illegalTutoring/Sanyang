@@ -5,6 +5,9 @@ import com.b301.canvearth.domain.admin.dto.request.SupportRequestPutDto;
 import com.b301.canvearth.domain.admin.dto.response.SupportResponsePutDto;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.service.SupportService;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,7 @@ public class AdminSupportController {
 
     private final SupportService supportService;
 
+    @Operation(summary = "REQ-ADMIN-06", description = "후원 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> registSupport(@RequestPart MultipartFile image,
                                                 @RequestPart("data") SupportRequestPostDto requestPostDto) {
@@ -44,28 +48,22 @@ public class AdminSupportController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
         }
 
-
         String isValidSupportDto = requestPostDto.isValid();
         if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
-            responseBody.put(MESSAGE, errorMessage);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
         Support insertSupport = supportService.insertSupport(image, requestPostDto);
-        if (insertSupport == null) {
-            log.error("insertSupport 비어있음.");
-            responseBody.put(MESSAGE, "후원 등록을 실패하였습니다.");
-            // TODO: exception 바꿔야 함
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-        }
+        log.info("insertSupport: {}", insertSupport);
 
         responseBody.put(MESSAGE, "후원 등록을 완료하였습니다.");
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @Operation(summary = "REQ-ADMIN-06", description = "후원 등록")
     @PutMapping("{supportId}")
     public ResponseEntity<Object> modifySupport(@PathVariable("supportId") Long supportId,
                                                 @RequestPart(value = "image", required = false) MultipartFile image,
@@ -80,8 +78,7 @@ public class AdminSupportController {
         if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
-            responseBody.put(MESSAGE, errorMessage);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
         Support modifySupport = supportService.modifySupport(supportId, image, requestPutDto);
@@ -95,6 +92,7 @@ public class AdminSupportController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @Operation(summary = "REQ-ADMIN-06", description = "후원 삭제")
     @DeleteMapping("/{supportId}")
     public ResponseEntity<Object> deleteSupport(@PathVariable("supportId") Long supportId) {
         log.info("===== [AdminSupportController] deleteSupport start =====");

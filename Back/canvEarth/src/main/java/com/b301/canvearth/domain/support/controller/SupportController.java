@@ -3,6 +3,7 @@ package com.b301.canvearth.domain.support.controller;
 import com.b301.canvearth.domain.support.dto.SupportResponseGetDto;
 import com.b301.canvearth.domain.support.entity.Support;
 import com.b301.canvearth.domain.support.service.SupportService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class SupportController {
 
     private final SupportService supportService;
 
+    @Operation(summary = "REQ-ADMIN-06", description = "후원 목록 보기")
     @GetMapping
     public ResponseEntity<Object> getSupportList() {
         log.info("===== [SupportController] getSupportList start =====");
