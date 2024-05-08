@@ -23,12 +23,11 @@ public class WorkResponseGetDto {
     private List<String> tags;
     private String original;
     private String thumbnail;
-    private String watermark;
 
     @Builder
     public WorkResponseGetDto(Long workId, String userId, String title, String company, String startDate,
                               String endDate, Date uploadDate, List<String> tags, String original,
-                              String thumbnail, String watermark) {
+                              String thumbnail) {
         this.workId = workId;
         this.userId = userId;
         this.title = title;
@@ -39,6 +38,5 @@ public class WorkResponseGetDto {
         this.tags = tags;
         this.original = original;
         this.thumbnail = thumbnail;
-        this.watermark = watermark;
     }
 }

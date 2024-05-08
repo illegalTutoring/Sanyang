@@ -1,6 +1,6 @@
 import { serverResponseDTO } from './common'
 
-interface galleryInfo {
+export interface galleryInfo {
     galleryId: number
     userId: string
     title: string
