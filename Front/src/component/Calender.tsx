@@ -11,12 +11,11 @@ import {
 } from 'date-fns'
 import styles from './Calendar.module.scss'
 import Select from 'react-select'
-import useDarkModeStore from '@/utils/store/useThemaStore'
+import Modal from './layout/Modal'
 
 interface ScheduleItem {
     calendarId: number
     userId: string
-    company: string
     title: string
     startDate: string
     endDate: string
@@ -28,6 +27,8 @@ interface CalendarProps {
     year: number
     month: number
     schedules: ScheduleItem[]
+    isDarkMode: boolean
+    isEditMode: boolean
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -36,17 +37,16 @@ const Calendar: React.FC<CalendarProps> = ({
     year,
     month,
     schedules,
+    isDarkMode,
+    isEditMode,
 }) => {
     const [selectedYear, setSelectedYear] = useState(year)
-    const [selectedMonth, setSelectedMonth] = useState(month - 1)
-    const { isDarkMode } = useDarkModeStore()
+    const [selectedMonth, setSelectedMonth] = useState(month)
 
-    const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedYear(parseInt(event.target.value, 10))
-    }
+    const [isAddMode, setIsAddMode] = useState(false)
 
-    const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedMonth(parseInt(event.target.value, 10) - 1)
+    const toggleEditMode = () => {
+        setIsAddMode(!isAddMode)
     }
 
     const days = eachDayOfInterval({
@@ -98,6 +98,7 @@ const Calendar: React.FC<CalendarProps> = ({
                         !daySchedules.schedules.some((s: any) => s.level === i)
                     ) {
                         daySchedules.schedules.push({
+                            calendarId: schedule.calendarId,
                             title: '',
                             level: i,
                             visible: false,
@@ -106,6 +107,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
 
                 daySchedules.schedules[currentLevel] = {
+                    calendarId: schedule.calendarId,
                     title:
                         date.getTime() ===
                         new Date(schedule.startDate).getTime()
@@ -163,8 +165,22 @@ const Calendar: React.FC<CalendarProps> = ({
         }
     }
 
+    const handleDateClick = (event: React.MouseEvent, day: Date) => {
+        event.stopPropagation()
+        setIsAddMode(true)
+        console.log(day)
+    }
+
+    const handleScheduleClick = (
+        event: React.MouseEvent,
+        calendarId: number,
+    ) => {
+        event.stopPropagation()
+        console.log(calendarId)
+    }
+
     return (
-        <div>
+        <div className={`${!isEditMode && styles.disableClick}`}>
             <div className={styles.selectBox}>
                 <div className={styles.selectDateBox}>
                     <Select
@@ -237,6 +253,7 @@ const Calendar: React.FC<CalendarProps> = ({
                             key={index}
                             style={dayStyle(day)}
                             className={styles.day}
+                            onClick={(event) => handleDateClick(event, day)}
                         >
                             <div style={{ paddingLeft: '5px' }}>
                                 {format(day, 'd')}
@@ -248,6 +265,15 @@ const Calendar: React.FC<CalendarProps> = ({
                                         <div
                                             key={idx}
                                             className={styles.schedule}
+                                            onClick={(event) => {
+                                                if (schedule.visible) {
+                                                    handleScheduleClick(
+                                                        event,
+                                                        schedule.calendarId,
+                                                        schedule,
+                                                    )
+                                                }
+                                            }}
                                             style={
                                                 schedule.visible == true
                                                     ? {
@@ -267,6 +293,14 @@ const Calendar: React.FC<CalendarProps> = ({
                     ))}
                 </div>
             </div>
+            <Modal
+                height="50%"
+                width="40%"
+                isVisible={isAddMode}
+                toggleModal={toggleEditMode}
+            >
+                <div></div>
+            </Modal>
         </div>
     )
 }
