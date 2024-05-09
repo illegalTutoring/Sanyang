@@ -211,7 +211,7 @@ const List: React.FC<ListProps> = ({
                                             <img
                                                 className={styles.deleteButton}
                                                 style={{ height: '15px' }}
-                                                src={'/svgs/delete.svg'}
+                                                src={'/svgs/delete_red.svg'}
                                                 alt="Delete"
                                                 onClick={(event) =>
                                                     handleDelete(index)
@@ -222,7 +222,7 @@ const List: React.FC<ListProps> = ({
                                             <img
                                                 className={styles.deleteButton}
                                                 style={{ height: '15px' }}
-                                                src={'/svgs/delete.svg'}
+                                                src={'/svgs/delete_red.svg'}
                                                 alt="Edit"
                                                 onClick={(event) =>
                                                     handleEditClick(event, item)

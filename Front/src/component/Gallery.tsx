@@ -84,7 +84,7 @@ const Gallery: React.FC<GalleryProps> = ({
                             {isEditMode && (
                                 <img
                                     className={styles.deleteButton}
-                                    src={'/svgs/delete.svg'}
+                                    src={'/svgs/delete_red.svg'}
                                     alt="Delete"
                                     onClick={(event) =>
                                         deleteImage(image.galleryId)
