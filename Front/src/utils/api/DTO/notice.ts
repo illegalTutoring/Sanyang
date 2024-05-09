@@ -1,11 +1,11 @@
 import { serverResponseDTO } from './common'
 
-interface noticeInfo {
+export interface noticeInfo {
     id: number
     title: string
 }
 
-interface noticeDetailInfo {
+export interface noticeDetailInfo {
     id: number
     username: string
     title: string
