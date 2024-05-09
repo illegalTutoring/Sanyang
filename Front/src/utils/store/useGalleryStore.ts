@@ -4,11 +4,11 @@ import { galleryInfo } from '../api/DTO/gallery'
 interface galleryState {
     images: Array<galleryInfo>
     tagList: Array<string>
-    imageDivs: Array<Element>
+    imageDivs: HTMLCollectionOf<Element> | undefined
 
     setImages: (by: Array<galleryInfo>) => void
     setTagList: (by: Array<galleryInfo>) => void
-    setImageDivs: (by: Array<Element>) => void
+    setImageDivs: (by: HTMLCollectionOf<Element>) => void
 }
 
 function makeTagList(images: Array<galleryInfo>): Array<string> {
@@ -26,7 +26,7 @@ function makeTagList(images: Array<galleryInfo>): Array<string> {
 export const galleryStore = createStore<galleryState>()((set) => ({
     images: [],
     tagList: [],
-    imageDivs: [],
+    imageDivs: undefined,
 
     setImages: (by) => set({ images: by }),
     setTagList: (by) => set({ tagList: makeTagList(by) }),
