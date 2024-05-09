@@ -327,7 +327,7 @@ const GalleryPage = () => {
             <div
                 className={styles.modalBackdrop}
                 style={{
-                    height: isModalOpen ? '190px' : '0',
+                    height: isModalOpen ? 'auto' : '0',
                 }}
             >
                 <div className={styles.modalContent}>
