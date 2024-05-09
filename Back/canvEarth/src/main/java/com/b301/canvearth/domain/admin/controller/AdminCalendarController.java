@@ -6,9 +6,11 @@ import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.calendar.service.CalendarService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
+import com.b301.canvearth.global.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,11 +29,12 @@ public class AdminCalendarController {
 
     private final CalendarService calendarService;
     private static final String MESSAGE = "message";
+    private final JWTUtil jwtUtil;
 
     @PostMapping
     @Operation(summary = "REQ-ADMIN-07", description = "일정 등록")
     @SecurityRequirement(name = "accessToken")
-    public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto) {
+    public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [AdminCalendarController] registCalendar start =====");
         log.info("[requestData]: {}", requestPostDto);
 
@@ -44,7 +47,9 @@ public class AdminCalendarController {
             throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
-        Calendar calendar = Calendar.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
+        String accessToken = request.getHeader("accessToken");
+        String username = jwtUtil.getUsername(accessToken);
+        Calendar calendar = Calendar.builder().userId(username).title(requestPostDto.getTitle())
                 .startDate(requestPostDto.getStartDate()).endDate(requestPostDto.getEndDate()).build();
 
         Calendar insertCalendar = calendarService.insertCalendar(calendar);
