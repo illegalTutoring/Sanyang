@@ -11,12 +11,11 @@ import {
 } from 'date-fns'
 import styles from './Calendar.module.scss'
 import Select from 'react-select'
-import useDarkModeStore from '@/utils/store/useThemaStore'
+import Modal from './layout/Modal'
 
 interface ScheduleItem {
     calendarId: number
     userId: string
-    company: string
     title: string
     startDate: string
     endDate: string
@@ -28,6 +27,11 @@ interface CalendarProps {
     year: number
     month: number
     schedules: ScheduleItem[]
+    isDarkMode: boolean
+    isEditMode: boolean
+    addSchedule: (schedule: ScheduleItem) => void
+    updateSchedules: (schedules: ScheduleItem) => void
+    deleteSchedule: (calendarId: number) => void
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -36,19 +40,126 @@ const Calendar: React.FC<CalendarProps> = ({
     year,
     month,
     schedules,
+    isDarkMode,
+    isEditMode,
+    addSchedule,
+    updateSchedules,
+    deleteSchedule,
 }) => {
+    // 지역변수
     const [selectedYear, setSelectedYear] = useState(year)
-    const [selectedMonth, setSelectedMonth] = useState(month - 1)
-    const { isDarkMode } = useDarkModeStore()
+    const [selectedMonth, setSelectedMonth] = useState(month)
+    const [isAddMode, setAddMode] = useState(false)
+    const [isUpdateMode, setUpdateMode] = useState(false)
+    const [insertData, setInsertData] = useState({
+        calendarId: -1,
+        title: '',
+        startDate: '',
+        endDate: '',
+    })
 
-    const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedYear(parseInt(event.target.value, 10))
+    // 토글 함수
+    const toggleAddMode = () => {
+        setAddMode(!isAddMode)
     }
 
-    const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedMonth(parseInt(event.target.value, 10) - 1)
+    const toggleUpdateMode = () => {
+        setUpdateMode(!isUpdateMode)
     }
 
+    // 이벤트 핸들러
+    const handleDateClick = (event: React.MouseEvent, day: Date) => {
+        event.stopPropagation()
+        setAddMode(true)
+
+        //console.log(day)
+    }
+
+    const handleScheduleClick = (
+        event: React.MouseEvent,
+        schedule: ScheduleItem,
+    ) => {
+        event.stopPropagation()
+        setInsertData({
+            calendarId: schedule.calendarId,
+            title: schedule.title,
+            startDate: schedule.startDate,
+            endDate: schedule.endDate,
+        })
+        setUpdateMode(true)
+
+        //console.log(schedule)
+    }
+
+    const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const calenderId = formData.get('calendarId')
+        const title = formData.get('title')
+        const startDate = formData.get('startDate')
+        const endDate = formData.get('endDate')
+
+        // addSchedule({
+        //     calendarId: -1,
+        //     userId: '-1',
+        //     title: title as string,
+        //     startDate: startDate as string,
+        //     endDate: endDate as string,
+        // })
+
+        console.log('Add Form data submitted:', { title, startDate, endDate })
+        setAddMode(false)
+    }
+
+    const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const calenderId = formData.get('calendarId')
+        const title = formData.get('title')
+        const startDate = formData.get('startDate')
+        const endDate = formData.get('endDate')
+
+        // updateSchedules({
+        //         calendarId: -1,
+        //         userId: '-1',
+        //         title: title as string,
+        //         startDate: startDate as string,
+        //         endDate: endDate as string,
+        // })
+
+        console.log('Update Form data submitted:', {
+            title,
+            startDate,
+            endDate,
+        })
+        setUpdateMode(false)
+    }
+
+    const handleDelete = (calendarId: number) => {
+        // deleteSchedule(calendarId)
+
+        console.log('Delete Form data submitted:', { calendarId })
+    }
+
+    const handlePrevMonth = () => {
+        if (selectedMonth === 0) {
+            setSelectedYear(selectedYear - 1)
+            setSelectedMonth(11)
+        } else {
+            setSelectedMonth(selectedMonth - 1)
+        }
+    }
+
+    const handleNextMonth = () => {
+        if (selectedMonth === 11) {
+            setSelectedYear(selectedYear + 1)
+            setSelectedMonth(0)
+        } else {
+            setSelectedMonth(selectedMonth + 1)
+        }
+    }
+
+    // 달력관련 함수
     const days = eachDayOfInterval({
         start: addDays(
             startOfMonth(new Date(selectedYear, selectedMonth)),
@@ -98,7 +209,8 @@ const Calendar: React.FC<CalendarProps> = ({
                         !daySchedules.schedules.some((s: any) => s.level === i)
                     ) {
                         daySchedules.schedules.push({
-                            title: '',
+                            calendarId: -1,
+                            name: '',
                             level: i,
                             visible: false,
                         })
@@ -106,18 +218,23 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
 
                 daySchedules.schedules[currentLevel] = {
-                    title:
+                    calendarId: schedule.calendarId,
+                    name:
                         date.getTime() ===
-                        new Date(schedule.startDate).getTime()
+                            new Date(schedule.startDate).getTime() ||
+                        date.getDay() === 0
                             ? schedule.title
                             : '',
+                    title: schedule.title,
+                    startDate: schedule.startDate,
+                    endDate: schedule.endDate,
                     level: currentLevel,
                     visible: true,
                 }
             }
         })
 
-        console.log(map)
+        //console.log(map)
 
         return map
     }, [schedules])
@@ -145,26 +262,8 @@ const Calendar: React.FC<CalendarProps> = ({
         label: idx + 1 + '월',
     }))
 
-    const handlePrevMonth = () => {
-        if (selectedMonth === 0) {
-            setSelectedYear(selectedYear - 1)
-            setSelectedMonth(11)
-        } else {
-            setSelectedMonth(selectedMonth - 1)
-        }
-    }
-
-    const handleNextMonth = () => {
-        if (selectedMonth === 11) {
-            setSelectedYear(selectedYear + 1)
-            setSelectedMonth(0)
-        } else {
-            setSelectedMonth(selectedMonth + 1)
-        }
-    }
-
     return (
-        <div>
+        <>
             <div className={styles.selectBox}>
                 <div className={styles.selectDateBox}>
                     <Select
@@ -221,7 +320,10 @@ const Calendar: React.FC<CalendarProps> = ({
                     />
                 </div>
             </div>
-            <div style={{ width, height }} className={styles.calendar}>
+            <div
+                style={{ width, height }}
+                className={`${styles.calendar} ${!isEditMode && styles.disableClick}`}
+            >
                 <div
                     className={`${styles.header} ${isDarkMode ? styles.darkHeader : styles.lightHeader}`}
                 >
@@ -237,6 +339,7 @@ const Calendar: React.FC<CalendarProps> = ({
                             key={index}
                             style={dayStyle(day)}
                             className={styles.day}
+                            onClick={(event) => handleDateClick(event, day)}
                         >
                             <div style={{ paddingLeft: '5px' }}>
                                 {format(day, 'd')}
@@ -248,6 +351,14 @@ const Calendar: React.FC<CalendarProps> = ({
                                         <div
                                             key={idx}
                                             className={styles.schedule}
+                                            onClick={(event) => {
+                                                if (schedule.visible) {
+                                                    handleScheduleClick(
+                                                        event,
+                                                        schedule,
+                                                    )
+                                                }
+                                            }}
                                             style={
                                                 schedule.visible == true
                                                     ? {
@@ -259,7 +370,7 @@ const Calendar: React.FC<CalendarProps> = ({
                                                       }
                                             }
                                         >
-                                            {schedule.title}
+                                            {schedule.name}
                                         </div>
                                     ),
                                 )}
@@ -267,7 +378,81 @@ const Calendar: React.FC<CalendarProps> = ({
                     ))}
                 </div>
             </div>
-        </div>
+            <Modal
+                height="50%"
+                width="40%"
+                isVisible={isAddMode}
+                toggleModal={toggleAddMode}
+            >
+                <form onSubmit={handleAddSubmit}>
+                    <input
+                        type="hidden"
+                        name="calendarId"
+                        value={insertData.calendarId}
+                    />
+                    <label htmlFor="title">Title</label>
+                    <input type="text" id="title" name="title" required />
+                    <br></br>
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="endDate">End Date</label>
+                    <input type="date" id="endDate" name="endDate" required />
+                    <br></br>
+                    <button type="submit">Save</button>
+                </form>
+            </Modal>
+            <Modal
+                height="50%"
+                width="40%"
+                isVisible={isUpdateMode}
+                toggleModal={toggleUpdateMode}
+            >
+                <form onSubmit={handleUpdateSubmit}>
+                    <input
+                        type="hidden"
+                        name="calendarId"
+                        value={insertData.calendarId}
+                    />
+                    <label htmlFor="title">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={insertData.title}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        value={insertData.startDate}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="endDate">End Date</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        value={insertData.endDate}
+                        required
+                    />
+                    <br></br>
+                    <button type="submit">update</button>
+                </form>
+                <button onClick={() => handleDelete(insertData.calendarId)}>
+                    delete
+                </button>
+            </Modal>
+        </>
     )
 }
 
