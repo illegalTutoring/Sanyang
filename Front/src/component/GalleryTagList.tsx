@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './Gallery.module.scss'
+import styles from './GalleryTagList.module.scss'
 
 interface TagListProps {
     tags: string[]

@@ -9,6 +9,7 @@ import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
+import { galleryStore } from '@/utils/store/useGalleryStore'
 
 let defaultImages = getGalleryList().data
 if (!defaultImages) {
@@ -24,21 +25,7 @@ if (!defaultImages) {
             startDate: '',
             endDate: '',
             uploadDate: '',
-            tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-            ],
+            tags: ['apple', 'alalal', 'apricot', 'avocado', 'acai', 'acerola'],
             original: 'https://placehold.co/600x400',
             thumbnail: 'https://placehold.co/600x400',
         },
@@ -50,12 +37,6 @@ if (!defaultImages) {
             endDate: '',
             uploadDate: '',
             tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
                 'anchovy',
                 'antelope',
                 'ant',
@@ -63,6 +44,8 @@ if (!defaultImages) {
                 'asteroid',
                 'avenue',
                 'answer',
+                'astronomy',
+                'algebra',
             ],
             original: 'https://placehold.co/900x400',
             thumbnail: 'https://placehold.co/900x400',
@@ -74,21 +57,7 @@ if (!defaultImages) {
             startDate: '',
             endDate: '',
             uploadDate: '',
-            tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-            ],
+            tags: ['artifact', 'alchemy'],
             original: 'https://placehold.co/900x1200',
             thumbnail: 'https://placehold.co/900x1200',
         },
@@ -99,21 +68,7 @@ if (!defaultImages) {
             startDate: '',
             endDate: '',
             uploadDate: '',
-            tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-            ],
+            tags: ['angle', 'argyle', 'ascot', 'artifact'],
             original: 'https://placehold.co/600x1100',
             thumbnail: 'https://placehold.co/600x1100',
         },
@@ -124,21 +79,7 @@ if (!defaultImages) {
             startDate: '',
             endDate: '',
             uploadDate: '',
-            tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-            ],
+            tags: ['aviation'],
             original: 'https://placehold.co/350X750',
             thumbnail: 'https://placehold.co/350X750',
         },
@@ -149,21 +90,7 @@ if (!defaultImages) {
             startDate: '',
             endDate: '',
             uploadDate: '',
-            tags: [
-                'apple',
-                'alalal',
-                'apricot',
-                'avocado',
-                'acai',
-                'acerola',
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-            ],
+            tags: ['aviary', 'axis'],
             original: 'https://placehold.co/350X650',
             thumbnail: 'https://placehold.co/350X650',
         },
@@ -177,6 +104,14 @@ console.log(defaultImages)
 const GalleryPage = () => {
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
+
+    useEffect(() => {
+        galleryStore.getState().setImages(defaultImages)
+        galleryStore.getState().setTagList(defaultImages)
+
+        let imageDivs = document.getElementsByClassName('galleryImage')
+        galleryStore.getState().setImageDivs(imageDivs)
+    }, [])
 
     // const defaultImages = [
     //     {
@@ -279,32 +214,7 @@ const GalleryPage = () => {
 
     const defaultImages2 = defaultImages.slice(0, 4)
 
-    const tags = [
-        'apple',
-        'alalal',
-        'apricot',
-        'avocado',
-        'acai',
-        'acerola',
-        'anchovy',
-        'antelope',
-        'ant',
-        'anaconda',
-        'asteroid',
-        'avenue',
-        'answer',
-        'astronomy',
-        'algebra',
-        'artifact',
-        'alchemy',
-        'angle',
-        'argyle',
-        'ascot',
-        'artifact',
-        'aviation',
-        'aviary',
-        'axis',
-    ]
+    const tags = galleryStore.getState().tagList
 
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
