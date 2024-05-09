@@ -23,12 +23,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.builder().message(errorCode.getErrorMessage()).build();
         return handleExceptionInternal(e, errorResponse, errorCode.getHttpStatus(), request);
-
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<Object> handleArgumentException(Exception ex, WebRequest request) {
-
         ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
         return handleExceptionInternal(ex, errorResponse, HttpStatus.BAD_REQUEST, request);
     }
@@ -62,7 +60,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 return null;
             }
         }
-
 
         if (httpStatus.equals(HttpStatus.INTERNAL_SERVER_ERROR) && body == null) {
             request.setAttribute("jakarta.servlet.error.exception", ex, 0);
