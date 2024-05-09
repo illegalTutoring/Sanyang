@@ -9,6 +9,7 @@ import com.b301.canvearth.domain.work.service.WorkService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> registWork(@RequestPart MultipartFile image,
                                              @RequestPart("data") WorkRequestPostDto requestPostDto){
         log.info("===== [AdminWorkController] registWork start =====");
@@ -67,6 +69,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 수정")
     @PutMapping("/{workId}")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> modifyWork(@PathVariable("workId") Long workId,
                                              @RequestPart(value="image", required = false) MultipartFile image,
                                              @RequestPart("data") WorkRequestPutDto requestPutDto) {
@@ -98,6 +101,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 삭제")
     @DeleteMapping("/{workId}")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> deleteWork(@PathVariable("workId") Long workId) {
         log.info("===== [AdminWorkController] deleteWork start =====");
         log.info("[path variable]: {}", workId);

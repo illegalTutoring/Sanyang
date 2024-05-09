@@ -1,11 +1,13 @@
 package com.b301.canvearth.global.config;
 
+import com.b301.canvearth.global.handler.CustomAccessDeniedHandler;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.filter.CustomLogoutFilter;
 import com.b301.canvearth.global.filter.ExceptionHandlerFilter;
 import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.filter.LogInFilter;
+import com.b301.canvearth.global.handler.JWTAuthenticationEntryPoint;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,10 @@ public class SecurityConfig {
     private final AccessService accessService;
 
     private final ResponseUtil responseUtil;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -93,10 +99,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         // Swagger
                         .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-resources/**"
+                                "/api/v3/api-docs/**",
+                                "/api/swagger-ui/**"
+//                                "/webjars/**",
+//                                "/swagger-resources/**"
                         ).permitAll()
                         // Spring Security
                         .requestMatchers("/",
@@ -124,13 +130,22 @@ public class SecurityConfig {
                 .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
                         UsernamePasswordAuthenticationFilter.class);
         http
-                .addFilterBefore(new JWTFilter(jwtUtil, accessService), LogInFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil, accessService),
+                        LogInFilter.class);
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService, responseUtil), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService, responseUtil),
+                        LogoutFilter.class);
 
         http
-                .addFilterBefore(new ExceptionHandlerFilter(responseUtil), CustomLogoutFilter.class);
+                .addFilterBefore(new ExceptionHandlerFilter(responseUtil),
+                        CustomLogoutFilter.class);
+
+        http
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling
+                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler));
 
         http
                 .sessionManagement((session) -> session

@@ -9,6 +9,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
@@ -26,15 +28,17 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             handleExceptionInternal(e, e.getErrorCode().getHttpStatus(), e.getErrorCode().getErrorMessage(), request, response);
         } catch (IllegalArgumentException e){
             handleExceptionInternal(e, HttpStatus.BAD_REQUEST, e.getMessage(), request, response);
-        }catch (Exception e){
+        } catch (AuthenticationException e){
+            handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, e.getMessage(), request, response);
+        } catch (AccessDeniedException e){
+            handleExceptionInternal(e, HttpStatus.FORBIDDEN, e.getMessage(), request, response);
+        } catch (Exception e){
             handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR,"서버에러", request, response);
         }
     }
 
     protected void handleExceptionInternal(Exception ex, HttpStatus httpStatus, String message, HttpServletRequest request, HttpServletResponse response) {
-
         log.info("=========================== START EXCEPTION INFO ===============================");
-
 
         if (response != null && response.isCommitted()) {
             if (log.isWarnEnabled()) {
@@ -42,10 +46,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             }
 
             return;
-        }
-
-        if (httpStatus.equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-            request.setAttribute("jakarta.servlet.error.exception", ex);
         }
 
         log.error("Exception name: [{}]", ex.toString());
@@ -63,11 +63,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         log.info("================================================================================");
 
         if(response != null){
-            try{
-                responseUtil.sendMessage(response, false, "", httpStatus, message);
-            }catch(Exception e){
-                log.error("Exception cause: ", e);
-            }
+            responseUtil.sendMessage(response, false, "", httpStatus, message);
         }
 
     }

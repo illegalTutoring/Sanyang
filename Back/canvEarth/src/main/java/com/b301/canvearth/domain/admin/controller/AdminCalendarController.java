@@ -7,6 +7,7 @@ import com.b301.canvearth.domain.calendar.service.CalendarService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class AdminCalendarController {
 
     @PostMapping
     @Operation(summary = "REQ-ADMIN-07", description = "일정 등록")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto) {
         log.info("===== [AdminCalendarController] registCalendar start =====");
         log.info("[requestData]: {}", requestPostDto);
@@ -55,6 +57,7 @@ public class AdminCalendarController {
 
     @PutMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 수정")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> modifyCalendar(@PathVariable("calendarId") Long calendarId,
                                                  @RequestBody CalendarRequestPutDto requestPutDto) {
         log.info("===== [AdminCalendarController] modifyCalendar start =====");
@@ -72,6 +75,7 @@ public class AdminCalendarController {
 
     @DeleteMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 삭제")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId) {
         log.info("===== [AdminCalendarController] deleteCalendar start =====");
         log.info("[path variable]: {}", calendarId);

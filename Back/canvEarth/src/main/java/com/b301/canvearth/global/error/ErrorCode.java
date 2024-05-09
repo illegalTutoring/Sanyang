@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // Membership Management
+    PARAMETER_IS_EMPTY(HttpStatus.BAD_REQUEST, "파라미터가 비어있습니다"),
     LOGIN_FAIL(HttpStatus.UNAUTHORIZED,"로그인 실패"),
     ID_DUPLICATE(HttpStatus.CONFLICT,"중복된 ID 입니다"),
     USERNAME_DUPLICATE(HttpStatus.CONFLICT,"중복된 이름 입니다"),

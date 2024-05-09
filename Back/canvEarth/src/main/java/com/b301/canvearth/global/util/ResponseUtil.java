@@ -3,6 +3,7 @@ package com.b301.canvearth.global.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class ResponseUtil {
 
@@ -25,7 +27,7 @@ public class ResponseUtil {
         return ResponseEntity.status(httpStatus).body(data);
     }
 
-    public void sendMessage(HttpServletResponse response, boolean isLogIn, String username, HttpStatus httpStatus, String message) throws IOException {
+    public void sendMessage(HttpServletResponse response, boolean isLogIn, String username, HttpStatus httpStatus, String message) {
         Map<String, String> data = new HashMap<>();
         data.put(MESSAGE, message);
 
@@ -37,7 +39,11 @@ public class ResponseUtil {
         response.setContentType("application/json;charset=utf-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getWriter().write(objectMapper.writeValueAsString(data));
+        try{
+            response.getWriter().write(objectMapper.writeValueAsString(data));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
         response.setStatus(httpStatus.value());
     }
 
