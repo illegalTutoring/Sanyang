@@ -11,6 +11,7 @@ import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,8 @@ public class AdminWorkController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> registWork(@RequestPart MultipartFile image,
-                                             @RequestPart("data") WorkRequestPostDto requestPostDto){
+                                             @RequestPart("data") WorkRequestPostDto requestPostDto,
+                                             HttpServletRequest request){
         log.info("===== [AdminWorkController] registWork start =====");
         log.info("[requestImageName]: {}", image.getOriginalFilename());
         log.info("[requestData]: {}", requestPostDto);
@@ -59,7 +61,7 @@ public class AdminWorkController {
             throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
-        Work insertWork = workService.insertWork(image, requestPostDto);
+        Work insertWork = workService.insertWork(image, requestPostDto, request);
         log.info("insertWork: {}", insertWork);
 
         responseBody.put(MESSAGE, "외주 작품 등록을 완료하였습니다.");
