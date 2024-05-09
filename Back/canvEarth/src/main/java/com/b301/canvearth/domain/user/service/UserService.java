@@ -37,26 +37,30 @@ public class UserService {
 
     public String signInProcess(SignInDto signinDto) throws CustomException {
 
-        // 1. 회원중복 조회
+        // 1. 파라미터 검증
         String id = signinDto.getId();
         String username = signinDto.getUsername();
         String password = signinDto.getPassword();
 
-        // 1-1. Id 중복검사
+        if(id == null || username == null || password == null) {
+            throw new CustomException(ErrorCode.PARAMETER_IS_EMPTY);
+        }
+
+        // 2. Id 중복검사
         boolean isExist = userRepository.existsById(id);
 
         if(isExist){
             throw new CustomException(ErrorCode.ID_DUPLICATE);
         }
 
-        // 1-2. UserName 중복검사
+        // 3. UserName 중복검사
         isExist = userRepository.existsByUserName(username);
 
         if(isExist){
             throw new CustomException(ErrorCode.USERNAME_DUPLICATE);
         }
 
-        // 회원 등록
+        // 4. 회원 등록
         User data = new User();
         data.setId(id);
         data.setUserName(username);
