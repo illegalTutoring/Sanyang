@@ -29,7 +29,7 @@ public class GalleryController {
 
     private final GalleryService galleryService;
 
-    @Operation(summary = "REQ-GALLERY-01", description = "갤러리 목록")
+    @Operation(summary = "REQ-GALLERY-01", description = "갤러리 목록 조회")
     @GetMapping()
     public ResponseEntity<Object> getGalleryList(){
         log.info("===== [GalleryController] getGalleryList start =====");

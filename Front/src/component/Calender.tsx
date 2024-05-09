@@ -10,6 +10,8 @@ import {
     addDays,
 } from 'date-fns'
 import styles from './Calendar.module.scss'
+import Select from 'react-select'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface ScheduleItem {
     calendarId: number
@@ -37,6 +39,7 @@ const Calendar: React.FC<CalendarProps> = ({
 }) => {
     const [selectedYear, setSelectedYear] = useState(year)
     const [selectedMonth, setSelectedMonth] = useState(month - 1)
+    const { isDarkMode } = useDarkModeStore()
 
     const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedYear(parseInt(event.target.value, 10))
@@ -122,57 +125,147 @@ const Calendar: React.FC<CalendarProps> = ({
     const dayStyle = (day: Date) => {
         const isThisMonth = day.getMonth() === selectedMonth
         return {
-            color: isThisMonth ? '000' : '#ccc',
+            color: isThisMonth
+                ? isDarkMode
+                    ? 'white'
+                    : 'black'
+                : isDarkMode
+                  ? '#444'
+                  : '#ccc',
+        }
+    }
+
+    const yearOptions = Array.from({ length: 10 }).map((_, idx) => ({
+        value: year - 5 + idx,
+        label: year - 5 + idx,
+    }))
+
+    const monthOptions = Array.from({ length: 12 }).map((_, idx) => ({
+        value: idx + 1,
+        label: idx + 1 + '월',
+    }))
+
+    const handlePrevMonth = () => {
+        if (selectedMonth === 0) {
+            setSelectedYear(selectedYear - 1)
+            setSelectedMonth(11)
+        } else {
+            setSelectedMonth(selectedMonth - 1)
+        }
+    }
+
+    const handleNextMonth = () => {
+        if (selectedMonth === 11) {
+            setSelectedYear(selectedYear + 1)
+            setSelectedMonth(0)
+        } else {
+            setSelectedMonth(selectedMonth + 1)
         }
     }
 
     return (
-        <div style={{ width, height }} className={styles.calendar}>
-            <div className={styles.header}>
-                <select value={selectedYear} onChange={handleYearChange}>
-                    {Array.from({ length: 10 }).map((_, idx) => (
-                        <option key={idx} value={year - 5 + idx}>
-                            {year - 5 + idx}
-                        </option>
-                    ))}
-                </select>
-                <select value={selectedMonth + 1} onChange={handleMonthChange}>
-                    {Array.from({ length: 12 }).map((_, idx) => (
-                        <option key={idx} value={idx + 1}>
-                            {format(new Date(0, idx), 'MMMM')}
-                        </option>
-                    ))}
-                </select>
+        <div>
+            <div className={styles.selectBox}>
+                <div className={styles.selectDateBox}>
+                    <Select
+                        value={yearOptions.find(
+                            (option) => option.value === selectedYear,
+                        )}
+                        options={yearOptions}
+                        onChange={(option) => {
+                            if (option) {
+                                setSelectedYear(option.value)
+                            }
+                        }}
+                        className={styles.customSelect}
+                        isSearchable={false}
+                        styles={{
+                            menu: (provided) => ({
+                                ...provided,
+                                marginTop: -10,
+                            }),
+                        }}
+                    />
+                    <Select
+                        value={monthOptions.find(
+                            (option) => option.value === selectedMonth + 1,
+                        )}
+                        options={monthOptions}
+                        onChange={(option) => {
+                            if (option) {
+                                setSelectedMonth(option.value - 1)
+                            }
+                        }}
+                        className={styles.customSelect}
+                        isSearchable={false}
+                        styles={{
+                            menu: (provided) => ({
+                                ...provided,
+                                marginTop: -10,
+                            }),
+                        }}
+                    />
+                </div>
+                <div className={styles.selectButtonBox}>
+                    <img
+                        className={styles.selectButton}
+                        src={`${isDarkMode ? '/svgs/arrow_left_white.svg' : '/svgs/arrow_left_black.svg'}`}
+                        onClick={handlePrevMonth}
+                        alt="Previous Month"
+                    />
+                    <img
+                        className={styles.selectButton}
+                        src={`${isDarkMode ? '/svgs/arrow_right_white.svg' : '/svgs/arrow_right_black.svg'}`}
+                        onClick={handleNextMonth}
+                        alt="Next Month"
+                    />
+                </div>
             </div>
-            <div className={styles.daysGrid}>
-                {days.map((day, index) => (
-                    <div
-                        key={index}
-                        style={dayStyle(day)}
-                        className={styles.day}
-                    >
-                        <div style={{ paddingLeft: '5px' }}>
-                            {format(day, 'd')}
+            <div style={{ width, height }} className={styles.calendar}>
+                <div
+                    className={`${styles.header} ${isDarkMode ? styles.darkHeader : styles.lightHeader}`}
+                >
+                    {['월', '화', '수', '목', '금', '토', '일'].map(
+                        (day, index) => (
+                            <div key={index}>{day}</div>
+                        ),
+                    )}
+                </div>
+                <div className={styles.daysGrid}>
+                    {days.map((day, index) => (
+                        <div
+                            key={index}
+                            style={dayStyle(day)}
+                            className={styles.day}
+                        >
+                            <div style={{ paddingLeft: '5px' }}>
+                                {format(day, 'd')}
+                            </div>
+                            {scheduleMap
+                                .get(format(day, 'yyyy-MM-dd'))
+                                ?.schedules.map(
+                                    (schedule: any, idx: number) => (
+                                        <div
+                                            key={idx}
+                                            className={styles.schedule}
+                                            style={
+                                                schedule.visible == true
+                                                    ? {
+                                                          backgroundColor: `hsl(${schedule.level * 30}, 50%, 70%)`,
+                                                      }
+                                                    : {
+                                                          backgroundColor:
+                                                              '#ffffff00',
+                                                      }
+                                            }
+                                        >
+                                            {schedule.title}
+                                        </div>
+                                    ),
+                                )}
                         </div>
-                        {scheduleMap
-                            .get(format(day, 'yyyy-MM-dd'))
-                            ?.schedules.map((schedule: any, idx: number) => (
-                                <div
-                                    key={idx}
-                                    className={styles.schedule}
-                                    style={
-                                        schedule.visible == true
-                                            ? {
-                                                  backgroundColor: `hsl(${schedule.level * 30}, 50%, 70%)`,
-                                              }
-                                            : { backgroundColor: '#ffffff00' }
-                                    }
-                                >
-                                    {schedule.title}
-                                </div>
-                            ))}
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     )

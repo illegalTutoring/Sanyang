@@ -1,6 +1,6 @@
 import { serverResponseDTO } from './common'
 
-interface galleryInfo {
+export interface galleryInfo {
     galleryId: number
     userId: string
     title: string
@@ -10,7 +10,6 @@ interface galleryInfo {
     tags: Array<string>
     original: string
     thumbnail: string
-    watermark: string
 }
 
 export interface getGalleryListResponseDTO extends serverResponseDTO {

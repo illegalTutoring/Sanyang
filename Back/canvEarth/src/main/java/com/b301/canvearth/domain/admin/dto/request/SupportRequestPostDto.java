@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,15 +12,12 @@ import java.util.List;
 public class SupportRequestPostDto {
 
     private final String title;
-    private final Date uploadDate;
     private final List<SupportLink> supportLink;
     private final String content;
 
     @Builder
-    public SupportRequestPostDto(String title, Date uploadDate,
-                                 List<SupportLink> supportLink, String content) {
+    public SupportRequestPostDto(String title, List<SupportLink> supportLink, String content) {
         this.title = title;
-        this.uploadDate = uploadDate;
         this.supportLink = supportLink;
         this.content = content;
     }
@@ -31,6 +27,8 @@ public class SupportRequestPostDto {
 
         if(title == null || title.isEmpty()) {
             isValid = "title";
+        } else if(supportLink == null || supportLink.isEmpty()) {
+            isValid = "supportLink";
         }
 
         return isValid;

@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './Banner.module.scss'
 
-interface BannerProps {
-    images: string[]
-    yindex: number[]
-    interval: number
-    width?: string
-    height?: string
+interface Images {
+    url: string
+    yindex: number
 }
 
-const Banner: React.FC<BannerProps> = ({
-    images,
-    yindex,
-    interval,
-    width = '100%',
-    height = '300px',
-}) => {
+interface BannerProps {
+    width: string
+    height: string
+    images: Images[]
+    interval: number
+}
+
+const Banner: React.FC<BannerProps> = ({ width, height, images, interval }) => {
     const extendedImages = [...images, images[0]]
-    const extendedYIndex = [...yindex, yindex[0]] // yindex도 확장해줍니다.
+
     const [currentIdx, setCurrentIdx] = useState(0)
     const [transitionEnabled, setTransitionEnabled] = useState(true)
 
@@ -38,10 +36,13 @@ const Banner: React.FC<BannerProps> = ({
         )
 
         return () => clearInterval(timer)
-    }, [currentIdx, extendedImages.length, interval])
+    }, [currentIdx, extendedImages, interval, transitionEnabled])
 
     return (
-        <div className={styles.bannerContainer} style={{ width, height }}>
+        <div
+            className={styles.container}
+            style={{ width, height, backgroundColor: '#bbb' }}
+        >
             <div
                 className={styles.imagesWrapper}
                 style={{
@@ -57,9 +58,10 @@ const Banner: React.FC<BannerProps> = ({
                         key={index}
                         className={styles.imageItem}
                         style={{
-                            backgroundImage: `url(${image})`,
-                            backgroundPositionY: `${extendedYIndex[index]}px`,
+                            backgroundImage: `url(${image.url})`,
+                            backgroundPositionY: `${image.yindex}px`,
                             backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
                             width: `${100 / images.length}%`,
                             height: '100%',
                         }}

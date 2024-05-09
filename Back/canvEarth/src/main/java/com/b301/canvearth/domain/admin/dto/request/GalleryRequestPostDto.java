@@ -32,7 +32,7 @@ public class GalleryRequestPostDto {
             isValid = "title";
         } else if(createDate == null || createDate.isEmpty()) {
             isValid = "startDate";
-        } else if(tags == null || tags.isEmpty()) {
+        } else if(tags == null) {
             isValid = "tags";
         }
         return isValid;
