@@ -270,6 +270,7 @@ const GalleryPage = () => {
                         width={'100%'}
                         height={'300px'}
                         colCount={defaultImages2.length}
+                        isDarkMode={isDarkMode}
                     />
                 </div>
             </div>

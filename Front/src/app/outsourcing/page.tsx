@@ -3,6 +3,7 @@
 import Gallery from '@/component/Gallery'
 import GridGallery from '@/component/GridGallery'
 import TagInput from '@/component/TagInput'
+import useEditModeStore from '@/utils/store/useEditModeStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
 export interface ImageData {
@@ -21,6 +22,7 @@ export interface ImageData {
 
 const OutsourcingPage = () => {
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
     // 들어온 데이터
     const defaultImages = [
@@ -150,6 +152,8 @@ const OutsourcingPage = () => {
                         width={'100%'}
                         height={'100%'}
                         colCount={2}
+                        isDarkMode={isDarkMode}
+                        isEditMode={isEditMode}
                     />
                 </div>
             </div>

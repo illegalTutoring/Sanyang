@@ -23,6 +23,8 @@ export interface GalleryProps {
     colCount: number
     width?: string
     height?: string
+    isEditMode?: boolean
+    isDarkMode?: boolean
 }
 
 const GridGallery: React.FC<GalleryProps> = ({
@@ -30,10 +32,10 @@ const GridGallery: React.FC<GalleryProps> = ({
     colCount,
     width,
     height,
+    isEditMode = false,
+    isDarkMode = false,
 }) => {
     const gridTemplateColumns = `repeat(${colCount}, 1fr)`
-    const { isDarkMode } = useDarkModeStore()
-    const { isEditMode } = useEditModeStore()
 
     return (
         <div
