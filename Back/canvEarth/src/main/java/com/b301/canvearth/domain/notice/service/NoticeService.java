@@ -1,6 +1,6 @@
 package com.b301.canvearth.domain.notice.service;
 
-import com.b301.canvearth.domain.admin.dto.NoticeRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.NoticeRequestPostDto;
 import com.b301.canvearth.domain.notice.dto.NoticeDto;
 import com.b301.canvearth.domain.notice.dto.NoticeTitleListResponseDto;
 import com.b301.canvearth.domain.notice.entity.Notice;

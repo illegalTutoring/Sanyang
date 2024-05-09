@@ -14,7 +14,10 @@ public class User {
 
     @Id
     private String id;
+    @Column(unique=true, nullable=false)
     private String userName;
+    @Column(nullable=false)
     private String userPassword;
+    @Column(nullable=false)
     private String role;
 }

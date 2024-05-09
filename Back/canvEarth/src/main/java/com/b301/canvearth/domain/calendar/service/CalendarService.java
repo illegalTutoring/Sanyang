@@ -1,9 +1,7 @@
 package com.b301.canvearth.domain.calendar.service;
 
-import com.b301.canvearth.domain.admin.dto.CalendarRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.CalendarRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.CalendarRequestPutDto;
 import com.b301.canvearth.domain.calendar.entity.Calendar;
-import com.b301.canvearth.domain.calendar.dto.CalendarResponseGetDto;
 import com.b301.canvearth.domain.calendar.repository.CalendarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service

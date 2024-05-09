@@ -1,35 +1,92 @@
 import axios, { AxiosResponse } from 'axios'
+import {
+    getNoticeDetailResponseDTO,
+    getNoticeListResponseDTO,
+    getRecentNoticeResponseDTO,
+    getTotalNoticeResponseDTO,
+} from './DTO/notice'
+import { axiosRequestHandler } from './interceptor'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export async function getNoticeList() {
+export function getNoticeList(): getNoticeListResponseDTO {
     /**
      * 공지 사항 목록을 반환한다.
      *
-     * @returns NoticeTitleListResponseDto 객체의 Array가 담긴 JSON
-     *
      * @beta
      */
 
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'GET',
-        url: `${SERVER_URL}/notice`,
-    })
-    return response.data
+    return axiosRequestHandler(async () => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'GET',
+            url: `${SERVER_URL}/notice`,
+        })
+
+        return {
+            message: response.data.message,
+            data: response.data.data,
+            page: response.data.page,
+        }
+    }, [])
 }
 
-export async function getNoticeDetail(notice_id: number) {
+export function getRecentNotice(): getRecentNoticeResponseDTO {
     /**
-     * 선택된 공지 사항의 상세정보를 반환한다.
-     *
-     * @returns NoticeDto가 담긴 JSON
+     * 가장 최신 공지 사항의 정보를 반환한다.
      *
      * @beta
      */
 
-    const response: AxiosResponse<JSON> = await axios({
-        method: 'GET',
-        url: `${SERVER_URL}/notice/${notice_id}`,
-    })
-    return response.data
+    return axiosRequestHandler(async () => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'GET',
+            url: `${SERVER_URL}/notice/top`,
+        })
+
+        return {
+            data: response.data.data,
+        }
+    }, [])
+}
+
+export function getNoticeDetail(noticeId: number): getNoticeDetailResponseDTO {
+    /**
+     * 가장 최신 공지 사항의 정보를 반환한다.
+     *
+     * @beta
+     */
+
+    return axiosRequestHandler(
+        async (noticeId: number) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'GET',
+                url: `${SERVER_URL}/notice/detail/${noticeId}`,
+            })
+
+            return {
+                data: response.data.data,
+            }
+        },
+        [noticeId],
+    )
+}
+
+export function getTotalNotice(): getTotalNoticeResponseDTO {
+    /**
+     * 공지 사항의 전체 페이지 수를 반환한다.
+     *
+     * @beta
+     */
+
+    return axiosRequestHandler(async () => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'GET',
+            url: `${SERVER_URL}/notice/total`,
+        })
+
+        return {
+            message: response.data.message,
+            data: response.data.data,
+        }
+    }, [])
 }

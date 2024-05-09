@@ -6,9 +6,43 @@
 
 .header {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: center;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    padding: 5px 0;
+}
+
+.darkHeader {
+    background-color: #f8f8f8;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.lightHeader {
+    background-color: #666;
+    color: #f8f8f8;
+    border-bottom: 1px solid #222;
+}
+
+.selectBox {
+    display: flex;
+    justify-content: space-between;
+
+    .selectDateBox {
+        display: flex;
+        height: 50px;
+    }
+
+    .selectButtonBox {
+        width: 70px;
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+
+        .selectButton {
+            width: 20px;
+            cursor: pointer;
+        }
+    }
 }
 
 .daysGrid {
@@ -28,9 +62,15 @@
 }
 
 .schedule {
-    margin: -1px;
     height: 20px;
     background-color: lightblue;
     font-size: 0.8rem;
     overflow: hidden;
+}
+
+.customSelect {
+    height: 100%;
+    width: 150px;
+    min-width: 150px;
+    color: black;
 }

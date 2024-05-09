@@ -94,6 +94,13 @@ a {
 }
 
 @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('/fonts/Pretendard-Regular.ttf') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'NotoSans-Regular';
     src: url('/fonts/NotoSansKR-Regular.ttf') format('woff2');
     font-weight: 900;

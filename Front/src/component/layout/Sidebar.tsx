@@ -12,12 +12,15 @@ const Sidebar: React.FC = () => {
 
     return (
         <>
-            <button
-                className={styles.toggleButton}
+            <img
                 onClick={() => setIsOpen(!isOpen)}
-            >
-                {isOpen ? 'Close' : 'Menu'}
-            </button>
+                className={styles.toggleButton}
+                style={{ cursor: 'pointer', width: '30px', height: '30px' }}
+                src={
+                    isDarkMode ? '/svgs/menu_white.svg' : '/svgs/menu_black.svg'
+                }
+                alt={`${isOpen ? 'Close Menu' : 'Open Menu'}`}
+            />
             <aside
                 className={`${styles.sidebar} ${isOpen ? styles.open : ''} ${isDarkMode ? 'dark' : 'light'}`}
             >

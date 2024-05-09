@@ -1,5 +1,6 @@
 package com.b301.canvearth.global.error;
 
+import com.amazonaws.AmazonServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.builder().message(errorCode.getErrorMessage()).build();
         return handleExceptionInternal(e, errorResponse, errorCode.getHttpStatus(), request);
-
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<Object> handleArgumentException(Exception ex, WebRequest request) {
-
         ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
         return handleExceptionInternal(ex, errorResponse, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {AmazonServiceException.class})
+    public ResponseEntity<Object> handleAmazonException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
+        return handleExceptionInternal(ex, errorResponse, HttpStatus.UNAUTHORIZED, request);
     }
 
 
@@ -56,7 +61,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             }
         }
 
-
         if (httpStatus.equals(HttpStatus.INTERNAL_SERVER_ERROR) && body == null) {
             request.setAttribute("jakarta.servlet.error.exception", ex, 0);
         }
@@ -76,10 +80,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.info("================================================================================");
 
-        return this.createResponseEntity(body, httpStatus, request);
+        return this.createResponseEntity(body, httpStatus);
     }
 
-    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus, WebRequest request) {
+    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus) {
         return ResponseEntity.status(httpStatus).body(body);
     }
 

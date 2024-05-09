@@ -1,11 +1,12 @@
 .link_container {
-    display: flex;
+    display: grid;
     width: 60%;
-    margin-bottom: 50px;
-    grid-template-columns: repeat(4, 1fr);
-    justify-content: space-around;
+    margin: 0 auto 50px;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    align-content: center;
     align-items: center;
-    gap: 30px;
+    justify-items: center;
 }
 
 .colLine {

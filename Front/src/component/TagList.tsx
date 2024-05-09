@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import styles from './TagList.module.scss'
 import useDarkModeStore from '@/utils/store/useThemaStore'
@@ -8,16 +6,16 @@ interface DataItem {
     [key: string]: any
 }
 
-interface TagActionMap {
-    [tag: string]: () => Promise<any>
-}
-
 interface ListProps {
     width: string
     height: string
     pageSize: number
     columns: string[]
-    tagActions: TagActionMap
+    data: DataItem[]
+    tagActions: {
+        [tag: string]: () => void
+    }
+    isEditMode: boolean
 }
 
 const List: React.FC<ListProps> = ({
@@ -25,28 +23,13 @@ const List: React.FC<ListProps> = ({
     height,
     pageSize,
     columns,
+    data,
     tagActions,
+    isEditMode,
 }) => {
-    const [data, setData] = useState<DataItem[]>([])
-    const [currentPage, setCurrentPage] = useState(0)
-    const [activeTag, setActiveTag] = useState<string>('All')
-
-    useEffect(() => {
-        fetchData('All')
-    }, [])
-
-    const fetchData = async (tag: string) => {
-        try {
-            const response = await tagActions[tag]()
-            setActiveTag(tag)
-            setData(response.outsourcingInfo)
-        } catch (error) {
-            console.error('Failed to fetch data:', error)
-        }
-    }
-
     const tags = Object.keys(tagActions)
     const { isDarkMode } = useDarkModeStore()
+    const [activeTag, setActiveTag] = useState(tags[0])
 
     return (
         <div style={{ width, height }}>
@@ -61,7 +44,9 @@ const List: React.FC<ListProps> = ({
                                 : ''
                         }
                         key={tag}
-                        onClick={() => fetchData(tag)}
+                        onClick={() => {
+                            tagActions[tag]()
+                        }}
                     >
                         {tag}
                     </button>
@@ -78,10 +63,12 @@ const List: React.FC<ListProps> = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, index) => (
+                    {data.slice(0, pageSize).map((item, index) => (
                         <tr key={index}>
                             {columns.map((column) => (
-                                <td key={column}>{item[column]}</td>
+                                <td key={`${index}-${column}`}>
+                                    {item[column]}
+                                </td>
                             ))}
                         </tr>
                     ))}
