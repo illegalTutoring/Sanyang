@@ -12,25 +12,23 @@ import {
 import styles from './Calendar.module.scss'
 import Select from 'react-select'
 import Modal from './layout/Modal'
-
-interface ScheduleItem {
-    calendarId: number
-    userId: string
-    title: string
-    startDate: string
-    endDate: string
-}
+import {
+    calendarInfo,
+    registCalendarRequestDTO,
+    modifyCalendarRequestDTO,
+} from '@/utils/api/DTO/calendar'
 
 interface CalendarProps {
     width: string
     height: string
     year: number
     month: number
-    schedules: ScheduleItem[]
+    schedules: calendarInfo[]
     isDarkMode: boolean
     isEditMode: boolean
-    addSchedule: (schedule: ScheduleItem) => void
-    updateSchedules: (schedules: ScheduleItem) => void
+    fetchSchedules: (year: number, month: number) => void
+    addSchedule: (schedule: registCalendarRequestDTO) => void
+    updateSchedules: (schedules: modifyCalendarRequestDTO) => void
     deleteSchedule: (calendarId: number) => void
 }
 
@@ -42,6 +40,7 @@ const Calendar: React.FC<CalendarProps> = ({
     schedules,
     isDarkMode,
     isEditMode,
+    fetchSchedules,
     addSchedule,
     updateSchedules,
     deleteSchedule,
@@ -77,7 +76,7 @@ const Calendar: React.FC<CalendarProps> = ({
 
     const handleScheduleClick = (
         event: React.MouseEvent,
-        schedule: ScheduleItem,
+        schedule: calendarInfo,
     ) => {
         event.stopPropagation()
         setInsertData({
@@ -94,51 +93,56 @@ const Calendar: React.FC<CalendarProps> = ({
     const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-        const calenderId = formData.get('calendarId')
+        const calendarId = formData.get('calendarId')
         const title = formData.get('title')
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        // addSchedule({
-        //     calendarId: -1,
-        //     userId: '-1',
-        //     title: title as string,
-        //     startDate: startDate as string,
-        //     endDate: endDate as string,
-        // })
+        addSchedule({
+            title: title as string,
+            startDate: startDate as string,
+            endDate: endDate as string,
+        })
 
-        console.log('Add Form data submitted:', { title, startDate, endDate })
+        console.log('스케쥴 추가: ', { title, startDate, endDate })
+
+        fetchSchedules(selectedYear, selectedMonth)
         setAddMode(false)
     }
 
     const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-        const calenderId = formData.get('calendarId')
+        const calendarId = formData.get('calendarId')
         const title = formData.get('title')
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        // updateSchedules({
-        //         calendarId: -1,
-        //         userId: '-1',
-        //         title: title as string,
-        //         startDate: startDate as string,
-        //         endDate: endDate as string,
-        // })
+        updateSchedules({
+            calendarId: parseInt(calendarId as string, 10),
+            title: title as string,
+            startDate: startDate as string,
+            endDate: endDate as string,
+        })
 
-        console.log('Update Form data submitted:', {
+        console.log('스케쥴 업데이트: ', {
+            calendarId,
             title,
             startDate,
             endDate,
         })
+
+        fetchSchedules(selectedYear, selectedMonth)
         setUpdateMode(false)
     }
 
     const handleDelete = (calendarId: number) => {
-        // deleteSchedule(calendarId)
+        deleteSchedule(calendarId)
 
-        console.log('Delete Form data submitted:', { calendarId })
+        console.log('스케쥴 삭제:', { calendarId })
+
+        fetchSchedules(selectedYear, selectedMonth)
+        setUpdateMode(false)
     }
 
     const handlePrevMonth = () => {
