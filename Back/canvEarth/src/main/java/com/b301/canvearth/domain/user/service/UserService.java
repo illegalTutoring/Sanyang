@@ -8,10 +8,8 @@ import com.b301.canvearth.domain.user.repository.UserRepository;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
+import com.b301.canvearth.global.util.JWTValidationUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +26,11 @@ public class UserService {
 
     private final JWTUtil jwtUtil;
 
-    private final RefreshService refreshService;
+    private final JWTValidationUtil jwtValidationUtil;
 
     private final AccessService accessService;
+
+    private final RefreshService refreshService;
 
     private final ResponseUtil responseUtil;
 
@@ -74,57 +74,24 @@ public class UserService {
 
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 
-        // 1. 쿠키에서 refresh 토큰 검색
-        String refreshToken = null;
-        Cookie[] cookies = request.getCookies();
+        // 1. Refresh Token 유효성 검사
+        String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
 
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    refreshToken = cookie.getValue();
-                }
-            }
-        }
-
-        if (refreshToken == null) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_DOES_NOT_EXIST);
-        }
-
-        // 2. refresh 토큰 유효기간 검증
-        try{
-            jwtUtil.isExpired(refreshToken);
-        }catch (ExpiredJwtException e){
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_HAS_EXPIRED);
-        }catch (SignatureException e){
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
-        }
-
-        // 3. 토큰 카테고리가 refresh 인지 대조
-        String category = jwtUtil.getCategory(refreshToken);
-
-        if (!category.equals("refresh")) {
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
-        }
-
-        // 4. Redis 에서 refresh 토큰 2차 검증
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        boolean isVaild = refreshService.isRefreshTokenValid(username, refreshToken);
-        if(!isVaild){
-            throw new CustomException(ErrorCode.UNUSED_REFRESH_TOKEN);
-        }
 
-        // 5. access, refresh 토큰 재발급
+        // 2. access, refresh 토큰 재발급
         String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
-        // white list 갱신
+        // 3. white list 갱신
         accessService.deleteAccessToken(username);
         accessService.saveAccessToken(username, newAccess, 600000L);
 
         refreshService.deleteRefreshToken(username);
         refreshService.saveRefreshToken(username, newRefresh, 86400000L);
 
+        // 4. JWT Token 전달
         response.setHeader("accessToken", newAccess);
         response.addCookie(responseUtil.createCookie("refreshToken", newRefresh));
 

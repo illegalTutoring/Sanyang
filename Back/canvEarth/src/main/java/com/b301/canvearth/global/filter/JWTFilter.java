@@ -4,10 +4,8 @@ import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.error.CustomException;
-import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import com.b301.canvearth.global.util.JWTValidationUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,44 +26,23 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
+    private final JWTValidationUtil jwtValidationUtil;
+
     private final AccessService accessService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, CustomException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, CustomException {
 
-        // 1. Header 에서 access 토큰 검색
-        String accessToken = request.getHeader("accessToken");
+        // 1. Access Token 유효성 검사
+        String accessToken = jwtValidationUtil.isValidAccessToken(request);
 
         if(accessToken == null ) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2. access 토큰 유효기간 검증
-        try{
-            jwtUtil.isExpired(accessToken);
-        }catch (ExpiredJwtException e){
-            throw new CustomException(ErrorCode.ACCESS_TOKEN_HAS_EXPIRED);
-        }catch(SignatureException e){
-            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
-        }
-
-        // 3. 토큰 카테고리가 access 인지 대조
-        String category = jwtUtil.getCategory(accessToken);
-
-        if(!category.equals("access")){
-            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
-        }
-
-        // 4. Redis 에서 access 토큰 2차 검증
+        // 2. role = ADMIN 인증
         String username = jwtUtil.getUsername(accessToken);
-        boolean isValid = accessService.isAccessTokenValid(username, accessToken);
-
-        if(!isValid){
-            throw new CustomException(ErrorCode.UNUSED_ACCESS_TOKEN);
-        }
-
-        // 5. role = ADMIN 인증
         String role = jwtUtil.getRole(accessToken);
 
         User userEntity = new User();
