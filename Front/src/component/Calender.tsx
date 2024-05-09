@@ -29,6 +29,9 @@ interface CalendarProps {
     schedules: ScheduleItem[]
     isDarkMode: boolean
     isEditMode: boolean
+    addSchedule: (schedule: ScheduleItem) => void
+    updateSchedules: (schedules: ScheduleItem) => void
+    deleteSchedule: (calendarId: number) => void
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -39,16 +42,120 @@ const Calendar: React.FC<CalendarProps> = ({
     schedules,
     isDarkMode,
     isEditMode,
+    addSchedule,
+    updateSchedules,
+    deleteSchedule,
 }) => {
+    // 지역변수
     const [selectedYear, setSelectedYear] = useState(year)
     const [selectedMonth, setSelectedMonth] = useState(month)
+    const [isAddMode, setAddMode] = useState(false)
+    const [isUpdateMode, setUpdateMode] = useState(false)
+    const [insertData, setInsertData] = useState({
+        calendarId: -1,
+        title: '',
+        startDate: '',
+        endDate: '',
+    })
 
-    const [isAddMode, setIsAddMode] = useState(false)
-
-    const toggleEditMode = () => {
-        setIsAddMode(!isAddMode)
+    // 토글 함수
+    const toggleAddMode = () => {
+        setAddMode(!isAddMode)
     }
 
+    const toggleUpdateMode = () => {
+        setUpdateMode(!isUpdateMode)
+    }
+
+    // 이벤트 핸들러
+    const handleDateClick = (event: React.MouseEvent, day: Date) => {
+        event.stopPropagation()
+        setAddMode(true)
+
+        //console.log(day)
+    }
+
+    const handleScheduleClick = (
+        event: React.MouseEvent,
+        schedule: ScheduleItem,
+    ) => {
+        event.stopPropagation()
+        setInsertData({
+            calendarId: schedule.calendarId,
+            title: schedule.title,
+            startDate: schedule.startDate,
+            endDate: schedule.endDate,
+        })
+        setUpdateMode(true)
+
+        //console.log(schedule)
+    }
+
+    const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const title = formData.get('title')
+        const startDate = formData.get('startDate')
+        const endDate = formData.get('endDate')
+
+        // addSchedule({
+        //     calendarId: -1,
+        //     userId: '-1',
+        //     title: title as string,
+        //     startDate: startDate as string,
+        //     endDate: endDate as string,
+        // })
+
+        console.log('Add Form data submitted:', { title, startDate, endDate })
+        setAddMode(false)
+    }
+
+    const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const title = formData.get('title')
+        const startDate = formData.get('startDate')
+        const endDate = formData.get('endDate')
+
+        // updateSchedules({
+        //         calendarId: -1,
+        //         userId: '-1',
+        //         title: title as string,
+        //         startDate: startDate as string,
+        //         endDate: endDate as string,
+        // })
+
+        console.log('Update Form data submitted:', {
+            title,
+            startDate,
+            endDate,
+        })
+        setUpdateMode(false)
+    }
+
+    const handleDelete = (calendarId: number) => {
+        console.log('Delete Form data submitted:', { calendarId })
+    }
+
+    const handlePrevMonth = () => {
+        if (selectedMonth === 0) {
+            setSelectedYear(selectedYear - 1)
+            setSelectedMonth(11)
+        } else {
+            setSelectedMonth(selectedMonth - 1)
+        }
+    }
+
+    const handleNextMonth = () => {
+        if (selectedMonth === 11) {
+            setSelectedYear(selectedYear + 1)
+            setSelectedMonth(0)
+        } else {
+            setSelectedMonth(selectedMonth + 1)
+        }
+    }
+
+    // 달력관련 함수
     const days = eachDayOfInterval({
         start: addDays(
             startOfMonth(new Date(selectedYear, selectedMonth)),
@@ -98,8 +205,8 @@ const Calendar: React.FC<CalendarProps> = ({
                         !daySchedules.schedules.some((s: any) => s.level === i)
                     ) {
                         daySchedules.schedules.push({
-                            calendarId: schedule.calendarId,
-                            title: '',
+                            calendarId: -1,
+                            name: '',
                             level: i,
                             visible: false,
                         })
@@ -108,18 +215,22 @@ const Calendar: React.FC<CalendarProps> = ({
 
                 daySchedules.schedules[currentLevel] = {
                     calendarId: schedule.calendarId,
-                    title:
+                    name:
                         date.getTime() ===
-                        new Date(schedule.startDate).getTime()
+                            new Date(schedule.startDate).getTime() ||
+                        date.getDay() === 0
                             ? schedule.title
                             : '',
+                    title: schedule.title,
+                    startDate: schedule.startDate,
+                    endDate: schedule.endDate,
                     level: currentLevel,
                     visible: true,
                 }
             }
         })
 
-        console.log(map)
+        //console.log(map)
 
         return map
     }, [schedules])
@@ -146,38 +257,6 @@ const Calendar: React.FC<CalendarProps> = ({
         value: idx + 1,
         label: idx + 1 + '월',
     }))
-
-    const handlePrevMonth = () => {
-        if (selectedMonth === 0) {
-            setSelectedYear(selectedYear - 1)
-            setSelectedMonth(11)
-        } else {
-            setSelectedMonth(selectedMonth - 1)
-        }
-    }
-
-    const handleNextMonth = () => {
-        if (selectedMonth === 11) {
-            setSelectedYear(selectedYear + 1)
-            setSelectedMonth(0)
-        } else {
-            setSelectedMonth(selectedMonth + 1)
-        }
-    }
-
-    const handleDateClick = (event: React.MouseEvent, day: Date) => {
-        event.stopPropagation()
-        setIsAddMode(true)
-        console.log(day)
-    }
-
-    const handleScheduleClick = (
-        event: React.MouseEvent,
-        calendarId: number,
-    ) => {
-        event.stopPropagation()
-        console.log(calendarId)
-    }
 
     return (
         <div className={`${!isEditMode && styles.disableClick}`}>
@@ -269,7 +348,6 @@ const Calendar: React.FC<CalendarProps> = ({
                                                 if (schedule.visible) {
                                                     handleScheduleClick(
                                                         event,
-                                                        schedule.calendarId,
                                                         schedule,
                                                     )
                                                 }
@@ -285,7 +363,7 @@ const Calendar: React.FC<CalendarProps> = ({
                                                       }
                                             }
                                         >
-                                            {schedule.title}
+                                            {schedule.name}
                                         </div>
                                     ),
                                 )}
@@ -297,9 +375,65 @@ const Calendar: React.FC<CalendarProps> = ({
                 height="50%"
                 width="40%"
                 isVisible={isAddMode}
-                toggleModal={toggleEditMode}
+                toggleModal={toggleAddMode}
             >
-                <div></div>
+                <form onSubmit={handleAddSubmit}>
+                    <label htmlFor="title">Title</label>
+                    <input type="text" id="title" name="title" required />
+                    <br></br>
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="endDate">End Date</label>
+                    <input type="date" id="endDate" name="endDate" required />
+                    <br></br>
+                    <button type="submit">Save</button>
+                </form>
+            </Modal>
+            <Modal
+                height="50%"
+                width="40%"
+                isVisible={isUpdateMode}
+                toggleModal={toggleUpdateMode}
+            >
+                <form onSubmit={handleUpdateSubmit}>
+                    <label htmlFor="title">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={insertData.title}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        value={insertData.startDate}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="endDate">End Date</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        value={insertData.endDate}
+                        required
+                    />
+                    <br></br>
+                    <button type="submit">update</button>
+                </form>
+                <button onClick={() => handleDelete(insertData.calendarId)}>
+                    delete
+                </button>
             </Modal>
         </div>
     )

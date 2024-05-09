@@ -86,6 +86,9 @@ const PersonalPage: React.FC = () => {
                 schedules={schedules}
                 isDarkMode={isDarkMode}
                 isEditMode={isEditMode}
+                addSchedule={(schedule) => {}}
+                updateSchedules={(schedules) => {}}
+                deleteSchedule={(schedule) => {}}
             />
         </article>
     )
