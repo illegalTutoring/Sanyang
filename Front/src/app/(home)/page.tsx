@@ -193,8 +193,20 @@ const HomePage = () => {
                                     {embedData.map((data, index) => (
                                         <div
                                             key={index}
-                                            style={{ marginBottom: '50px' }}
+                                            className={styles.embedLink}
                                         >
+                                            {isEditMode && (
+                                                <img
+                                                    className={
+                                                        styles.deleteButton
+                                                    }
+                                                    src={'/svgs/delete_red.svg'}
+                                                    alt="Delete"
+                                                    // onClick={(event) =>
+                                                    //      이곳에 임베드 삭제 이벤트
+                                                    // }
+                                                />
+                                            )}
                                             <DraggableProfile
                                                 key={data.type}
                                                 item={data}
@@ -205,7 +217,10 @@ const HomePage = () => {
                                     ))}
                                     <div
                                         key={-1}
-                                        style={{ marginBottom: '50px' }}
+                                        className={styles.embedLink}
+                                        // onClick={
+                                        //      이곳에 임베드 추가 이벤트
+                                        // }
                                     >
                                         <Profile
                                             src={getImageSource(6)}
@@ -219,7 +234,10 @@ const HomePage = () => {
                                 {embedData.map((data, index) => (
                                     <div
                                         key={index}
-                                        style={{ marginBottom: '50px' }}
+                                        className={styles.embedLink}
+                                        // onClick={
+                                        //     이곳에 링크 이동 이벤트
+                                        // }
                                     >
                                         <Profile
                                             src={getImageSource(data.type)}

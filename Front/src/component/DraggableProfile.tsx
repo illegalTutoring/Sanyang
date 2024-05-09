@@ -116,7 +116,7 @@ const DraggableProfile: React.FC<ProfileComponentProps> = ({
             animate="animationEnd"
             drag="x"
             dragConstraints={{ left: 0, right: 300 }}
-            style={{ opacity: opacity, cursor: cursorStyle }}
+            style={{ opacity: opacity }}
             className={styles.embedLink}
         >
             <Profile src={getImageSource(item.type)} size={70} />
