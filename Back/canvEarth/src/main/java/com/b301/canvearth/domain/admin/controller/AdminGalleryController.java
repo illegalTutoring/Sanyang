@@ -8,6 +8,7 @@ import com.b301.canvearth.domain.gallery.service.GalleryService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class AdminGalleryController {
 
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> registGallery(@RequestPart MultipartFile image,
                                                 @RequestPart("data") GalleryRequestPostDto requestPostDto){
         log.info("===== [AdminGalleryController] registGallery start =====");
@@ -64,8 +66,26 @@ public class AdminGalleryController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @Operation(summary = "REQ-ADMIN-02", description = "갤러리 삭제")
+    @DeleteMapping("/{galleryId}")
+    @SecurityRequirement(name = "accessToken")
+    public ResponseEntity<Object> deleteGallery(@PathVariable("galleryId") Long galleryId) {
+        log.info("===== [AdminGalleryController] deleteGallery start =====");
+        log.info("[path variable]: {}", galleryId);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        galleryService.deleteGallery(galleryId);
+
+        responseBody.put(MESSAGE, "갤러리 삭제가 완료되었습니다.");
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+    }
+
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 수정")
     @PutMapping("/{galleryId}")
+    @SecurityRequirement(name = "accessToken")
     public ResponseEntity<Object> modifyGallery(@PathVariable("galleryId") Long galleryId,
                                                 @RequestPart(value="image", required = false) MultipartFile image,
                                                 @RequestPart("data") GalleryRequestPutDto requestPutDto) {
@@ -93,21 +113,5 @@ public class AdminGalleryController {
         responseBody.put("data", responsePutDto);
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    @Operation(summary = "REQ-ADMIN-02", description = "갤러리 삭제")
-    @DeleteMapping("/{galleryId}")
-    public ResponseEntity<Object> deleteGallery(@PathVariable("galleryId") Long galleryId) {
-        log.info("===== [AdminGalleryController] deleteGallery start =====");
-        log.info("[path variable]: {}", galleryId);
-
-        Map<String, Object> responseBody = new HashMap<>();
-
-        galleryService.deleteGallery(galleryId);
-
-        responseBody.put(MESSAGE, "갤러리 삭제가 완료되었습니다.");
-        log.info("[responseData] {}", responseBody);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-
     }
 }
