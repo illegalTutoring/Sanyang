@@ -80,10 +80,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.info("================================================================================");
 
-        return this.createResponseEntity(body, httpStatus, request);
+        return this.createResponseEntity(body, httpStatus);
     }
 
-    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus, WebRequest request) {
+    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus) {
         return ResponseEntity.status(httpStatus).body(body);
     }
 
