@@ -5,10 +5,13 @@ import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -20,9 +23,9 @@ public class SwaggerConfig {
                 .components(
                         new Components()
                                 .addSecuritySchemes("accessToken", new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("accessToken")
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("accessToken")
                                 )
                                 .addSecuritySchemes("refreshToken", new SecurityScheme()
                                         .type(SecurityScheme.Type.APIKEY)
@@ -58,8 +61,6 @@ public class SwaggerConfig {
                                                                 .addMediaType("application/json", new MediaType()
                                                                         .schema(new Schema<>()
                                                                                 .addProperty("message", new StringSchema())
-                                                                                .addProperty("username", new StringSchema())
-                                                                                .addProperty("refreshToken", new StringSchema()) // 추가
                                                                         )
                                                                 )
                                                         )
@@ -75,12 +76,42 @@ public class SwaggerConfig {
                                                         )
                                                 )
                                         )
-//                                        .security(new ArrayList<>(
-//                                                Arrays.asList(
-//                                                        new SecurityRequirement().addList("bearerAuth"),
-//                                                        new SecurityRequirement().addList("refreshToken")
-//                                                )
-//                                        ))
+                                )
+                        )
+                        .addPathItem("api/user/logout", new PathItem()
+                                .post(new Operation()
+                                        .tags(List.of("user"))
+                                        .operationId("logout")
+                                        .summary("REQ-USER-02")
+                                        .description("로그인(Access, Refresh 토큰 발급)")
+                                        .responses(new ApiResponses()
+                                                .addApiResponse("200", new ApiResponse()
+                                                        .description("Successful login")
+                                                        .content(new Content()
+                                                                .addMediaType("application/json", new MediaType()
+                                                                        .schema(new Schema<>()
+                                                                                .addProperty("message", new StringSchema())
+                                                                        )
+                                                                )
+                                                        )
+                                                )
+                                                .addApiResponse("401", new ApiResponse()
+                                                        .description("Unauthorized")
+                                                        .content(new Content()
+                                                                .addMediaType("application/json", new MediaType()
+                                                                        .schema(new Schema<>()
+                                                                                .addProperty("message", new StringSchema())
+                                                                        )
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                        .security(new ArrayList<>(
+                                                Arrays.asList(
+                                                        new SecurityRequirement().addList("bearerAuth"),
+                                                        new SecurityRequirement().addList("refreshToken")
+                                                )
+                                        ))
                                 )
                         )
                 );
