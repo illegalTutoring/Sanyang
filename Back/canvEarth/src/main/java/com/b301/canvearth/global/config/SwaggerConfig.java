@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -78,15 +78,15 @@ public class SwaggerConfig {
                                         )
                                 )
                         )
-                        .addPathItem("api/user/logout", new PathItem()
+                        .addPathItem("/api/user/logout", new PathItem()
                                 .post(new Operation()
                                         .tags(List.of("user"))
                                         .operationId("logout")
                                         .summary("REQ-USER-02")
-                                        .description("로그인(Access, Refresh 토큰 발급)")
+                                        .description("로그아웃")
                                         .responses(new ApiResponses()
                                                 .addApiResponse("200", new ApiResponse()
-                                                        .description("Successful login")
+                                                        .description("Successful logout")
                                                         .content(new Content()
                                                                 .addMediaType("application/json", new MediaType()
                                                                         .schema(new Schema<>()
@@ -107,8 +107,7 @@ public class SwaggerConfig {
                                                 )
                                         )
                                         .security(new ArrayList<>(
-                                                Arrays.asList(
-                                                        new SecurityRequirement().addList("bearerAuth"),
+                                                Collections.singletonList(
                                                         new SecurityRequirement().addList("refreshToken")
                                                 )
                                         ))
