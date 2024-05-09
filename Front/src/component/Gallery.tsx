@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import styles from './Gallery.module.scss'
-
-export interface ImageData {
-    workId?: number
-    galleryId?: number
-    userId: string
-    title: string
-    company?: string
-    startDate: string
-    endDate: string
-    uploadDate: string
-    tags: string[]
-    original: string
-    thumbnail: string
-}
+import { galleryInfo } from '@/utils/api/DTO/gallery'
 
 export interface GalleryProps {
-    images: ImageData[]
+    images: galleryInfo[]
     colCount: number
     width?: string
     height?: string
@@ -89,20 +76,18 @@ const Gallery: React.FC<GalleryProps> = ({
                 )}
                 {images.map((image) => (
                     <div
-                        key={image.workId ? image.workId : image.galleryId}
-                        className={styles.column}
+                        key={image.galleryId}
+                        className={`${styles.column} galleryImage`}
                         onClick={() => handleImageClick(image.original)}
                     >
                         <div className={styles.card}>
                             {isEditMode && (
                                 <img
                                     className={styles.deleteButton}
-                                    src={'/svgs/delete.svg'}
+                                    src={'/svgs/delete_red.svg'}
                                     alt="Delete"
                                     onClick={(event) =>
-                                        deleteImage(
-                                            image.workId || image.galleryId!,
-                                        )
+                                        deleteImage(image.galleryId)
                                     }
                                 />
                             )}

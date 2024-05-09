@@ -23,6 +23,7 @@ interface SupportProps {
     height?: string
     cardMinWidth?: string
     cardMaxWidth?: string
+    addTogle: () => void
 }
 
 const SupportCard: React.FC<SupportProps> = ({
@@ -33,6 +34,7 @@ const SupportCard: React.FC<SupportProps> = ({
     height = 'auto',
     cardMinWidth = '350px',
     cardMaxWidth = '1fr',
+    addTogle,
 }) => {
     const currentDate = new Date().toISOString().slice(0, 7)
 
@@ -48,20 +50,34 @@ const SupportCard: React.FC<SupportProps> = ({
                 padding: '10px',
             }}
         >
-            {items.map((item) => (
+            {isEditMode && (
                 <div
-                    className={styles.card}
-                    key={item.supportId}
-                    style={{
-                        border: '1px solid #ccc',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'left',
-                        padding: '30px',
-                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    }}
+                    className={`${styles.card} ${styles.addCard}`}
+                    style={{ padding: '0' }}
+                    key={-1}
                 >
+                    <img
+                        src={'/svgs/add_card.svg'}
+                        alt={'addButton'}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                        }}
+                    />
+                </div>
+            )}
+            {items.map((item) => (
+                <div className={styles.card} key={item.supportId}>
+                    {isEditMode && (
+                        <img
+                            className={styles.deleteButton}
+                            src={'/svgs/delete_red.svg'}
+                            alt="Delete"
+                            // onClick={(event) =>
+                            // }
+                        />
+                    )}
                     <div
                         style={{
                             display: 'grid',

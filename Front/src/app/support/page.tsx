@@ -3,8 +3,10 @@
 import SupportCard from '@/component/SupportCard'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './support.module.scss'
+import useEditModeStore from '@/utils/store/useEditModeStore'
+import Modal from '@/component/layout/Modal'
 
 const components: { [key: string]: React.ComponentType<any> } = {
     artstation: dynamic(() => import('@/component/support/Artstation')),
@@ -59,6 +61,13 @@ const getDomains = (): Domain[] => {
 const SupportPage: React.FC = () => {
     const domains = getDomains()
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
+
+    const [addMode, setAddMode] = useState(false)
+
+    const toggleAddMode = () => {
+        setAddMode((prev) => !prev)
+    }
 
     const supportData = [
         {
@@ -222,10 +231,19 @@ const SupportPage: React.FC = () => {
 
                 <SupportCard
                     items={supportData}
-                    isEditMode={false}
+                    isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
                 />
             </div>
+
+            <Modal
+                isVisible={addMode}
+                toggleModal={toggleAddMode}
+                width="60vw"
+                height="60vh"
+            >
+                <div></div>
+            </Modal>
         </article>
     )
 }

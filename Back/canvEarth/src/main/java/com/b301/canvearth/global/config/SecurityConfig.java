@@ -2,9 +2,13 @@ package com.b301.canvearth.global.config;
 
 import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.authorization.service.RefreshService;
+import com.b301.canvearth.global.filter.CustomLogoutFilter;
+import com.b301.canvearth.global.filter.ExceptionHandlerFilter;
 import com.b301.canvearth.global.filter.JWTFilter;
-import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.filter.LogInFilter;
+import com.b301.canvearth.global.util.JWTUtil;
+import com.b301.canvearth.global.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -38,13 +43,7 @@ public class SecurityConfig {
 
     private final AccessService accessService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
-
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-        this.refreshService = refreshService;
-        this.accessService = accessService;
-    }
+    private final ResponseUtil responseUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -90,9 +89,16 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-
         http
                 .authorizeHttpRequests((auth) -> auth
+                        // Swagger
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/webjars/**",
+                                "/swagger-resources/**"
+                        ).permitAll()
+                        // Spring Security
                         .requestMatchers("/",
                                 /*
                                     로그인을 통한 토큰 발행 JWT(access, refresh)없이
@@ -109,21 +115,22 @@ public class SecurityConfig {
                                 "/api/banner",
                                 "/api/embed",
                                 "/api/support"
-
                         ).permitAll()
                         // 2. 배포용 : ADMIN 권한 확인
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         http
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
+                        UsernamePasswordAuthenticationFilter.class);
+        http
                 .addFilterBefore(new JWTFilter(jwtUtil, accessService), LogInFilter.class);
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService, responseUtil), LogoutFilter.class);
 
         http
-                .addFilterBefore(new com.b301.canvearth.global.filter.LogoutFilter(jwtUtil, refreshService, accessService), LogoutFilter.class);
+                .addFilterBefore(new ExceptionHandlerFilter(responseUtil), CustomLogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session

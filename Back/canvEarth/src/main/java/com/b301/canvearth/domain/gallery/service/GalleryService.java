@@ -1,13 +1,11 @@
 package com.b301.canvearth.domain.gallery.service;
 
 
-import com.b301.canvearth.domain.admin.dto.GalleryRequestPostDto;
-import com.b301.canvearth.domain.admin.dto.GalleryRequestPutDto;
-import com.b301.canvearth.domain.admin.dto.WorkRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPostDto;
+import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPutDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.repository.GalleryRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
-import com.b301.canvearth.domain.work.entity.Work;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +43,6 @@ public class GalleryService {
                 .tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))
                 .thumbnailPath(paths.get("thumbnailPath"))
-                .watermarkPath(paths.get("watermarkPath"))
                 .build();
 
         Gallery insertGallery = galleryRepository.save(gallery);
@@ -78,11 +75,9 @@ public class GalleryService {
             // 기존 S3 이미지는 삭제
             s3Service.deleteImage(changeGallery.getOriginalPath());
             s3Service.deleteImage(changeGallery.getThumbnailPath());
-            s3Service.deleteImage(changeGallery.getWatermarkPath());
 
             changeGallery.setOriginalPath(paths.get("originalPath"));
             changeGallery.setThumbnailPath(paths.get("thumbnailPath"));
-            changeGallery.setWatermarkPath(paths.get("watermarkPath"));
         }
 
         return galleryRepository.save(changeGallery);
@@ -96,7 +91,6 @@ public class GalleryService {
         // S3 이미지들 삭제
         s3Service.deleteImage(gallery.getOriginalPath());
         s3Service.deleteImage(gallery.getThumbnailPath());
-        s3Service.deleteImage(gallery.getWatermarkPath());
 
         // DB에서 삭제
         galleryRepository.delete(gallery);

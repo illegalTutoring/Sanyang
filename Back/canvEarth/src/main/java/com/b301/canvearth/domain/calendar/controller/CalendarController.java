@@ -3,7 +3,6 @@ package com.b301.canvearth.domain.calendar.controller;
 import com.b301.canvearth.domain.calendar.dto.CalendarResponseGetDto;
 import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.calendar.service.CalendarService;
-import com.b301.canvearth.domain.outsourcing.dto.OutsourcingResponseGetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
