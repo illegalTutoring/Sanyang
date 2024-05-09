@@ -80,6 +80,7 @@ public class NoticeService {
                 .map(notice -> NoticeTitleListResponseDto.builder()
                         .id(notice.getId())
                         .title(notice.getTitle())
+                        .registDate(notice.getRegistDate())
                         .build())
                 .toList();
     }
