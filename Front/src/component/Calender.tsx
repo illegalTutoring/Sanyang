@@ -94,6 +94,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
+        const calenderId = formData.get('calendarId')
         const title = formData.get('title')
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
@@ -113,6 +114,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
+        const calenderId = formData.get('calendarId')
         const title = formData.get('title')
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
@@ -134,6 +136,8 @@ const Calendar: React.FC<CalendarProps> = ({
     }
 
     const handleDelete = (calendarId: number) => {
+        // deleteSchedule(calendarId)
+
         console.log('Delete Form data submitted:', { calendarId })
     }
 
@@ -259,7 +263,7 @@ const Calendar: React.FC<CalendarProps> = ({
     }))
 
     return (
-        <div className={`${!isEditMode && styles.disableClick}`}>
+        <>
             <div className={styles.selectBox}>
                 <div className={styles.selectDateBox}>
                     <Select
@@ -316,7 +320,10 @@ const Calendar: React.FC<CalendarProps> = ({
                     />
                 </div>
             </div>
-            <div style={{ width, height }} className={styles.calendar}>
+            <div
+                style={{ width, height }}
+                className={`${styles.calendar} ${!isEditMode && styles.disableClick}`}
+            >
                 <div
                     className={`${styles.header} ${isDarkMode ? styles.darkHeader : styles.lightHeader}`}
                 >
@@ -378,6 +385,11 @@ const Calendar: React.FC<CalendarProps> = ({
                 toggleModal={toggleAddMode}
             >
                 <form onSubmit={handleAddSubmit}>
+                    <input
+                        type="hidden"
+                        name="calendarId"
+                        value={insertData.calendarId}
+                    />
                     <label htmlFor="title">Title</label>
                     <input type="text" id="title" name="title" required />
                     <br></br>
@@ -402,6 +414,11 @@ const Calendar: React.FC<CalendarProps> = ({
                 toggleModal={toggleUpdateMode}
             >
                 <form onSubmit={handleUpdateSubmit}>
+                    <input
+                        type="hidden"
+                        name="calendarId"
+                        value={insertData.calendarId}
+                    />
                     <label htmlFor="title">Title</label>
                     <input
                         type="text"
@@ -435,7 +452,7 @@ const Calendar: React.FC<CalendarProps> = ({
                     delete
                 </button>
             </Modal>
-        </div>
+        </>
     )
 }
 
