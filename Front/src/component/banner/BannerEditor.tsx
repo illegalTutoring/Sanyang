@@ -6,14 +6,15 @@ type PreviewImg = {
     yindex: number
 }
 
-interface BannerEditorProps {}
+interface BannerEditorProps {
+    addBanner: (images: PreviewImg[]) => void
+}
 
-const BannerEditor: React.FC<BannerEditorProps> = () => {
+const BannerEditor: React.FC<BannerEditorProps> = ({ addBanner }) => {
     const [files, setFiles] = useState<File[]>([])
-    const [dragIndex, setDragIndex] = useState<number>(0)
-
     const [previewImgs, setPreviewImgs] = useState<PreviewImg[]>([])
 
+    const [dragIndex, setDragIndex] = useState<number | null>(null)
     const [startY, setStartY] = useState<number>(0)
     const [startTopOffset, setStartTopOffset] = useState<number>(0)
 
@@ -23,22 +24,21 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
             return
         }
 
-        const newPreviewImgs = files.map((file) => {
+        const newPreviewImgs = files.map((file, index) => {
             const fileReader = new FileReader()
+
+            fileReader.onload = () => {
+                newPreviewImgs[index].url = fileReader.result as string
+                setPreviewImgs([...newPreviewImgs])
+            }
+
             fileReader.readAsDataURL(file)
+
             return {
                 name: file.name,
                 url: '',
                 yindex: 0,
             }
-        })
-        files.forEach((file, index) => {
-            const fileReader = new FileReader()
-            fileReader.onload = () => {
-                newPreviewImgs[index].url = fileReader.result as string
-                setPreviewImgs([...newPreviewImgs])
-            }
-            fileReader.readAsDataURL(file)
         })
     }, [files])
 
@@ -63,7 +63,10 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
     useEffect(() => {
         const onMouseMove = (event: MouseEvent) => {
             if (dragIndex !== null) {
-                const deltaY = event.clientY - startY
+                let deltaY = event.clientY - startY
+
+                deltaY = Math.max(-50, Math.min(50, deltaY))
+
                 setPreviewImgs((prev) =>
                     prev.map((preview, idx) => {
                         if (idx === dragIndex) {
@@ -79,7 +82,7 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
         }
 
         const onMouseUp = () => {
-            setDragIndex(0)
+            setDragIndex(null)
             window.removeEventListener('mousemove', onMouseMove)
             window.removeEventListener('mouseup', onMouseUp)
         }
@@ -95,6 +98,12 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
         }
     }, [dragIndex, startY, startTopOffset])
 
+    const handleSubmit = () => {
+        // addBanner(previewImgs)
+
+        console.log(previewImgs)
+    }
+
     return (
         <div>
             <input
@@ -106,30 +115,27 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: `repeat(${files.length}, 1fr)`,
-                    gap: 10,
-                    position: 'relative',
+                    gridTemplateColumns: 'repeat(auto-fill, 150px)',
+                    gap: '0px',
                 }}
             >
                 {previewImgs.map((preview, index) => (
-                    <div
+                    <img
                         key={preview.name}
-                        style={{ position: 'relative', cursor: 'ns-resize' }}
-                    >
-                        <img
-                            src={preview.url}
-                            alt={`Preview of ${preview.name}`}
-                            style={{
-                                width: 100,
-                                height: 100,
-                                position: 'relative',
-                                top: `${preview.yindex}px`,
-                            }}
-                            onMouseDown={(e) => startDrag(index, e)}
-                        />
-                    </div>
+                        src={preview.url}
+                        alt={`Preview of ${preview.name}`}
+                        style={{
+                            width: '150px',
+                            height: 'auto',
+                            position: 'relative',
+                            top: `${preview.yindex}px`,
+                            cursor: 'ns-resize',
+                        }}
+                        onMouseDown={(e) => startDrag(index, e)}
+                    />
                 ))}
             </div>
+            <button onClick={handleSubmit}>Submit</button>
         </div>
     )
 }
