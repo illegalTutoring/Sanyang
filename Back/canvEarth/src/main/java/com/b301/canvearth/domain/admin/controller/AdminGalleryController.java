@@ -34,7 +34,7 @@ public class AdminGalleryController {
 
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registGallery(@RequestPart MultipartFile image,
                                                 @RequestPart("data") GalleryRequestPostDto requestPostDto){
         log.info("===== [AdminGalleryController] registGallery start =====");
@@ -68,7 +68,7 @@ public class AdminGalleryController {
 
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 삭제")
     @DeleteMapping("/{galleryId}")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> deleteGallery(@PathVariable("galleryId") Long galleryId) {
         log.info("===== [AdminGalleryController] deleteGallery start =====");
         log.info("[path variable]: {}", galleryId);
@@ -85,7 +85,7 @@ public class AdminGalleryController {
 
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 수정")
     @PutMapping("/{galleryId}")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyGallery(@PathVariable("galleryId") Long galleryId,
                                                 @RequestPart(value="image", required = false) MultipartFile image,
                                                 @RequestPart("data") GalleryRequestPutDto requestPutDto) {

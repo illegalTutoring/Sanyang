@@ -33,7 +33,7 @@ public class AdminCalendarController {
 
     @PostMapping
     @Operation(summary = "REQ-ADMIN-07", description = "일정 등록")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [AdminCalendarController] registCalendar start =====");
         log.info("[requestData]: {}", requestPostDto);
@@ -47,7 +47,8 @@ public class AdminCalendarController {
             throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
-        String accessToken = request.getHeader("accessToken");
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.replace("Bearer ", "");
         String username = jwtUtil.getUsername(accessToken);
         Calendar calendar = Calendar.builder().userId(username).title(requestPostDto.getTitle())
                 .startDate(requestPostDto.getStartDate()).endDate(requestPostDto.getEndDate()).build();
@@ -62,7 +63,7 @@ public class AdminCalendarController {
 
     @PutMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 수정")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyCalendar(@PathVariable("calendarId") Long calendarId,
                                                  @RequestBody CalendarRequestPutDto requestPutDto) {
         log.info("===== [AdminCalendarController] modifyCalendar start =====");
@@ -80,7 +81,7 @@ public class AdminCalendarController {
 
     @DeleteMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 삭제")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId) {
         log.info("===== [AdminCalendarController] deleteCalendar start =====");
         log.info("[path variable]: {}", calendarId);

@@ -36,7 +36,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registWork(@RequestPart MultipartFile image,
                                              @RequestPart("data") WorkRequestPostDto requestPostDto,
                                              HttpServletRequest request){
@@ -71,7 +71,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 수정")
     @PutMapping("/{workId}")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyWork(@PathVariable("workId") Long workId,
                                              @RequestPart(value="image", required = false) MultipartFile image,
                                              @RequestPart("data") WorkRequestPutDto requestPutDto) {
@@ -103,7 +103,7 @@ public class AdminWorkController {
 
     @Operation(summary = "REQ-ADMIN-01", description = "외주 삭제")
     @DeleteMapping("/{workId}")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> deleteWork(@PathVariable("workId") Long workId) {
         log.info("===== [AdminWorkController] deleteWork start =====");
         log.info("[path variable]: {}", workId);
