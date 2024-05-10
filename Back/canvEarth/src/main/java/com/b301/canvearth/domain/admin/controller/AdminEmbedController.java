@@ -28,7 +28,7 @@ public class AdminEmbedController {
 
     @PutMapping
     @Operation(summary = "REQ-ADMIN-04", description = "임베드 링크 변경")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyEmbedLink(@RequestBody List<EmbedRequestPutDto> data){
 
         log.info("===== [AdminEmbedController] modifyEmbedLink START =====");

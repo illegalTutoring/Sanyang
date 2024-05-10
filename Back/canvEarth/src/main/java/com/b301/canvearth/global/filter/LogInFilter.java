@@ -19,7 +19,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -58,7 +57,7 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         // 로그인 성공
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -69,6 +68,8 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        response.setHeader("Role", role);
+
         String accessToken = jwtUtil.createJwt("access", username, role, 1800000L);
         String refreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
@@ -77,7 +78,7 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         refreshService.saveRefreshToken(username, refreshToken, 86400000L);
 
         // 토큰 발행
-        response.setHeader("accessToken", accessToken);
+        response.setHeader("Authorization", "Bearer " + accessToken);
         response.addCookie(responseUtil.createCookie("refreshToken", refreshToken));
 
         responseUtil.sendMessage(response,true, username, HttpStatus.OK, "로그인 성공");

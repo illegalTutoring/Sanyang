@@ -1,7 +1,6 @@
 package com.b301.canvearth.global.filter;
 
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
-import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.util.JWTUtil;
@@ -27,8 +26,6 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
 
     private final JWTValidationUtil jwtValidationUtil;
-
-    private final AccessService accessService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, CustomException {

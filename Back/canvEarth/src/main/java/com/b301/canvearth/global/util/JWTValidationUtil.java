@@ -68,11 +68,13 @@ public class JWTValidationUtil {
     public String isValidAccessToken(HttpServletRequest request) throws CustomException {
 
         // 1. Header 에서 access 토큰 검색
-        String accessToken = request.getHeader("accessToken");
+        String accessToken = request.getHeader("Authorization");
 
         if (accessToken == null) {
             return null;
         }
+
+        accessToken = accessToken.replace("Bearer ", "");
 
         // 2. access 토큰 유효기간 검증
         try{
