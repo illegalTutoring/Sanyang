@@ -9,6 +9,7 @@ import com.b301.canvearth.global.filter.JWTFilter;
 import com.b301.canvearth.global.filter.LogInFilter;
 import com.b301.canvearth.global.handler.JWTAuthenticationEntryPoint;
 import com.b301.canvearth.global.util.JWTUtil;
+import com.b301.canvearth.global.util.JWTValidationUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +38,17 @@ public class SecurityConfig {
     @Value("${cors.allowedOrigins}")
     private String[] allowedOrigins;
 
+    @Value("${security.permitTestList}")
+    private String[] permitTestList;
+
+    @Value("${security.permitAccessList}")
+    private String[] permitAccessList;
+
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private final JWTUtil jwtUtil;
+
+    private final JWTValidationUtil jwtValidationUtil;
 
     private final RefreshService refreshService;
 
@@ -78,7 +87,7 @@ public class SecurityConfig {
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
 
-                    configuration.setExposedHeaders(Arrays.asList("accessToken", "Set-Cookie", "set-cookie"));
+                    configuration.setExposedHeaders(Arrays.asList("accessToken", "Set-Cookie"));
 
                     return configuration;
                 })));
@@ -97,44 +106,30 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        // Swagger
-                        .requestMatchers(
-                                "/api/v3/api-docs/**",
-                                "/api/swagger-ui/**"
-//                                "/webjars/**",
-//                                "/swagger-resources/**"
-                        ).permitAll()
-                        // Spring Security
-                        .requestMatchers("/",
-                                /*
-                                    로그인을 통한 토큰 발행 JWT(access, refresh)없이
-                                    API test 진행하고자할 때 사용!!!
-                                    1. 개발용 : ADMIN 권한 우회 URI 허용
-                                */
-                                //"/api/admin/**",
 
-                                "/api/user/**",
-                                "/api/calendar/**",
-                                "/api/work",
-                                "/api/gallery",
-                                "/api/notice/**",
-                                "/api/banner",
-                                "/api/embed",
-                                "/api/support"
-                        ).permitAll()
+                        /*
+                            로그인을 통한 토큰 발행 JWT(access, refresh)없이
+                            API test 진행하고자할 때 사용!!!
+                        */
+
+                        // 1. 개발용 : ADMIN 권한 우회 URI 허용
+//                        .requestMatchers(permitTestList).permitAll()
+
                         // 2. 배포용 : ADMIN 권한 확인
+                        .requestMatchers(permitAccessList).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated());
 
         http
                 .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
                         UsernamePasswordAuthenticationFilter.class);
         http
-                .addFilterBefore(new JWTFilter(jwtUtil, accessService),
+                .addFilterBefore(new JWTFilter(jwtUtil, jwtValidationUtil, accessService),
                         LogInFilter.class);
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService, accessService, responseUtil),
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, jwtValidationUtil, refreshService, accessService, responseUtil),
                         LogoutFilter.class);
 
         http

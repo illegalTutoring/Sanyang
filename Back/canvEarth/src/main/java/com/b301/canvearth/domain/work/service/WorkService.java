@@ -5,6 +5,8 @@ import com.b301.canvearth.domain.admin.dto.request.WorkRequestPutDto;
 import com.b301.canvearth.domain.s3.service.S3Service;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.repository.WorkRepository;
+import com.b301.canvearth.global.util.JWTUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,16 +23,19 @@ public class WorkService {
 
     private final WorkRepository workRepository;
     private final S3Service s3Service;
+    private final JWTUtil jwtUtil;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Work insertWork(MultipartFile image, WorkRequestPostDto requestPostDto) {
+    public Work insertWork(MultipartFile image, WorkRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [WorkService] insertWork start =====");
 
         Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
-        Work work = Work.builder().userId(requestPostDto.getUserId()).company(requestPostDto.getCompany())
+        String accessToken = request.getHeader("accessToken");
+        String username = jwtUtil.getUsername(accessToken);
+        Work work = Work.builder().userId(username).company(requestPostDto.getCompany())
                 .title(requestPostDto.getTitle()).startDate(requestPostDto.getStartDate())
                 .endDate(requestPostDto.getEndDate()).tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))

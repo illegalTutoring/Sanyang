@@ -3,6 +3,7 @@ package com.b301.canvearth.domain.gallery.service;
 
 import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPostDto;
 import com.b301.canvearth.domain.admin.dto.request.GalleryRequestPutDto;
+import com.b301.canvearth.domain.gallery.dto.GalleryListResponseGetDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.repository.GalleryRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
@@ -13,9 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -31,6 +30,32 @@ public class GalleryService {
     public List<Gallery> getGalleryList(){
         log.info("======== Start galleryService.getGalleryList ==============");
         return galleryRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    public List<Gallery> getGalleryListByTags(String tagString) {
+        log.info("===== [GalleryService] getGalleryListByTags start =====");
+
+        log.info("tagString: {}", tagString);
+        String[] tags = tagString.split(",");
+        List<Gallery> galleries = galleryRepository.findByTagsContaining(tags);
+        log.info("gallerys: {}", galleries);
+        return galleries;
+    }
+
+    public List<GalleryListResponseGetDto> changeResponseGet(List<Gallery> galleryList) {
+        log.info("===== [GalleryService] changeResponseGet start =====");
+
+        List<GalleryListResponseGetDto> responseList = new ArrayList<>();
+        for(Gallery g: galleryList) {
+            GalleryListResponseGetDto getGallery = GalleryListResponseGetDto.builder()
+                    .galleryId(g.getId()).userId(g.getUserId()).title(g.getTitle()).uploadDate(g.getUploadDate())
+                    .createDate(g.getCreateDate()).tags(g.getTags()).original(g.getOriginalPath())
+                    .thumbnail(g.getThumbnailPath())
+                    .build();
+            responseList.add(getGallery);
+        }
+
+        return responseList;
     }
 
     public Gallery insertGallery(MultipartFile image, GalleryRequestPostDto requestPostDto) {
