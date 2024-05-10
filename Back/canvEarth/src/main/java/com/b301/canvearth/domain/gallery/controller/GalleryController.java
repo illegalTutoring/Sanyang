@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,15 +38,7 @@ public class GalleryController {
         Map<String, Object> responseBody = new HashMap<>();
 
         List<Gallery> galleryList = galleryService.getGalleryList();
-        List<GalleryListResponseGetDto> responseList = new ArrayList<>();
-        for(Gallery g: galleryList) {
-            GalleryListResponseGetDto getGallery = GalleryListResponseGetDto.builder()
-                    .galleryId(g.getId()).userId(g.getUserId()).title(g.getTitle()).uploadDate(g.getUploadDate())
-                    .createDate(g.getCreateDate()).tags(g.getTags()).originalPath(g.getOriginalPath())
-                    .thumbnailPath(g.getThumbnailPath())
-                    .build();
-            responseList.add(getGallery);
-        }
+        List<GalleryListResponseGetDto> responseList = galleryService.changeResponseGet(galleryList);
 
         responseBody.put(MESSAGE, "갤러리 목록 불러오기 성공");
         responseBody.put("data", responseList);
@@ -53,6 +46,20 @@ public class GalleryController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @Operation(summary = "REQ-GALLERY-01", description = "갤러리 목록 조회(태그)")
+    @GetMapping("/{tagString}")
+    public ResponseEntity<Object> getGalleryListByTag(@PathVariable("tagString") String tagString) {
+        log.info("===== [GalleryController] getGalleryListByTag start =====");
 
+        Map<String, Object> responseBody = new HashMap<>();
+
+        List<Gallery> galleryList = galleryService.getGalleryListByTags(tagString);
+        List<GalleryListResponseGetDto> responseList = galleryService.changeResponseGet(galleryList);
+
+        responseBody.put(MESSAGE, "갤러리 태그 검색 목록 불러오기 성공");
+        responseBody.put("data", responseList);
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
 
 }
