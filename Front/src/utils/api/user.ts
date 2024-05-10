@@ -7,7 +7,7 @@ import {
     signinRequestDTO,
     signinResponseDTO,
 } from './DTO/user'
-import { userStore } from '../store/useUserStore'
+import userStore from '../store/useUserStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -35,11 +35,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
             userStore.getState().setId(data.username)
             userStore.getState().setUsername(response.data.username)
             userStore.getState().setAccessToken(response.headers.accesstoken)
-            console.info(
-                'Login >> Access Token: ' + userStore.getState().accessToken,
-                'Login >> User ID: ' + userStore.getState().id,
-                'Login >> User Name: ' + userStore.getState().username,
-            )
+            userStore.getState().setRole(response.data.role)
 
             return {
                 statusCode: response.status,
@@ -101,7 +97,6 @@ export function signin(data: signinRequestDTO): signinResponseDTO {
 
 export function reIssue(accessToken: string): reIssueResponseDTO {
     return axiosRequestHandler(async () => {
-        console.log('reIssue AccessToken: ', accessToken)
         const response: AxiosResponse<any, any> = await axios({
             method: 'POST',
             url: `${SERVER_URL}/user/reissue`,
@@ -111,9 +106,6 @@ export function reIssue(accessToken: string): reIssueResponseDTO {
         })
 
         userStore.getState().setAccessToken(response.headers.accesstoken)
-        console.info(
-            'ReIssue >> AccessToken: ' + userStore.getState().accessToken,
-        )
 
         return {
             statusCode: response.status,

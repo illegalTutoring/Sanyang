@@ -29,7 +29,7 @@ import {
     modifyEmbedLinkRequestDTO,
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
-import { userStore } from '../store/useUserStore'
+import userStore from '../store/useUserStore'
 import {
     deleteNoticeResponseDTO,
     modifyNoticeRequestDTO,

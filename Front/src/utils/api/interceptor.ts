@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { userStore } from '../store/useUserStore'
+import userStore from '../store/useUserStore'
 import { logout, reIssue } from './user'
 
 type RequestFunction = (...params: any[]) => any
