@@ -270,6 +270,7 @@ const GalleryPage = () => {
                         width={'100%'}
                         height={'300px'}
                         colCount={defaultImages2.length}
+                        isDarkMode={isDarkMode}
                     />
                 </div>
             </div>
@@ -286,6 +287,7 @@ const GalleryPage = () => {
                     addTogle={() => {
                         toggleAddMode()
                     }}
+                    isDarkMode={isDarkMode}
                 />
             </div>
 
@@ -326,7 +328,7 @@ const GalleryPage = () => {
             <div
                 className={styles.modalBackdrop}
                 style={{
-                    height: isModalOpen ? '190px' : '0',
+                    height: isModalOpen ? 'auto' : '0',
                 }}
             >
                 <div className={styles.modalContent}>
