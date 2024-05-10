@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styles from './TagList.module.scss'
+import styles from './List.module.scss'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import Modal from './layout/Modal'
 
@@ -11,12 +11,10 @@ interface ListProps {
     width: string
     height: string
     pageSize: number
+    columnNames: string[]
     columns: string[]
     columnWidth: string[]
     data: DataItem[]
-    tagActions: {
-        [tag: string]: () => void
-    }
     isEditMode: boolean
 }
 
@@ -24,15 +22,13 @@ const List: React.FC<ListProps> = ({
     width,
     height,
     pageSize,
+    columnNames,
     columns,
     columnWidth,
     data,
-    tagActions,
     isEditMode,
 }) => {
-    const tags = Object.keys(tagActions)
     const { isDarkMode } = useDarkModeStore()
-    const [activeTag, setActiveTag] = useState(tags[0])
     const [isAddMode, setIsAddMode] = useState(false)
     const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false)
@@ -156,24 +152,6 @@ const List: React.FC<ListProps> = ({
 
             <div style={{ width, height }}>
                 <div className={styles.tags}>
-                    {tags.map((tag) => (
-                        <button
-                            className={
-                                activeTag === tag
-                                    ? isDarkMode
-                                        ? styles.darkActive
-                                        : styles.lightActive
-                                    : ''
-                            }
-                            key={tag}
-                            onClick={() => {
-                                tagActions[tag]()
-                                setActiveTag(tag)
-                            }}
-                        >
-                            {tag}
-                        </button>
-                    ))}
                     {isEditMode ? (
                         <button onClick={toggleEditMode}>post</button>
                     ) : (
@@ -184,7 +162,7 @@ const List: React.FC<ListProps> = ({
                 <table className={styles.table}>
                     <thead>
                         <tr className={isDarkMode ? styles.dark : styles.light}>
-                            {columns.map((column, index) => (
+                            {columnNames.map((column, index) => (
                                 <th
                                     key={column}
                                     style={{ width: columnWidth[index] }}
