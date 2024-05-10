@@ -10,7 +10,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import { workStore } from '@/utils/store/useWorkStore'
 import { useEffect } from 'react'
 
-const defaultImages = getWorkList().data
+const defaultImages = getWorkList().data || []
 
 const OutsourcingPage = () => {
     const { isDarkMode } = useDarkModeStore()
