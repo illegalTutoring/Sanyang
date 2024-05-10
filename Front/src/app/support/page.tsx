@@ -3,7 +3,10 @@
 import SupportCard from '@/component/SupportCard'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { useState } from 'react'
+import styles from './support.module.scss'
+import useEditModeStore from '@/utils/store/useEditModeStore'
+import Modal from '@/component/layout/Modal'
 
 const components: { [key: string]: React.ComponentType<any> } = {
     artstation: dynamic(() => import('@/component/support/Artstation')),
@@ -58,12 +61,18 @@ const getDomains = (): Domain[] => {
 const SupportPage: React.FC = () => {
     const domains = getDomains()
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
+
+    const [addMode, setAddMode] = useState(false)
+
+    const toggleAddMode = () => {
+        setAddMode((prev) => !prev)
+    }
 
     const supportData = [
         {
-            supportId: 3,
-            thumbnail:
-                'https://b105.s3.ap-northeast-2.amazonaws.com/0f111a3b-cf15-4117-82b4-12ddaac9aa00_support.png',
+            supportId: 1,
+            thumbnail: 'https://placehold.co/200X200',
             title: '수채화 기법 마스터하기',
             uploadDate: '2024-05',
             supportLink: [
@@ -80,11 +89,10 @@ const SupportPage: React.FC = () => {
                 '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
         },
         {
-            supportId: 4,
-            thumbnail:
-                'https://b105.s3.ap-northeast-2.amazonaws.com/d8e9fe3b-584f-4749-b4a9-e03b0e979dbc_support.png',
+            supportId: 2,
+            thumbnail: 'https://placehold.co/200X200',
             title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-06',
+            uploadDate: '2024-05',
             supportLink: [
                 {
                     name: '프로크리에이트',
@@ -99,9 +107,8 @@ const SupportPage: React.FC = () => {
                 '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
         },
         {
-            supportId: 5,
-            thumbnail:
-                'https://b105.s3.ap-northeast-2.amazonaws.com/26e5b7e0-4584-4cd3-8b1c-3b918c1bb1f2_support.png',
+            supportId: 7,
+            thumbnail: 'https://placehold.co/200X200',
             title: '캐릭터 디자인의 모든 것',
             uploadDate: '2024-04',
             supportLink: [
@@ -118,11 +125,82 @@ const SupportPage: React.FC = () => {
                 '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
         },
         {
-            supportId: 6,
-            thumbnail:
-                'https://b105.s3.ap-northeast-2.amazonaws.com/7e8a6d44-b49f-4de1-817f-aafeaad82c67_support.png',
+            supportId: 0,
+            thumbnail: 'https://placehold.co/200X200',
             title: '애니메이션 기초',
-            uploadDate: '2024-07',
+            uploadDate: '2024-03',
+            supportLink: [
+                {
+                    name: '애니메이션 워크샵',
+                    link: 'https://www.animationworkshop.com/',
+                },
+                {
+                    name: '애니메이터스 리소스',
+                    link: 'https://www.animatorsresource.com/',
+                },
+            ],
+            content:
+                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
+        },
+        {
+            supportId: 3,
+            thumbnail: 'https://placehold.co/200X200',
+            title: '수채화 기법 마스터하기',
+            uploadDate: '2024-03',
+            supportLink: [
+                {
+                    name: '아트스테이션',
+                    link: 'https://www.artstation.com/',
+                },
+                {
+                    name: '디바인트아트',
+                    link: 'https://www.deviantart.com/',
+                },
+            ],
+            content:
+                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
+        },
+        {
+            supportId: 4,
+            thumbnail: 'https://placehold.co/200X200',
+            title: '디지털 일러스트레이션 팁',
+            uploadDate: '2024-02',
+            supportLink: [
+                {
+                    name: '프로크리에이트',
+                    link: 'https://procreate.art/',
+                },
+                {
+                    name: '클립스튜디오',
+                    link: 'https://www.clipstudio.net/',
+                },
+            ],
+            content:
+                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
+        },
+        {
+            supportId: 5,
+            thumbnail: 'https://placehold.co/200X200',
+            title: '캐릭터 디자인의 모든 것',
+            uploadDate: '2024-01',
+            supportLink: [
+                {
+                    name: '픽시브',
+                    link: 'https://www.pixiv.net/',
+                },
+                {
+                    name: '베헨스',
+                    link: 'https://www.behance.net/',
+                },
+            ],
+            content:
+                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
+        },
+        {
+            supportId: 6,
+            thumbnail: 'https://placehold.co/200X200',
+            title: '애니메이션 기초',
+            uploadDate: '2024-01',
             supportLink: [
                 {
                     name: '애니메이션 워크샵',
@@ -140,23 +218,32 @@ const SupportPage: React.FC = () => {
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <SupportCard
-                items={supportData}
-                isEditMode={false}
-                isDarkMode={isDarkMode}
-            />
+            <div className={styles.container}>
+                <div
+                    className={`${styles.banner} ${isDarkMode ? styles.darkBanner : styles.lightBanner}`}
+                >
+                    <div style={{ fontSize: '46px' }}>서포트</div>
+                    <br></br>
+                    <h3 style={{ fontSize: '16px' }}>
+                        작품의 구매 정보나, 작가를 후원할 수 있는 링크들 입니다.
+                    </h3>
+                </div>
 
-            {domains.map((domain, index) => {
-                const Component = components[domain.key]
-                return (
-                    <Component
-                        key={index}
-                        url={domain.url}
-                        height="50vh"
-                        text={domain.text}
-                    />
-                )
-            })}
+                <SupportCard
+                    items={supportData}
+                    isEditMode={isEditMode}
+                    isDarkMode={isDarkMode}
+                />
+            </div>
+
+            <Modal
+                isVisible={addMode}
+                toggleModal={toggleAddMode}
+                width="60vw"
+                height="60vh"
+            >
+                <div></div>
+            </Modal>
         </article>
     )
 }

@@ -4,6 +4,7 @@ package com.b301.canvearth.domain.banner.controller;
 import com.b301.canvearth.domain.banner.dto.BannerListResponseGetDto;
 import com.b301.canvearth.domain.banner.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +18,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@Tag(name = "banner", description = "배너 API")
 @RequestMapping("/api/banner")
+@Tag(name = "banner", description = "배너 API")
 public class BannerController {
 
     private final BannerService bannerService;
     private final static String MESSAGE = "message";
 
-    @Operation(summary = "REQ-BANNER-01", description = "배너 이미지 보기")
     @GetMapping()
+    @Operation(summary = "REQ-BANNER-01", description = "배너 이미지 보기")
+    @ApiResponse(responseCode = "200", description = "배너 목록 불러오기 성공")
+    @ApiResponse(responseCode = "500" ,description = "서버에러")
     public ResponseEntity<Object> getBanner(){
 
         log.info("===== [BannerController] getBanner START =====");

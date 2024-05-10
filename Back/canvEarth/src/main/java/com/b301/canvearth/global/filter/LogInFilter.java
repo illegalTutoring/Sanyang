@@ -6,14 +6,12 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,30 +21,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 @Slf4j
 public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+
     private final JWTUtil jwtUtil;
+
     private final RefreshService refreshService;
+
     private final AccessService accessService;
+
+    private final ResponseUtil responseUtil;
 
     public LogInFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshService = refreshService;
         this.accessService = accessService;
+        this.responseUtil = new ResponseUtil();
         super.setFilterProcessesUrl("/api/user/login");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 로그인 시도
-        String username = obtainUsername(request);
+        String username = obtainUsername(request);  // username => id
         String password = obtainPassword(request);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -76,46 +78,14 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
         // 토큰 발행
         response.setHeader("accessToken", accessToken);
-        response.addCookie(createCookie(refreshToken));
+        response.addCookie(responseUtil.createCookie("refreshToken", refreshToken));
 
-        Map<String, String> data = new HashMap<>();
-        data.put("message", "로그인 성공");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonData = objectMapper.writeValueAsString(data);
-
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write(jsonData);
-        response.setStatus(HttpStatus.OK.value());
-    }
-
-    private Cookie createCookie(String value) {
-
-        Cookie cookie = new Cookie("refreshToken", value);
-        cookie.setPath("/");
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-
-        return cookie;
+        responseUtil.sendMessage(response,true, username, HttpStatus.OK, "로그인 성공");
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 
-//        Map<String, String> data = new HashMap<>();
-//        data.put("message", "로그인 실패");
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String jsonData = objectMapper.writeValueAsString(data);
-//
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("application/json;charset=utf-8");
-//        response.getWriter().write(jsonData);
-//        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-
-        throw new CustomException(ErrorCode.CHECK_THE_ID_OR_PASS);
-
+        throw new CustomException(ErrorCode.LOGIN_FAIL);
     }
 }

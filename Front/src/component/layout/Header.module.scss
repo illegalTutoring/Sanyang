@@ -8,9 +8,22 @@
 }
 
 .profile {
+    border-radius: 25px;
+    width: 100%;
+    height: 45px;
     align-items: center;
-    display: grid;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 20px 5px 10px;
     grid-template-columns: 50px 1fr;
+}
+
+.profileDark {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profileLight {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .toggleDarkModeButton {
@@ -29,7 +42,7 @@
     display: grid;
 
     label {
-        margin: 1rem;
+        margin-top: 10px;
     }
 
     input {
@@ -55,11 +68,30 @@
 }
 
 .profileMenu {
+    margin-right: 25px;
     position: absolute;
     top: 60px;
     right: 0;
-    width: 160px;
-    box-shadow: 0 4px 6px -6px gray;
+    width: 110px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: -5px;
 
-    padding: 10px;
+    .profileItem {
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        cursor: pointer;
+
+        h3 {
+            font-size: 16px;
+            font-family: 'Pretendard-Regular';
+        }
+    }
+
+    img {
+        width: 25px;
+    }
 }

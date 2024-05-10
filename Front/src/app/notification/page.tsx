@@ -1,75 +1,40 @@
 'use client'
 
-import useDarkModeStore from '@/utils/store/useThemaStore'
-import List from '@/component/TagList'
 import styles from './notification.module.scss'
+import React, { useState, useEffect } from 'react'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore'
+import List from '@/component/TagList'
+import Pagination from '@/component/Pagination'
+
+import {
+    getNoticeList,
+    getNoticeDetail,
+    getTotalNotice,
+} from '@/utils/api/notice'
+
+import { noticeInfo } from '@/utils/api/DTO/notice'
 
 const NotificationPage = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
 
-    const getDummyOutsourcingList = async (year: number, month: number) => {
-        return {
-            message: `${year}년 ${month}월 외주 목록입니다.`,
-            outsourcingInfo: [
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 신규 캐릭터 일러스트 작업',
-                    startDate: '2024-04-01',
-                    endDate: '2024-04-30',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 신규 업데이트 일러스트 작업',
-                    startDate: '2024-05-01',
-                    endDate: '2024-05-31',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 여름 이벤트 일러스트 작업',
-                    startDate: '2024-06-01',
-                    endDate: '2024-06-30',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 특별 프로모션 일러스트 작업',
-                    startDate: '2024-07-01',
-                    endDate: '2024-07-31',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 할로윈 이벤트 일러스트 작업',
-                    startDate: '2024-10-01',
-                    endDate: '2024-10-31',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 크리스마스 이벤트 일러스트 작업',
-                    startDate: '2024-12-01',
-                    endDate: '2024-12-31',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 새해 기념 일러스트 작업',
-                    startDate: '2025-01-01',
-                    endDate: '2025-01-31',
-                },
-                {
-                    userId: 'sanyang',
-                    client: 'D&F',
-                    title: 'D&F 발렌타인 데이 특별 일러스트 작업',
-                    startDate: '2025-02-01',
-                    endDate: '2025-02-28',
-                },
-            ],
-        }
+    // 지역 변수
+    const [data, setData] = useState<noticeInfo[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+    // 함수
+    const fetchData = async (page: number) => {
+        const response = await getNoticeList(page, itemsPerPage)
+        console.log(response.data)
+        setData(response.data)
     }
+
+    useEffect(() => {
+        fetchData(currentPage)
+    }, [currentPage])
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -87,22 +52,25 @@ const NotificationPage = () => {
                 <div className={styles.list}>
                     <List
                         width="100%"
-                        height="40vh"
+                        height="100%"
                         pageSize={10}
-                        columns={[
-                            'userId',
-                            'client',
-                            'title',
-                            'startDate',
-                            'endDate',
-                        ]}
+                        columns={['ID', 'title', 'registDate']}
+                        columnWidth={['10%', '70%', '20%']}
+                        data={data}
                         tagActions={{
-                            All: () => getDummyOutsourcingList(2024, 4),
-                            Update: () => getDummyOutsourcingList(2024, 4),
-                            Notice: () => getDummyOutsourcingList(2024, 4),
+                            All: () => fetchData(currentPage),
+                            Update: () => fetchData(currentPage),
+                            Notice: () => fetchData(currentPage),
                         }}
+                        isEditMode={isEditMode}
                     />
                 </div>
+                <Pagination
+                    totalPage={100}
+                    limit={itemsPerPage}
+                    page={currentPage}
+                    setPage={setCurrentPage}
+                />
             </div>
         </article>
     )

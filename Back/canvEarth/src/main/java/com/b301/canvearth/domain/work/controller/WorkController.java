@@ -1,9 +1,9 @@
 package com.b301.canvearth.domain.work.controller;
 
-import com.amazonaws.services.s3.model.ObjectTagging;
 import com.b301.canvearth.domain.work.dto.WorkResponseGetDto;
 import com.b301.canvearth.domain.work.entity.Work;
 import com.b301.canvearth.domain.work.service.WorkService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,7 @@ public class WorkController {
 
     private final WorkService workService;
 
+    @Operation(summary = "REQ-WORK-01", description = "외주 목록 보기")
     @GetMapping
     public ResponseEntity<Object> getWorkList() {
         log.info("===== [WorkController] getWorkList start =====");
@@ -41,7 +42,7 @@ public class WorkController {
             WorkResponseGetDto getWork = WorkResponseGetDto.builder().workId(w.getId()).userId(w.getUserId()).title(w.getTitle())
                     .company(w.getCompany()).startDate(w.getStartDate()).endDate(w.getEndDate())
                     .uploadDate(w.getUploadDate()).tags(w.getTags()).original(w.getOriginalPath())
-                    .thumbnail(w.getThumbnailPath()).watermark(w.getWatermarkPath()).build();
+                    .thumbnail(w.getThumbnailPath()).build();
             responseList.add(getWork);
         }
 
