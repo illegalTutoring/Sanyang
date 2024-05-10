@@ -125,7 +125,7 @@ public class SecurityConfig {
                 .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
                         UsernamePasswordAuthenticationFilter.class);
         http
-                .addFilterBefore(new JWTFilter(jwtUtil, jwtValidationUtil, accessService),
+                .addFilterBefore(new JWTFilter(jwtUtil, jwtValidationUtil),
                         LogInFilter.class);
 
         http
