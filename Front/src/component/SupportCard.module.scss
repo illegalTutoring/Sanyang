@@ -27,6 +27,26 @@
     );
 }
 
+.card {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.addCard {
+    border: 3px solid #808080;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+}
+
 .dateBox {
     margin-top: 2px;
     font-size: 12px;
@@ -63,4 +83,17 @@
 
 .linkBoxLight {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 10%;
 }

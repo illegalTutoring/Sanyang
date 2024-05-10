@@ -1,6 +1,8 @@
 package com.b301.canvearth.global.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +14,7 @@ import java.util.Date;
 @Component
 public class JWTUtil {
 
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
 
     public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
 
@@ -34,9 +36,9 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-    public Boolean isExpired(String token) {
+    public void isExpired(String token) throws ExpiredJwtException, SignatureException {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }
 
     public String createJwt(String category, String username, String role, Long expiredMs) {
