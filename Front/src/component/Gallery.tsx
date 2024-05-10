@@ -10,6 +10,7 @@ export interface GalleryProps {
     width?: string
     height?: string
     isEditMode: boolean
+    isDarkMode: boolean
     addTogle: () => void
 }
 
@@ -17,6 +18,7 @@ const Gallery: React.FC<GalleryProps> = ({
     images,
     colCount,
     isEditMode,
+    isDarkMode,
     addTogle,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
@@ -124,7 +126,7 @@ const Gallery: React.FC<GalleryProps> = ({
                 </div>
             )}
             <Masonry
-                breakpointCols={newColCount}
+                breakpointCols={breakpointColumnsObj}
                 className={styles.list}
                 columnClassName={styles.column}
             >
@@ -176,6 +178,7 @@ const Gallery: React.FC<GalleryProps> = ({
                             tags={image.tags}
                             galleryId={image.galleryId}
                             handleScroll={handleScroll}
+                            isDarkMode={isDarkMode}
                         />
                     </div>
                 ))}

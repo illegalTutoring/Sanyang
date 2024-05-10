@@ -35,13 +35,22 @@
             }
 
             .tag {
-                background-color: black;
-                color: white;
                 margin-right: 5px;
                 padding: 0 10px;
                 font-family: 'Pretendard-Regular';
                 border-radius: 20px;
                 white-space: nowrap;
+                cursor: pointer;
+            }
+
+            .tagDark {
+                color: #ccc;
+                background: rgb(141, 102, 141);
+            }
+
+            .tagWhite {
+                color: #333;
+                background: rgb(220, 216, 159);
             }
         }
     }
