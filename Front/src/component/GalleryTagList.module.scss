@@ -45,20 +45,12 @@
 
             .tagDark {
                 color: #ccc;
-                background: linear-gradient(
-                    to right,
-                    rgb(147, 79, 98),
-                    rgb(88, 50, 88)
-                );
+                background: rgb(141, 102, 141);
             }
 
             .tagWhite {
                 color: #333;
-                background: linear-gradient(
-                    to right,
-                    rgb(246, 247, 202),
-                    rgb(208, 204, 146)
-                );
+                background: rgb(220, 216, 159);
             }
         }
     }
