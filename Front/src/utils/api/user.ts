@@ -35,6 +35,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
             userStore.getState().setId(data.username)
             userStore.getState().setUsername(response.data.username)
             userStore.getState().setAccessToken(response.headers.accesstoken)
+            userStore.getState().setRole(response.data.role)
 
             return {
                 statusCode: response.status,
