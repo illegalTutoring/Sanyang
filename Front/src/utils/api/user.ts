@@ -7,7 +7,7 @@ import {
     signinRequestDTO,
     signinResponseDTO,
 } from './DTO/user'
-import { userStore } from '../store/useUserStore'
+import userStore from '../store/useUserStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
