@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import useEditModeStore from '@/utils/store/useEditModeStore'
 
 interface AuthState {
     isLoggedIn: boolean
@@ -10,8 +11,9 @@ interface AuthState {
 const useAuthStore = create(
     persist<AuthState>(
         (set, get) => ({
-            isLoggedIn: false,
+            isLoggedIn: true,
             logIn: () => set({ isLoggedIn: true }),
+
             logOut: () => set({ isLoggedIn: false }),
         }),
         {

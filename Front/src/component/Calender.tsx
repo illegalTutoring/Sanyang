@@ -69,6 +69,12 @@ const Calendar: React.FC<CalendarProps> = ({
     // 이벤트 핸들러
     const handleDateClick = (event: React.MouseEvent, day: Date) => {
         event.stopPropagation()
+        setInsertData({
+            calendarId: -1,
+            title: '',
+            startDate: format(day, 'yyyy-MM-dd'),
+            endDate: format(day, 'yyyy-MM-dd'),
+        })
         setAddMode(true)
 
         //console.log(day)
@@ -402,11 +408,18 @@ const Calendar: React.FC<CalendarProps> = ({
                         type="date"
                         id="startDate"
                         name="startDate"
+                        value={insertData.startDate}
                         required
                     />
                     <br></br>
                     <label htmlFor="endDate">End Date</label>
-                    <input type="date" id="endDate" name="endDate" required />
+                    <input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        value={insertData.endDate}
+                        required
+                    />
                     <br></br>
                     <button type="submit">Save</button>
                 </form>
