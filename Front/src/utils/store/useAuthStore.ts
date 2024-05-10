@@ -11,16 +11,9 @@ interface AuthState {
 const useAuthStore = create(
     persist<AuthState>(
         (set, get) => ({
-            isLoggedIn: false,
-            logIn: () => {
-                set({ isLoggedIn: true })
+            isLoggedIn: true,
+            logIn: () => set({ isLoggedIn: true }),
 
-                const { isEditMode, toggleEditMode } = useEditModeStore()
-
-                if (isEditMode) {
-                    toggleEditMode()
-                }
-            },
             logOut: () => set({ isLoggedIn: false }),
         }),
         {

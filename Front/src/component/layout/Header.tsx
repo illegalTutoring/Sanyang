@@ -9,7 +9,6 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login } from '@/utils/api/user'
-import { WiDayCloudy } from 'react-icons/wi'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -41,6 +40,14 @@ const Header: React.FC = () => {
             /**
              * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
              */
+        }
+    }
+
+    const handelLogout = () => {
+        logOut()
+
+        if (isEditMode) {
+            toggleEditMode()
         }
     }
 
@@ -85,7 +92,7 @@ const Header: React.FC = () => {
                         >
                             <div
                                 className={styles.profileItem}
-                                onClick={logOut}
+                                onClick={handelLogout}
                             >
                                 <img
                                     className={styles.toggleLoginButton}

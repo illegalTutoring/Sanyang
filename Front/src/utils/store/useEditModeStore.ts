@@ -14,7 +14,7 @@ const useEditModeStore = create(
                 set((state) => ({ isEditMode: !state.isEditMode })),
         }),
         {
-            name: 'DarkModeStorage',
+            name: 'EditModeStorage',
         },
     ),
 )
