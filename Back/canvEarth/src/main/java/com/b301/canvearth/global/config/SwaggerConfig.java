@@ -1,12 +1,14 @@
 package com.b301.canvearth.global.config;
 
 import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +22,11 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
+                .addServersItem(new Server().url("/"))
+                .info(new Info()
+                        .title("CanvEarth API")
+                        .version("1.0")
+                )
                 .components(
                         new Components()
                                 .addSecuritySchemes("accessToken", new SecurityScheme()
