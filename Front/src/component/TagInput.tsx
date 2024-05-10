@@ -137,6 +137,24 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
             <div
                 className={`${styles.tagBox} ${isDarkMode ? styles.darkBox : styles.lightBox}`}
             >
+                <div className={styles.tagContainer}>
+                    {tags.map((tag, index) => (
+                        <div
+                            className={`${styles.tag} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
+                            key={index}
+                        >
+                            #{tag}
+                            <button
+                                className={`${styles.deleteButton} ${isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton}`}
+                                onClick={() => deleteTag(tag)}
+                                aria-label="Delete tag"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
+
                 <div className={styles.searchBox}>
                     <input
                         ref={inputRef}
@@ -156,6 +174,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                         ></img>
                     </div>
                 </div>
+
                 <div className={styles.inputBox}>
                     {suggestions.length > 0 && (
                         <ul className={styles.suggestions}>
@@ -179,23 +198,6 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                             ))}
                         </ul>
                     )}
-                </div>
-                <div className={styles.tagContainer}>
-                    {tags.map((tag, index) => (
-                        <div
-                            className={`${styles.tag} ${isDarkMode ? styles.darkTag : styles.lightTag}`}
-                            key={index}
-                        >
-                            #{tag}
-                            <button
-                                className={`${styles.deleteButton} ${isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton}`}
-                                onClick={() => deleteTag(tag)}
-                                aria-label="Delete tag"
-                            >
-                                ×
-                            </button>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

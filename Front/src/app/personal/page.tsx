@@ -1,41 +1,37 @@
 'use client'
 
 import styles from './personal.module.scss'
-import useDarkModeStore from '@/utils/store/useThemaStore'
-
-import Calendar from '@/component/Calender'
-import { getCalendar } from '@/utils/api/calendar'
 import { useEffect, useState } from 'react'
+import useEditModeStore from '@/utils/store/useEditModeStore'
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import Calendar from '@/component/Calender'
 
-export interface Schedule {
-    calendarId: number
-    userId: string
-    company: string
-    title: string
-    startDate: string
-    endDate: string
-}
+import { calendarInfo } from '@/utils/api/DTO/calendar'
+import { getCalendar } from '@/utils/api/calendar'
+import {
+    registCalendar,
+    modifyCalendar,
+    deleteCalendar,
+} from '@/utils/api/admin'
 
 const PersonalPage: React.FC = () => {
-    const [schedules, setSchedules] = useState<Schedule[]>([])
+    // 전역변수
+    const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
+
+    // 지역변수
+    const [schedules, setSchedules] = useState<calendarInfo[]>([])
+
+    // 함수
+    const fetchSchedules = async (year: number, month: number) => {
+        const response = await getCalendar(year, month)
+        setSchedules(response.data)
+    }
 
     useEffect(() => {
-        const fetchSchedules = async () => {
-            const year = new Date().getFullYear()
-            const month = new Date().getMonth() + 1
-            const response = await getCalendar(year, month)
-
-            /**
-             * @todo Error Handling
-             */
-
-            setSchedules(response.data)
-        }
-
-        fetchSchedules()
+        fetchSchedules(new Date().getFullYear(), new Date().getMonth())
     }, [])
 
-    const { isDarkMode } = useDarkModeStore()
     return (
         <article
             className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}
@@ -44,8 +40,14 @@ const PersonalPage: React.FC = () => {
                 width="100%"
                 height="90vh"
                 year={new Date().getFullYear()}
-                month={new Date().getMonth() + 1}
+                month={new Date().getMonth()}
                 schedules={schedules}
+                isDarkMode={isDarkMode}
+                isEditMode={isEditMode}
+                fetchSchedules={fetchSchedules}
+                addSchedule={registCalendar}
+                updateSchedules={modifyCalendar}
+                deleteSchedule={deleteCalendar}
             />
         </article>
     )
