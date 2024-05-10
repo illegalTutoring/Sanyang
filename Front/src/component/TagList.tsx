@@ -12,6 +12,7 @@ interface ListProps {
     height: string
     pageSize: number
     columns: string[]
+    columnWidth: string[]
     data: DataItem[]
     tagActions: {
         [tag: string]: () => void
@@ -24,6 +25,7 @@ const List: React.FC<ListProps> = ({
     height,
     pageSize,
     columns,
+    columnWidth,
     data,
     tagActions,
     isEditMode,
@@ -61,7 +63,6 @@ const List: React.FC<ListProps> = ({
 
     const handleDelete = (index: number) => {
         console.log(`Deleting item at index ${index}`)
-        // Delete logic here
     }
 
     const handleEditClick = (event: React.MouseEvent, item: DataItem) => {
@@ -183,8 +184,13 @@ const List: React.FC<ListProps> = ({
                 <table className={styles.table}>
                     <thead>
                         <tr className={isDarkMode ? styles.dark : styles.light}>
-                            {columns.map((column) => (
-                                <th key={column}>{column}</th>
+                            {columns.map((column, index) => (
+                                <th
+                                    key={column}
+                                    style={{ width: columnWidth[index] }}
+                                >
+                                    {column}
+                                </th>
                             ))}
                             {isEditMode && (
                                 <>
@@ -195,39 +201,40 @@ const List: React.FC<ListProps> = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item, index) => (
+                        {data.map((item, rowIndex) => (
                             <tr
-                                key={index}
+                                key={rowIndex}
                                 onClick={() => handleRowClick(item)}
                             >
-                                {columns.map((column) => (
-                                    <td key={`${index}-${column}`}>
+                                {columns.map((column, colIndex) => (
+                                    <td
+                                        key={`${rowIndex}-${column}`}
+                                        style={{ width: columnWidth[colIndex] }}
+                                    >
                                         {item[column]}
                                     </td>
                                 ))}
                                 {isEditMode && (
                                     <>
                                         <td>
-                                            <img
-                                                className={styles.deleteButton}
-                                                style={{ height: '15px' }}
-                                                src={'/svgs/delete_red.svg'}
-                                                alt="Delete"
-                                                onClick={(event) =>
-                                                    handleDelete(index)
-                                                }
-                                            />
+                                            <button
+                                                onClick={(event) => {
+                                                    event.stopPropagation()
+                                                    handleDelete(rowIndex)
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                         <td>
-                                            <img
-                                                className={styles.deleteButton}
-                                                style={{ height: '15px' }}
-                                                src={'/svgs/delete_red.svg'}
-                                                alt="Edit"
-                                                onClick={(event) =>
+                                            <button
+                                                onClick={(event) => {
+                                                    event.stopPropagation()
                                                     handleEditClick(event, item)
-                                                }
-                                            />
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
                                         </td>
                                     </>
                                 )}
