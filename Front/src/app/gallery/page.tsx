@@ -377,6 +377,7 @@ const GalleryPage = () => {
                     addTogle={() => {
                         toggleAddMode()
                     }}
+                    isDarkMode={isDarkMode}
                 />
             </div>
 
