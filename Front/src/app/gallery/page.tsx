@@ -96,7 +96,7 @@ if (!defaultImages) {
         },
     ]
 }
-console.log(defaultImages)
+
 /**
  * @todo Error Handling
  */
