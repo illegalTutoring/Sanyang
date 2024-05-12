@@ -30,7 +30,6 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, CustomException {
 
-        log.info("=========================START JWT (ACCESS) TOKEN FILTER========================");
 
         // 1. Access Token 유효성 검사
         String accessToken = jwtValidationUtil.isValidAccessToken(request);
@@ -39,6 +38,8 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        log.info("=========================START JWT (ACCESS) TOKEN FILTER========================");
 
         // 2. role = ADMIN 인증
         String username = jwtUtil.getUsername(accessToken);
@@ -52,7 +53,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        log.info("================================================================================");
+        log.info("==========================END JWT (ACCESS) TOKEN FILTER=========================");
 
         filterChain.doFilter(request, response);
     }

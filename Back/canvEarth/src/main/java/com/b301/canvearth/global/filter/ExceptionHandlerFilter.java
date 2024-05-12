@@ -38,7 +38,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     }
 
     protected void handleExceptionInternal(Exception ex, HttpStatus httpStatus, String message, HttpServletRequest request, HttpServletResponse response) {
-        log.info("=========================== START EXCEPTION INFO ===============================");
+        log.info("======================= START SECURITY EXCEPTION INFO ==========================");
 
         if (response != null && response.isCommitted()) {
             if (log.isWarnEnabled()) {
@@ -60,7 +60,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         log.error("Exception uri [{}]", request.getRequestURI());
 
-        log.info("================================================================================");
+        log.info("======================== END SECURITY EXCEPTION INFO ===========================");
 
         if(response != null){
             responseUtil.sendMessage(response, false, "", httpStatus, message);

@@ -47,6 +47,9 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
+        log.info("============================== START LOGIN FILTER ==============================");
+
         // 로그인 시도
         String username = obtainUsername(request);  // username => id
         String password = obtainPassword(request);
@@ -59,6 +62,9 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
+
+        log.info("================================ SUCCESS LOGIN =================================");
+
         // 로그인 성공
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -85,6 +91,8 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+
+        log.info("================================== FAIL LOGIN ===================================");
 
         throw new CustomException(ErrorCode.LOGIN_FAIL);
     }

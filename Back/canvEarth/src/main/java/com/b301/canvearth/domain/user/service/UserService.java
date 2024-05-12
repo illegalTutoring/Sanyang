@@ -13,9 +13,11 @@ import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -36,6 +38,8 @@ public class UserService {
 
 
     public String signInProcess(SignInDto signinDto) throws CustomException {
+
+        log.info("============================ START SIGNIN SERVICE ==============================");
 
         // 1. 파라미터 검증
         String id = signinDto.getId();
@@ -69,10 +73,14 @@ public class UserService {
 
         userRepository.save(data);
 
+        log.info("============================= END SIGNIN SERVICE ===============================");
+
         return "회원가입 성공";
     }
 
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
+
+        log.info("============================ START REISSUE SERVICE =============================");
 
         // 1. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
@@ -94,6 +102,8 @@ public class UserService {
         // 4. JWT Token 전달
         response.setHeader("accessToken", newAccess);
         response.addCookie(responseUtil.createCookie("refreshToken", newRefresh));
+
+        log.info("============================= END REISSUE SERVICE ==============================");
 
         return "refresh 토큰 재발행 성공";
     }
