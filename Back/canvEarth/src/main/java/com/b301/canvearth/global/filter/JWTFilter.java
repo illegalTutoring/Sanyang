@@ -1,7 +1,6 @@
 package com.b301.canvearth.global.filter;
 
 import com.b301.canvearth.domain.authorization.dto.CustomUserDetails;
-import com.b301.canvearth.domain.authorization.service.AccessService;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.util.JWTUtil;
@@ -28,10 +27,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTValidationUtil jwtValidationUtil;
 
-    private final AccessService accessService;
-
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException, CustomException {
+
+        log.info("=========================START JWT (ACCESS) TOKEN FILTER========================");
 
         // 1. Access Token 유효성 검사
         String accessToken = jwtValidationUtil.isValidAccessToken(request);
@@ -52,6 +51,8 @@ public class JWTFilter extends OncePerRequestFilter {
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        log.info("================================================================================");
 
         filterChain.doFilter(request, response);
     }
