@@ -36,7 +36,7 @@ public enum ErrorCode {
     INVALID_LINK_TYPE(HttpStatus.BAD_REQUEST, "옳지 않은 Link 타입입니다."),
     NO_POST(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
     NO_S3_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S3 접근 권한이 없습니다."),
-    NO_REQUIRE_ARUGUMENT(HttpStatus.BAD_REQUEST);
+    NO_REQUIRE_ARGUMENT(HttpStatus.BAD_REQUEST);
 
     private final HttpStatus httpStatus;
     private String errorMessage;

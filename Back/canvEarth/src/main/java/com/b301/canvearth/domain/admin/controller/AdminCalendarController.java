@@ -44,7 +44,7 @@ public class AdminCalendarController {
         if(!isValidCalendarDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidCalendarDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         String accessToken = request.getHeader("accessToken");

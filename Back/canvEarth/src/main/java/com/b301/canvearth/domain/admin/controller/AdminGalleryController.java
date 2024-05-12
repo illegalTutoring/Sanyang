@@ -55,7 +55,7 @@ public class AdminGalleryController {
         if(!isValidGalleryDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidGalleryDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         Gallery insertGallery =  galleryService.insertGallery(image, requestPostDto);
@@ -99,7 +99,7 @@ public class AdminGalleryController {
         if(!isValidGalleryDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidGalleryDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         Gallery modifyGallery = galleryService.modifyGallery(galleryId, image, requestPutDto);
