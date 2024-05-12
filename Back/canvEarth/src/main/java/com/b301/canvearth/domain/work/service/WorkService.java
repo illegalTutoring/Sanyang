@@ -9,7 +9,6 @@ import com.b301.canvearth.global.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,15 +24,13 @@ public class WorkService {
     private final S3Service s3Service;
     private final JWTUtil jwtUtil;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
     public Work insertWork(MultipartFile image, WorkRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [WorkService] insertWork start =====");
 
         Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
-        String accessToken = request.getHeader("accessToken");
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.replace("Bearer ", "");
         String username = jwtUtil.getUsername(accessToken);
         Work work = Work.builder().userId(username).company(requestPostDto.getCompany())
                 .title(requestPostDto.getTitle()).startDate(requestPostDto.getStartDate())

@@ -89,19 +89,19 @@ public class UserService {
         String role = jwtUtil.getRole(refreshToken);
 
         // 2. access, refresh 토큰 재발급
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // 3. white list 갱신
         accessService.deleteAccessToken(username);
-        accessService.saveAccessToken(username, newAccess, 600000L);
+        accessService.saveAccessToken(username, newAccessToken, 600000L);
 
         refreshService.deleteRefreshToken(username);
-        refreshService.saveRefreshToken(username, newRefresh, 86400000L);
+        refreshService.saveRefreshToken(username, newRefreshToken, 86400000L);
 
         // 4. JWT Token 전달
-        response.setHeader("accessToken", newAccess);
-        response.addCookie(responseUtil.createCookie("refreshToken", newRefresh));
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
+        response.addCookie(responseUtil.createCookie("refreshToken", newRefreshToken));
 
         log.info("============================= END REISSUE SERVICE ==============================");
 

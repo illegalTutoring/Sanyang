@@ -39,7 +39,7 @@ public class AdminBannerController {
     @ApiResponse(responseCode = "400" ,description = "용량이 너무 큽니다.")
     @ApiResponse(responseCode = "415" ,description = "지원하지 않는 파일 형식입니다")
     @ApiResponse(responseCode = "500" ,description = "서버에러")
-    @SecurityRequirement(name = "accessToken")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "images", required = false)List<MultipartFile> images, @RequestPart(value = "infos", required = false)  List<BannerRequestPutDto> infos){
         log.info("===== [AdminBannerController] modifyBannerList START =====");
         log.info("[images]: {}", images);
