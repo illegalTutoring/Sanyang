@@ -18,7 +18,7 @@ const Header: React.FC = () => {
     // 전역 상태관리
     const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn, logOut } = useAuthStore()
-    const { isEditMode, toggleEditMode } = useEditModeStore()
+    const { isEditMode, setEditMode, toggleEditMode } = useEditModeStore()
 
     // 함수
     const toggleLoginModal = () => setLoginModalVisible(!loginModalVisible)
@@ -45,10 +45,7 @@ const Header: React.FC = () => {
 
     const handelLogout = () => {
         logOut()
-
-        if (isEditMode) {
-            toggleEditMode()
-        }
+        setEditMode(false)
     }
 
     return (

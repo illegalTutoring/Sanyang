@@ -96,7 +96,7 @@ const Calendar: React.FC<CalendarProps> = ({
         //console.log(schedule)
     }
 
-    const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleAddSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         const calendarId = formData.get('calendarId')
@@ -104,7 +104,7 @@ const Calendar: React.FC<CalendarProps> = ({
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        addSchedule({
+        await addSchedule({
             title: title as string,
             startDate: startDate as string,
             endDate: endDate as string,
@@ -114,7 +114,9 @@ const Calendar: React.FC<CalendarProps> = ({
         setAddMode(false)
     }
 
-    const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleUpdateSubmit = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         const calendarId = formData.get('calendarId')
@@ -122,7 +124,7 @@ const Calendar: React.FC<CalendarProps> = ({
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        updateSchedules({
+        await updateSchedules({
             calendarId: parseInt(calendarId as string, 10),
             title: title as string,
             startDate: startDate as string,
