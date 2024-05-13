@@ -1,0 +1,57 @@
+.tagList {
+    display: flex;
+    align-content: center;
+    overflow: hidden;
+    justify-content: space-between;
+    margin-top: 5px;
+
+    .scrollBtnLeft {
+        height: 100%;
+        padding-right: 10px;
+        cursor: pointer;
+    }
+
+    .scrollBtnRight {
+        height: 100%;
+        padding-left: 10px;
+        cursor: pointer;
+    }
+
+    .tagBoxWrapper {
+        position: relative;
+
+        .tagBox {
+            position: absolute; /* 절대 위치 */ /* 이미지 아래쪽에 배치 */
+            left: 0px;
+            width: 100%;
+            display: flex;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            border-radius: 20px;
+
+            &::-webkit-scrollbar {
+                height: 0px;
+                width: 0px;
+            }
+
+            .tag {
+                margin-right: 5px;
+                padding: 0 10px;
+                font-family: 'Pretendard-Regular';
+                border-radius: 20px;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+
+            .tagDark {
+                color: #ccc;
+                background: rgb(141, 102, 141);
+            }
+
+            .tagWhite {
+                color: #333;
+                background: rgb(220, 216, 159);
+            }
+        }
+    }
+}

@@ -17,14 +17,12 @@ export interface getGalleryListResponseDTO extends serverResponseDTO {
 }
 
 export interface registGalleryRequestDTO {
-    userId: string
     title: string
     createDate: string
     tags: Array<string>
 }
 
 export interface modifyGalleryRequestDTO {
-    userId: string
     galleryId: number
     title: string
     createDate: string

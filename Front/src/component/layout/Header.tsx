@@ -9,7 +9,6 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login } from '@/utils/api/user'
-import { WiDayCloudy } from 'react-icons/wi'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -41,6 +40,14 @@ const Header: React.FC = () => {
             /**
              * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
              */
+        }
+    }
+
+    const handelLogout = () => {
+        logOut()
+
+        if (isEditMode) {
+            toggleEditMode()
         }
     }
 
@@ -76,7 +83,7 @@ const Header: React.FC = () => {
                             alt="profile image"
                             radius={50}
                         />
-                        <h3 style={{ marginLeft: '10px' }}>admin</h3>
+                        <h3 style={{ marginLeft: '10px' }}>관리자</h3>
                     </div>
 
                     {profileMenuVisible && (
@@ -85,7 +92,7 @@ const Header: React.FC = () => {
                         >
                             <div
                                 className={styles.profileItem}
-                                onClick={logOut}
+                                onClick={handelLogout}
                             >
                                 <img
                                     className={styles.toggleLoginButton}
@@ -96,7 +103,7 @@ const Header: React.FC = () => {
                                     }
                                     alt="login"
                                 />
-                                <h3>logout</h3>
+                                <h3>로그아웃</h3>
                             </div>
                             {isEditMode ? (
                                 <div
@@ -112,7 +119,7 @@ const Header: React.FC = () => {
                                         }
                                         alt="login"
                                     />
-                                    <h3>edit</h3>
+                                    <h3>수정모드</h3>
                                 </div>
                             ) : (
                                 <div
@@ -128,7 +135,7 @@ const Header: React.FC = () => {
                                         }
                                         alt="login"
                                     />
-                                    <h3>view</h3>
+                                    <h3>일반모드</h3>
                                 </div>
                             )}
                         </div>
@@ -159,7 +166,8 @@ const Header: React.FC = () => {
                         isVisible={loginModalVisible}
                         toggleModal={toggleLoginModal}
                         width="400px"
-                        height="310px"
+                        //height="320px" sign up 링크 존재 시
+                        height="300px"
                     >
                         <div className={styles.loginModal}>
                             <h1 style={{ fontFamily: 'Pacifico-Regular' }}>
@@ -192,13 +200,17 @@ const Header: React.FC = () => {
                                     textAlign: 'center',
                                 }}
                             >
-                                계정 생성을 원한다면{' '}
+                                {/* 계정 생성을 원한다면{' '}
                                 <Link
-                                    style={{ color: '#0051b8' }}
+                                    style={
+                                        isDarkMode
+                                            ? { color: '#40a1E8' }
+                                            : { color: '#0051b8' }
+                                    }
                                     href="/signup"
                                 >
-                                    이곳을 클릭하세요
-                                </Link>
+                                    클릭하세요
+                                </Link> */}
                             </div>
                         </div>
                     </Modal>

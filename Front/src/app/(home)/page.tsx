@@ -1,12 +1,39 @@
 'use client'
 
 import styles from './home.module.scss'
-import EditableBanner from '@/component/banner/EditableBanner'
-import Profile from '@/component/Profile'
+import EditableBanner, { Images } from '@/component/banner/EditableBanner'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
+import DraggableProfile from '@/component/DraggableProfile'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import Profile from '@/component/Profile'
+import { getBanner } from '@/utils/api/banner'
+import { getNoticeList } from '@/utils/api/notice'
+import { bannerInfo } from '@/utils/api/DTO/banner'
+import { noticeInfo } from '@/utils/api/DTO/notice'
+
+interface ProfileData {
+    type: number
+    link: string
+}
+
+const defaultImages = [
+    {
+        url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
+        yindex: 0,
+    },
+    {
+        url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
+        yindex: 0,
+    },
+    {
+        url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+        yindex: 0,
+    },
+]
 
 const HomePage = () => {
     // 전역 변수
@@ -17,23 +44,37 @@ const HomePage = () => {
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
     const [editBanner, setEditBanner] = useState(false)
-    const [images, setImages] = useState([
-        {
-            url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
-            yindex: 0,
-        },
-    ])
-    const [notice, setNotice] = useState(
-        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
-    )
+    const [images, setImages] = useState<Images[]>([])
+    const [notice, setNotice] = useState<string>()
+
+    const fetchBanners = async () => {
+        const response = await getBanner()
+
+        let result: Images[] = []
+        response.data.forEach((image) => {
+            result.push({
+                url: image.imagePath,
+                yindex: image.coordinateY,
+            })
+        })
+        setImages(result)
+    }
+    const fetchNotices = async (page: number, size: number) => {
+        const response = await getNoticeList(page, size)
+
+        let result: string = ''
+        if (response.data) {
+            result = response.data[0].title
+        } else {
+            result = '공지사항이 없습니다.'
+        }
+
+        setNotice(result)
+    }
+    useEffect(() => {
+        fetchBanners()
+        fetchNotices(1, 1)
+    }, [])
 
     //함수
     const toggleEditBanner = () => setEditBanner(!editBanner)
@@ -46,6 +87,16 @@ const HomePage = () => {
             contentDiv?.scrollIntoView({ behavior: 'smooth' })
         }, 100)
     }
+
+    // 더미 데이터
+    const [embedData, setEmbedData] = useState<ProfileData[]>([
+        { type: 0, link: 'https://example.com/link1' },
+        { type: 1, link: 'https://example.com/link2' },
+        { type: 2, link: 'https://example.com/link3' },
+        { type: 3, link: 'https://example.com/link3' },
+        { type: 4, link: 'https://example.com/link3' },
+        { type: 5, link: 'https://example.com/link3' },
+    ])
 
     const getImageSource = (type: number) => {
         switch (type) {
@@ -75,44 +126,22 @@ const HomePage = () => {
                     : '/svgs/pixiv_black.svg'
             case 6:
                 return isDarkMode
-                    ? '/svgs/etc_white.svg'
-                    : '/svgs/etc_black.svg'
+                    ? '/svgs/add_embed_white.svg'
+                    : '/svgs/add_embed_black.svg'
             default:
                 return ''
         }
     }
 
-    // 더미 데이터
-    const embedData = [
-        {
-            type: 0,
-            link: 'https://example.com/link1',
+    const moveProfile = useCallback(
+        (dragIndex: number, hoverIndex: number) => {
+            const newEmbedData = [...embedData]
+            const draggedItem = newEmbedData.splice(dragIndex, 1)[0]
+            newEmbedData.splice(hoverIndex, 0, draggedItem)
+            setEmbedData(newEmbedData)
         },
-        {
-            type: 1,
-            link: 'https://example.com/link2',
-        },
-        {
-            type: 2,
-            link: 'https://example.com/link3',
-        },
-        {
-            type: 4,
-            link: 'https://example.com/link5',
-        },
-        {
-            type: 3,
-            link: 'https://example.com/link4',
-        },
-        {
-            type: 5,
-            link: 'https://example.com/link6',
-        },
-        {
-            type: 6,
-            link: 'https://example.com/link7',
-        },
-    ]
+        [embedData],
+    )
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -191,19 +220,66 @@ const HomePage = () => {
                             Contact
                         </div>
 
-                        <div className={styles.link_container}>
-                            {embedData.map((data, index) => (
-                                <div
-                                    key={index}
-                                    style={{ marginBottom: '50px' }}
-                                >
-                                    <Profile
-                                        src={getImageSource(data.type)}
-                                        size={70}
-                                    />
+                        {isEditMode ? (
+                            <DndProvider backend={HTML5Backend}>
+                                <div className={styles.link_container}>
+                                    {embedData.map((data, index) => (
+                                        <div
+                                            key={index}
+                                            className={styles.embedLink}
+                                        >
+                                            {isEditMode && (
+                                                <img
+                                                    className={
+                                                        styles.deleteButton
+                                                    }
+                                                    src={'/svgs/delete_red.svg'}
+                                                    alt="Delete"
+                                                    // onClick={(event) =>
+                                                    //      이곳에 임베드 삭제 이벤트
+                                                    // }
+                                                />
+                                            )}
+                                            <DraggableProfile
+                                                key={data.type}
+                                                item={data}
+                                                index={index}
+                                                moveProfile={moveProfile}
+                                            />
+                                        </div>
+                                    ))}
+                                    <div
+                                        key={-1}
+                                        className={styles.embedLink}
+                                        // onClick={
+                                        //      이곳에 임베드 추가 이벤트
+                                        // }
+                                    >
+                                        <Profile
+                                            src={getImageSource(6)}
+                                            size={70}
+                                        />
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                            </DndProvider>
+                        ) : (
+                            <div className={styles.link_container}>
+                                {embedData.map((data, index) => (
+                                    <div
+                                        key={index}
+                                        className={styles.embedLink}
+                                        // onClick={
+                                        //     이곳에 링크 이동 이벤트
+                                        // }
+                                    >
+                                        <Profile
+                                            src={getImageSource(data.type)}
+                                            size={70}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
