@@ -1,8 +1,7 @@
+'use client'
+
 import React from 'react'
 import styles from './GridGallery.module.scss'
-import useDarkModeStore from '@/utils/store/useThemaStore'
-import { BiLabel } from 'react-icons/bi'
-import useEditModeStore from '@/utils/store/useEditModeStore'
 
 export interface ImageData {
     workId?: number
@@ -28,7 +27,7 @@ export interface GalleryProps {
 }
 
 const GridGallery: React.FC<GalleryProps> = ({
-    images,
+    images = [],
     colCount,
     width,
     height,

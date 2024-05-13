@@ -31,6 +31,7 @@
 .table {
     width: 100%;
     border-collapse: collapse;
+
     th {
         padding: 8px;
         border-radius: 5px;
@@ -42,6 +43,15 @@
         padding: 8px;
         text-align: left;
         border-bottom: 1px solid #ddd;
+        font-family: 'Pretendard-Regular';
+    }
+}
+
+@media (max-width: 500px) {
+    .table {
+        td {
+            font-size: 14px;
+        }
     }
 }
 

@@ -80,6 +80,7 @@ public class NoticeService {
                 .map(notice -> NoticeTitleListResponseDto.builder()
                         .id(notice.getId())
                         .title(notice.getTitle())
+                        .registDate(notice.getRegistDate())
                         .build())
                 .toList();
     }
@@ -109,7 +110,8 @@ public class NoticeService {
 
         log.info("===== [NoticeService] InsertNotice START =====");
 
-        String accessToken = request.getHeader("accessToken");
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.replace("Bearer ", "");
         String username = jwtUtil.getUsername(accessToken);
 
         User user = userRepository.findByUserName(username);

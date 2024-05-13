@@ -8,6 +8,7 @@ import com.b301.canvearth.domain.support.service.SupportService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class AdminSupportController {
 
     @Operation(summary = "REQ-ADMIN-06", description = "후원 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registSupport(@RequestPart MultipartFile image,
                                                 @RequestPart("data") SupportRequestPostDto requestPostDto) {
         log.info("===== [AdminSupportController] registSupport start =====");
@@ -65,6 +67,7 @@ public class AdminSupportController {
 
     @Operation(summary = "REQ-ADMIN-06", description = "후원 등록")
     @PutMapping("{supportId}")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifySupport(@PathVariable("supportId") Long supportId,
                                                 @RequestPart(value = "image", required = false) MultipartFile image,
                                                 @RequestPart("data") SupportRequestPutDto requestPutDto) {
@@ -94,6 +97,7 @@ public class AdminSupportController {
 
     @Operation(summary = "REQ-ADMIN-06", description = "후원 삭제")
     @DeleteMapping("/{supportId}")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> deleteSupport(@PathVariable("supportId") Long supportId) {
         log.info("===== [AdminSupportController] deleteSupport start =====");
         log.info("[path variable]: {}", supportId);

@@ -32,7 +32,7 @@ const SupportCard: React.FC<SupportProps> = ({
     isDarkMode,
     width = '100%',
     height = 'auto',
-    cardMinWidth = '350px',
+    cardMinWidth = '315px',
     cardMaxWidth = '1fr',
     addTogle,
 }) => {
