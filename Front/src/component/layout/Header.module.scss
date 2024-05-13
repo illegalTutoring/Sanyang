@@ -1,0 +1,118 @@
+.header {
+    display: grid;
+    grid-template-columns: 150px 1fr 50px auto;
+    align-items: center;
+    padding: 0 20px;
+    gap: 10px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 500px) {
+    .toggleLoginButton {
+        display: none;
+    }
+
+    .toggleDarkModeButton {
+        width: 20px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 370px) {
+    .profile {
+        h3 {
+            font-size: 13px;
+        }
+    }
+}
+
+.profile {
+    border-radius: 25px;
+    width: 100%;
+    height: 45px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 20px 5px 10px;
+    grid-template-columns: 50px 1fr;
+    cursor: pointer;
+}
+
+.profileDark {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profileLight {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.toggleDarkModeButton {
+    width: 35px;
+    cursor: pointer;
+}
+
+.toggleLoginButton {
+    width: 35px;
+}
+
+.loginModal {
+    display: grid;
+}
+
+.loginForm {
+    display: grid;
+
+    label {
+        margin-top: 10px;
+    }
+
+    input {
+        padding: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #0061a8;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #004885;
+        }
+    }
+}
+
+.profileMenu {
+    margin-right: 25px;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 110px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: -5px;
+    cursor: pointer;
+
+    .profileItem {
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+
+        h3 {
+            font-size: 16px;
+            font-family: 'Pretendard-Regular';
+        }
+    }
+
+    img {
+        width: 25px;
+    }
+}

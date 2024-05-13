@@ -1,85 +1,54 @@
 import axios, { AxiosResponse } from 'axios'
+import { axiosRequestHandler } from './interceptor'
+import { getGalleryListResponseDTO } from './DTO/gallery'
 
-const SERVER_URL = process.env.SERVER_URL
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export async function getGalleryList() {
+export function getGalleryList(): getGalleryListResponseDTO {
     /**
-     * 갤러리 이미지 정보 리스트를 반환한다.
-     *
-     * @returns galleryResponseGetDto 객체
-     *
-     * @beta
+     * 갤러리 이미지 정보 목록을 반환한다.
      */
 
-    // const response: AxiosResponse<JSON> = await axios({
-    //     method: 'GET',
-    //     url: `${SERVER_URL}/gallery`
-    // })
-    // return response.data
+    return axiosRequestHandler(async () => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'GET',
+            url: `${SERVER_URL}/gallery`,
+        })
 
-    // START - DUMMY DATA
-    return {
-        message: '갤러리 목록 불러오기 성공',
-        galleryList: [
-            {
-                userId: 'sanyang',
-                title: '피카피카 우는 토끼',
-                upload_date: '2024-04-12 12:34:56',
-                image: {
-                    s3Path: '/s3/.../',
-                },
-            },
-            {
-                userId: 'sanyang',
-                title: '바보바보 우는 예원',
-                upload_date: '2024-05-12 12:34:56',
-                image: {
-                    s3Path: '/s3/.../',
-                },
-            },
-        ],
-    }
-    // END - DUMMY DATA
+        return {
+            message: response.data.message,
+            data: response.data.data,
+        }
+    }, [])
 }
 
-export async function getGalleryListByTag(tagList: Array<string>) {
+export function getGalleryListByTag(
+    tags: Array<string>,
+): getGalleryListResponseDTO {
     /**
-     * 태그에 해당하는 갤러리 이미지 정보 리스트를 반환한다.
-     *
-     * @param tagList - tag들이 담긴 Array
-     * @returns galleryResponseGetDto 객체
-     *
-     * @beta
+     * 검색 태그에 해당하는 갤러리 이미지 정보 목록을 반환한다.
      */
 
-    // TODO: 태그가 비어있다면 getGalleryList를 호출하도록 설정
+    return axiosRequestHandler(
+        async (tags: Array<string>) => {
+            let tagString: string = ''
+            for (let index = 0; index < tags.length - 1; index++) {
+                tagString += tags[index] + ','
+            }
+            if (tags.length > 0) {
+                tagString += tags[tags.length - 1]
+            }
 
-    // let tagString: string = '';
-    // for (let tag in tagList) {
-    //     tagString += `${tag},`
-    // }
-    // // 마지막 comma 제거
-    // tagString = tagString.substring(0, tagString.length - 2)
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'GET',
+                url: `${SERVER_URL}/gallery/${tagString}`,
+            })
 
-    // const response: AxiosResponse<JSON> = await axios({
-    //     method: 'GET',
-    //     url: `${SERVER_URL}/gallery/${tagString}`
-    // })
-    // return response.data
-
-    // START - DUMMY DATA
-    return {
-        message: '태그 검색 결과',
-        galleryList: [
-            {
-                userId: 'sanyang',
-                title: '피카피카 우는 토끼',
-                upload_date: '2024-04-12 12:34:56',
-                image: {
-                    s3Path: '/s3/.../',
-                },
-            },
-        ],
-    }
-    // END - DUMMY DATA
+            return {
+                message: response.data.message,
+                data: response.data.data,
+            }
+        },
+        [tags],
+    )
 }
