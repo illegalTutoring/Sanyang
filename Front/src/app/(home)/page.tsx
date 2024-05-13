@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './home.module.scss'
-import EditableBanner from '@/component/banner/EditableBanner'
+import EditableBanner, { Images } from '@/component/banner/EditableBanner'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import DraggableProfile from '@/component/DraggableProfile'
@@ -10,11 +10,30 @@ import { useCallback, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Profile from '@/component/Profile'
+import { getBanner } from '@/utils/api/banner'
+import { getNoticeList } from '@/utils/api/notice'
+import { bannerInfo } from '@/utils/api/DTO/banner'
+import { noticeInfo } from '@/utils/api/DTO/notice'
 
 interface ProfileData {
     type: number
     link: string
 }
+
+const defaultImages = [
+    {
+        url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
+        yindex: 0,
+    },
+    {
+        url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
+        yindex: 0,
+    },
+    {
+        url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
+        yindex: 0,
+    },
+]
 
 const HomePage = () => {
     // 전역 변수
@@ -25,23 +44,37 @@ const HomePage = () => {
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
     const [editBanner, setEditBanner] = useState(false)
-    const [images, setImages] = useState([
-        {
-            url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
-            yindex: 0,
-        },
-    ])
-    const [notice, setNotice] = useState(
-        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
-    )
+    const [images, setImages] = useState<Images[]>([])
+    const [notice, setNotice] = useState<string>()
+
+    const fetchBanners = async () => {
+        const response = await getBanner()
+
+        let result: Images[] = []
+        response.data.forEach((image) => {
+            result.push({
+                url: image.imagePath,
+                yindex: image.coordinateY,
+            })
+        })
+        setImages(result)
+    }
+    const fetchNotices = async (page: number, size: number) => {
+        const response = await getNoticeList(page, size)
+
+        let result: string = ''
+        if (response.data) {
+            result = response.data[0].title
+        } else {
+            result = '공지사항이 없습니다.'
+        }
+
+        setNotice(result)
+    }
+    useEffect(() => {
+        fetchBanners()
+        fetchNotices(1, 1)
+    }, [])
 
     //함수
     const toggleEditBanner = () => setEditBanner(!editBanner)

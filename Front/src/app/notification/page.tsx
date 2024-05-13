@@ -6,13 +6,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import List from '@/component/List'
 import Pagination from '@/component/Pagination'
-
-import {
-    getNoticeList,
-    getNoticeDetail,
-    getTotalNotice,
-} from '@/utils/api/notice'
-
+import { getNoticeList } from '@/utils/api/notice'
 import { noticeInfo } from '@/utils/api/DTO/notice'
 
 const NotificationPage = () => {
