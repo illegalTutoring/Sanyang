@@ -18,10 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
+
+    private final static String MESSAGE = "message";
 
     private final JWTUtil jwtUtil;
 
@@ -54,6 +58,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         // 2. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
         String username = jwtUtil.getUsername(refreshToken);
+        String role = jwtUtil.getRole(refreshToken);
 
         // 3. Token 삭제
         accessService.deleteAccessToken(username);
@@ -61,9 +66,17 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         response.addCookie(responseUtil.deleteCookie("refreshToken"));
 
-        responseUtil.sendMessage(response, false,"", HttpStatus.OK, "로그아웃 성공");
-
         log.info("=============================== SUCCESS LOGOUT =================================");
+        log.info("[USER INFO]");
+        log.info("  username: {}", username);
+        log.info("  role: {}", role);
+
+        Map<String, String> data = new HashMap<>();
+        data.put(MESSAGE, "로그아웃 성공");
+
+        responseUtil.sendMessage(response, data, HttpStatus.OK);
+
+        log.info("============================= END LOGOUT FILTER ================================");
 
     }
 

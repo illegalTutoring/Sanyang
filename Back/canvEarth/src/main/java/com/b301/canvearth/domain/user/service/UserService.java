@@ -88,9 +88,17 @@ public class UserService {
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
+        log.info("[USER INFO]");
+        log.info("  username: {}", username);
+        log.info("  role: {}", role);
+
         // 2. access, refresh 토큰 재발급
         String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+        log.info("[REISSUED JWT(ACCESS, REFRESH) INFO]");
+        log.info("  accessToken: {}", newAccessToken);
+        log.info("  refreshToken: {}", newRefreshToken);
 
         // 3. white list 갱신
         accessService.deleteAccessToken(username);

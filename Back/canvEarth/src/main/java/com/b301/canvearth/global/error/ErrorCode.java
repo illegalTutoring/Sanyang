@@ -15,13 +15,11 @@ public enum ErrorCode {
     // JWT(Access Token)
     ACCESS_TOKEN_HAS_EXPIRED(HttpStatus.UNAUTHORIZED,"만료된 access 토큰 입니다"),
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"잘못된 access 토큰 입니다"),
-    UNUSED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"사용하지 않는 access 토큰입니다"),
 
     // JWT(Refresh Token)
     REFRESH_TOKEN_DOES_NOT_EXIST(HttpStatus.UNAUTHORIZED,"refresh 토큰이 존재하지 않습니다"),
     REFRESH_TOKEN_HAS_EXPIRED(HttpStatus.UNAUTHORIZED,"만료된 refresh 토큰 입니다"),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"잘못된 refresh 토큰 입니다"),
-    UNUSED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"사용하지 않는 refresh 토큰입니다"),
 
     CHECK_THE_YEAR_OR_MONTH(HttpStatus.BAD_REQUEST, "년, 월을 확인해주세요."),
     NO_TITLE(HttpStatus.BAD_REQUEST, "제목이 없습니다."),
