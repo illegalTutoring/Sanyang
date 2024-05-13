@@ -7,6 +7,25 @@
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 500px) {
+    .toggleLoginButton {
+        display: none;
+    }
+
+    .toggleDarkModeButton {
+        width: 20px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 370px) {
+    .profile {
+        h3 {
+            font-size: 13px;
+        }
+    }
+}
+
 .profile {
     border-radius: 25px;
     width: 100%;
@@ -16,6 +35,7 @@
     justify-content: space-between;
     padding: 5px 20px 5px 10px;
     grid-template-columns: 50px 1fr;
+    cursor: pointer;
 }
 
 .profileDark {
@@ -28,6 +48,7 @@
 
 .toggleDarkModeButton {
     width: 35px;
+    cursor: pointer;
 }
 
 .toggleLoginButton {
@@ -76,6 +97,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-top: -5px;
+    cursor: pointer;
 
     .profileItem {
         border-bottom: 1px solid #ccc;
@@ -83,7 +105,6 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px;
-        cursor: pointer;
 
         h3 {
             font-size: 16px;

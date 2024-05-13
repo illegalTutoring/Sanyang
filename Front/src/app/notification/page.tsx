@@ -4,7 +4,7 @@ import styles from './notification.module.scss'
 import React, { useState, useEffect } from 'react'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
-import List from '@/component/TagList'
+import List from '@/component/List'
 import Pagination from '@/component/Pagination'
 import { getNoticeList } from '@/utils/api/notice'
 import { noticeInfo } from '@/utils/api/DTO/notice'
@@ -15,14 +15,29 @@ const NotificationPage = () => {
     const { isEditMode } = useEditModeStore()
 
     // 지역 변수
-    const [data, setData] = useState<noticeInfo[]>([])
+    // const [data, setData] = useState<noticeInfo[]>([])
+
+    const data = [
+        {
+            id: 1,
+            title: '제목',
+            registDate: 'YYYY-MM-DD',
+        },
+        {
+            id: 2,
+            title: '제목',
+            registDate: 'YYYY-MM-DD',
+        },
+    ]
+
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 10
+    const itemsPerPage = 7
 
     // 함수
     const fetchData = async (page: number) => {
         const response = await getNoticeList(page, itemsPerPage)
-        setData(response.data)
+        console.log(response.data)
+        // setData(response.data)
     }
 
     useEffect(() => {
@@ -47,19 +62,15 @@ const NotificationPage = () => {
                         width="100%"
                         height="100%"
                         pageSize={10}
-                        columns={['ID', 'title', 'registDate']}
-                        columnWidth={['10%', '70%', '20%']}
+                        columnNames={['No', '제목', '등록일자']}
+                        columns={['id', 'title', 'registDate']}
+                        columnWidth={['1%', '70%', '30%']}
                         data={data}
-                        tagActions={{
-                            All: () => fetchData(currentPage),
-                            Update: () => fetchData(currentPage),
-                            Notice: () => fetchData(currentPage),
-                        }}
                         isEditMode={isEditMode}
                     />
                 </div>
                 <Pagination
-                    totalPage={100}
+                    totalPage={20}
                     limit={itemsPerPage}
                     page={currentPage}
                     setPage={setCurrentPage}
