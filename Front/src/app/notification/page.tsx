@@ -6,13 +6,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import List from '@/component/TagList'
 import Pagination from '@/component/Pagination'
-
-import {
-    getNoticeList,
-    getNoticeDetail,
-    getTotalNotice,
-} from '@/utils/api/notice'
-
+import { getNoticeList } from '@/utils/api/notice'
 import { noticeInfo } from '@/utils/api/DTO/notice'
 
 const NotificationPage = () => {
@@ -28,7 +22,6 @@ const NotificationPage = () => {
     // 함수
     const fetchData = async (page: number) => {
         const response = await getNoticeList(page, itemsPerPage)
-        console.log(response.data)
         setData(response.data)
     }
 

@@ -6,7 +6,7 @@ import Banner from '@/component/banner/Banner'
 import Modal from '@/component/layout/Modal'
 import BannerEditor from '@/component/banner/BannerEditor'
 
-interface Images {
+export interface Images {
     url: string
     yindex: number
 }
