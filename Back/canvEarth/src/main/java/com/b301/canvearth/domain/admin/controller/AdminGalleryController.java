@@ -10,6 +10,7 @@ import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,8 @@ public class AdminGalleryController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registGallery(@RequestPart MultipartFile image,
-                                                @RequestPart("data") GalleryRequestPostDto requestPostDto){
+                                                @RequestPart("data") GalleryRequestPostDto requestPostDto,
+                                                HttpServletRequest request){
         log.info("===== [AdminGalleryController] registGallery start =====");
         log.info("[requestImageName]: {}", image.getOriginalFilename());
         log.info("[requestData]: {}", requestPostDto);
@@ -58,7 +60,7 @@ public class AdminGalleryController {
             throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
         }
 
-        Gallery insertGallery =  galleryService.insertGallery(image, requestPostDto);
+        Gallery insertGallery =  galleryService.insertGallery(image, requestPostDto, request);
         log.info("insertGallery: {}", insertGallery);
 
         responseBody.put(MESSAGE, "갤러리 등록을 완료하였습니다.");
