@@ -54,7 +54,7 @@ public class AdminSupportController {
         if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         Support insertSupport = supportService.insertSupport(image, requestPostDto);
@@ -81,7 +81,7 @@ public class AdminSupportController {
         if (!isValidSupportDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidSupportDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         Support modifySupport = supportService.modifySupport(supportId, image, requestPutDto);

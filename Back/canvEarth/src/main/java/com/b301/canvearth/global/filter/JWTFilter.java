@@ -42,6 +42,11 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
+        log.info("============================ VALID JWT(ACCESS) TOKEN ===========================");
+        log.info("[USER INFO]");
+        log.info("  username: {}", username);
+        log.info("  role: {}", role);
+
         User userEntity = new User();
         userEntity.setUserName(username);
         userEntity.setRole(role);
@@ -49,6 +54,8 @@ public class JWTFilter extends OncePerRequestFilter {
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        log.info("========================= END JWT (ACCESS) TOKEN FILTER ========================");
 
         filterChain.doFilter(request, response);
     }

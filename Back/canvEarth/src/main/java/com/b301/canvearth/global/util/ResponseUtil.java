@@ -20,6 +20,8 @@ public class ResponseUtil {
 
     private final static String USERNAME = "username";
 
+    private final static String ROLE = "role";
+
     public ResponseEntity<Object> createResponseEntity(String message, HttpStatus httpStatus){
         Map<String, Object> data = new HashMap<>();
         data.put(MESSAGE, message);
@@ -27,12 +29,12 @@ public class ResponseUtil {
         return ResponseEntity.status(httpStatus).body(data);
     }
 
-    public void sendMessage(HttpServletResponse response, boolean isLogIn, String username, HttpStatus httpStatus, String message) {
-        Map<String, String> data = new HashMap<>();
-        data.put(MESSAGE, message);
+    public void sendMessage(HttpServletResponse response, Map<String, String>data, HttpStatus httpStatus) {
+        data.put(MESSAGE, data.get(MESSAGE));
 
-        if(isLogIn){
-            data.put(USERNAME, username);
+        if(data.containsKey(USERNAME)){
+            data.put(USERNAME, data.get(USERNAME));
+            data.put(ROLE, data.get(ROLE));
         }
 
         response.setCharacterEncoding("UTF-8");

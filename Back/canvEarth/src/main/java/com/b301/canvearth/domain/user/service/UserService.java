@@ -13,9 +13,11 @@ import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -36,6 +38,8 @@ public class UserService {
 
 
     public String signInProcess(SignInDto signinDto) throws CustomException {
+
+        log.info("============================ START SIGNIN SERVICE ==============================");
 
         // 1. 파라미터 검증
         String id = signinDto.getId();
@@ -69,10 +73,14 @@ public class UserService {
 
         userRepository.save(data);
 
+        log.info("============================= END SIGNIN SERVICE ===============================");
+
         return "회원가입 성공";
     }
 
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
+
+        log.info("============================ START REISSUE SERVICE =============================");
 
         // 1. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
@@ -80,9 +88,17 @@ public class UserService {
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
+        log.info("[USER INFO]");
+        log.info("  username: {}", username);
+        log.info("  role: {}", role);
+
         // 2. access, refresh 토큰 재발급
         String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+        log.info("[REISSUED JWT(ACCESS, REFRESH) INFO]");
+        log.info("  accessToken: {}", newAccessToken);
+        log.info("  refreshToken: {}", newRefreshToken);
 
         // 3. white list 갱신
         accessService.deleteAccessToken(username);
@@ -94,6 +110,8 @@ public class UserService {
         // 4. JWT Token 전달
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(responseUtil.createCookie("refreshToken", newRefreshToken));
+
+        log.info("============================= END REISSUE SERVICE ==============================");
 
         return "refresh 토큰 재발행 성공";
     }
