@@ -10,14 +10,12 @@ import java.util.List;
 @ToString
 public class GalleryRequestPostDto {
 
-    private final String userId;
     private final String title;
     private final String createDate;
     private final List<String> tags;
 
     @Builder
-    public GalleryRequestPostDto(String userId, String title, String createDate, List<String> tags) {
-        this.userId = userId;
+    public GalleryRequestPostDto(String title, String createDate, List<String> tags) {
         this.title = title;
         this.createDate = createDate;
         this.tags = tags;
@@ -26,9 +24,7 @@ public class GalleryRequestPostDto {
     public String isValid() {
         String isValid = "valid";
 
-        if(userId == null || userId.isEmpty()) {
-            isValid = "userId";
-        } else if(title == null || title.isEmpty()) {
+        if(title == null || title.isEmpty()) {
             isValid = "title";
         } else if(createDate == null || createDate.isEmpty()) {
             isValid = "startDate";
