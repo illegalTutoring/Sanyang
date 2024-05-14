@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './GalleryTagList.module.scss'
+import { useRouter } from 'next/navigation'
 
 interface TagListProps {
     tags: string[]
@@ -14,6 +15,7 @@ const GalleryTagList: React.FC<TagListProps> = ({
     handleScroll,
     isDarkMode,
 }) => {
+    const router = useRouter()
     return (
         <div className={styles.tagList}>
             <div
@@ -33,6 +35,7 @@ const GalleryTagList: React.FC<TagListProps> = ({
                         <div
                             key={idx}
                             className={`${styles.tag} ${isDarkMode ? styles.tagDark : styles.tagWhite}`}
+                            onClick={() => router.push(`/gallery/${tag}`)}
                         >
                             #{tag}
                         </div>
