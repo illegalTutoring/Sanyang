@@ -9,6 +9,7 @@ import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.JWTValidationUtil;
+import com.b301.canvearth.global.util.LogUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,10 +37,12 @@ public class UserService {
 
     private final ResponseUtil responseUtil;
 
+    private final LogUtil logUtil;
+
 
     public String signInProcess(SignInDto signinDto) throws CustomException {
 
-        log.info("============================ START SIGNIN SERVICE ==============================");
+        logUtil.serviceLogging("sign in");
 
         // 1. 파라미터 검증
         String id = signinDto.getId();
@@ -47,21 +50,21 @@ public class UserService {
         String password = signinDto.getPassword();
 
         if(id == null || username == null || password == null) {
-            throw new CustomException(ErrorCode.PARAMETER_IS_EMPTY);
+            logUtil.exceptionLogging(ErrorCode.PARAMETER_IS_EMPTY, "Sign in failed");
         }
 
         // 2. Id 중복검사
         boolean isExist = userRepository.existsById(id);
 
         if(isExist){
-            throw new CustomException(ErrorCode.ID_DUPLICATE);
+            logUtil.exceptionLogging(ErrorCode.ID_DUPLICATE, "Sign in failed");
         }
 
         // 3. UserName 중복검사
         isExist = userRepository.existsByUserName(username);
 
         if(isExist){
-            throw new CustomException(ErrorCode.USERNAME_DUPLICATE);
+            logUtil.exceptionLogging(ErrorCode.USERNAME_DUPLICATE, "Sign in failed");
         }
 
         // 4. 회원 등록
@@ -73,32 +76,24 @@ public class UserService {
 
         userRepository.save(data);
 
-        log.info("============================= END SIGNIN SERVICE ===============================");
+        logUtil.resultLogging("Sign in success");
 
         return "회원가입 성공";
     }
 
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 
-        log.info("============================ START REISSUE SERVICE =============================");
-
         // 1. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
+
+        logUtil.serviceLogging("reIssue");
 
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
-        log.info("[USER INFO]");
-        log.info("  username: {}", username);
-        log.info("  role: {}", role);
-
         // 2. access, refresh 토큰 재발급
         String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
-
-        log.info("[REISSUED JWT(ACCESS, REFRESH) INFO]");
-        log.info("  accessToken: {}", newAccessToken);
-        log.info("  refreshToken: {}", newRefreshToken);
 
         // 3. white list 갱신
         accessService.deleteAccessToken(username);
@@ -111,7 +106,7 @@ public class UserService {
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(responseUtil.createCookie("refreshToken", newRefreshToken));
 
-        log.info("============================= END REISSUE SERVICE ==============================");
+        logUtil.resultLogging("ReIssue success");
 
         return "refresh 토큰 재발행 성공";
     }

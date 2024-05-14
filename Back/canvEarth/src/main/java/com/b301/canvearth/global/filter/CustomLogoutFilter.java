@@ -5,6 +5,7 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.JWTValidationUtil;
+import com.b301.canvearth.global.util.LogUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,6 +38,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
     private final ResponseUtil responseUtil;
 
+    private final LogUtil logUtil;
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException,CustomException {
         doFilter((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, filterChain);
@@ -53,30 +56,29 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
-        log.info("============================ START LOGOUT FILTER ===============================");
-
         // 2. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
-        String username = jwtUtil.getUsername(refreshToken);
-        String role = jwtUtil.getRole(refreshToken);
+
+        logUtil.serviceLogging("logout");
+
+        if(refreshToken == null) {
+            return;
+        }
 
         // 3. Token 삭제
+        String username = jwtUtil.getUsername(refreshToken);
         accessService.deleteAccessToken(username);
         refreshService.deleteRefreshToken(username);
 
         response.addCookie(responseUtil.deleteCookie("refreshToken"));
 
-        log.info("=============================== SUCCESS LOGOUT =================================");
-        log.info("[USER INFO]");
-        log.info("  username: {}", username);
-        log.info("  role: {}", role);
+        // 4. return
+        logUtil.resultLogging("Logout success");
 
         Map<String, String> data = new HashMap<>();
         data.put(MESSAGE, "로그아웃 성공");
 
         responseUtil.sendMessage(response, data, HttpStatus.OK);
-
-        log.info("============================= END LOGOUT FILTER ================================");
 
     }
 

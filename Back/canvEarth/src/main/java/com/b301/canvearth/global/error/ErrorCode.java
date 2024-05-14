@@ -8,7 +8,7 @@ public enum ErrorCode {
 
     // Membership Management
     PARAMETER_IS_EMPTY(HttpStatus.BAD_REQUEST, "파라미터가 비어있습니다"),
-    LOGIN_FAIL(HttpStatus.UNAUTHORIZED,"로그인 실패"),
+    LOGIN_FAIL(HttpStatus.UNAUTHORIZED,"ID와 비밀번호를 확인하세요"),
     ID_DUPLICATE(HttpStatus.CONFLICT,"중복된 ID 입니다"),
     USERNAME_DUPLICATE(HttpStatus.CONFLICT,"중복된 이름 입니다"),
 
@@ -34,7 +34,8 @@ public enum ErrorCode {
     INVALID_LINK_TYPE(HttpStatus.BAD_REQUEST, "옳지 않은 Link 타입입니다."),
     NO_POST(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
     NO_S3_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S3 접근 권한이 없습니다."),
-    NO_REQUIRE_ARGUMENT(HttpStatus.BAD_REQUEST);
+    NO_REQUIRE_ARGUMENT(HttpStatus.BAD_REQUEST),
+    NOT_ALLOWED_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다.");
 
     private final HttpStatus httpStatus;
     private String errorMessage;
