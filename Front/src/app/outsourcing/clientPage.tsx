@@ -35,6 +35,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ works }) => {
             left++
             if (left % 2 !== 0) {
                 const baseEntry = {
+                    workId: (item.workId ?? 0) * -1,
                     userId: item.userId,
                     uploadDate: item.uploadDate,
                     tags: item.tags,
@@ -62,6 +63,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ works }) => {
                 splitEntries.push(workDetails)
 
                 const baseEntry = {
+                    workId: (item.workId ?? 0) * -1,
                     userId: item.userId,
                     uploadDate: item.uploadDate,
                     tags: item.tags,

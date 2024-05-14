@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import styles from './GridGallery.module.scss'
 import {
     modifyWorkRequestDTO,
@@ -148,7 +148,6 @@ const GridGallery: React.FC<GalleryProps> = ({
         }
 
         await updateGallery(data, selectedImage)
-        fetchGallery && fetchGallery()
         setUpdateMode(false)
     }
 
@@ -156,9 +155,14 @@ const GridGallery: React.FC<GalleryProps> = ({
         if (!deleteGallery) return
 
         await deleteGallery(workId)
-        fetchGallery && fetchGallery()
         setUpdateMode(false)
     }
+
+    // 훅
+
+    useEffect(() => {
+        fetchGallery
+    }, [isAddMode, isUpdateMode])
 
     const gridTemplateColumns = `repeat(${colCount}, 1fr)`
 
