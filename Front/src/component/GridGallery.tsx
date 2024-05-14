@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import styles from './GridGallery.module.scss'
 
@@ -27,7 +25,7 @@ export interface GalleryProps {
 }
 
 const GridGallery: React.FC<GalleryProps> = ({
-    images = [],
+    images,
     colCount,
     width,
     height,
@@ -87,10 +85,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                 </>
             )}
             {images.map((image) => (
-                <div
-                    className={styles.workContainer}
-                    key={image.workId ? image.workId : image.galleryId}
-                >
+                <div className={styles.workContainer} key={image.galleryId}>
                     {image.company && (
                         <div
                             className={`${styles.titleContainer} ${isDarkMode ? styles.darkTitle : styles.lightTitle}`}

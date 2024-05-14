@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import styles from './Gallery.module.scss'
