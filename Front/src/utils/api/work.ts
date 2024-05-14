@@ -14,6 +14,9 @@ export function getWorkList(): getWorkListResponseDTO {
             method: 'GET',
             url: `${SERVER_URL}/work`,
         })
+
+        console.log(response.data.data)
+
         return {
             message: response.data.message,
             data: response.data.data,
