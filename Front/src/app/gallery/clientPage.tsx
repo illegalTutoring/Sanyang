@@ -7,7 +7,7 @@ import TagInput from '@/component/TagInput'
 import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import { getGalleryList } from '@/utils/api/gallery'
+import { getGalleryList, getGalleryListByTag } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import { galleryInfo } from '@/utils/api/DTO/gallery'
 
@@ -16,27 +16,36 @@ import { galleryInfo } from '@/utils/api/DTO/gallery'
  */
 
 interface ClientPageProps {
-    images: galleryInfo[]
+    propsImages: galleryInfo[]
 }
 
-let images2: galleryInfo[] = []
-let tagList: string[] = []
+const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
+    const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
+    const [images2, setImages2] = useState<galleryInfo[]>(propsImages || [])
+    const [tagList, setTagList] = useState<string[]>([])
 
-const ClientPage: React.FC<ClientPageProps> = ({ images }) => {
-    const fetchGallery = async () => {
-        const response = await getGalleryList()
-        images = response.data
-        images2 = images.slice(0, 4)
-
-        console.log(images)
-
+    const makeTagList = (arr: galleryInfo[]) => {
         let tagSet = new Set<string>()
-        response.data.forEach((image) => {
-            image.tags.forEach((tag) => {
+        arr.forEach((el) => {
+            el.tags.forEach((tag) => {
                 tagSet.add(tag)
             })
         })
-        tagList = Array.from(tagSet).sort()
+
+        return Array.from(tagSet).sort()
+    }
+    const fetchGallery = async () => {
+        const response = await getGalleryList()
+        setImages(response.data)
+        setImages2(images.slice(0, 4))
+        setTagList(makeTagList(images))
+    }
+
+    const fetchGalleryByTag = async (selectedTags: string[]) => {
+        const response = await getGalleryListByTag(selectedTags)
+        setImages(response.data)
+        setImages2(images.slice(0, 4))
+        setTagList(makeTagList(images))
     }
 
     const { isDarkMode } = useDarkModeStore()

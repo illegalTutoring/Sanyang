@@ -277,8 +277,8 @@ const List: React.FC<ListProps> = ({
                                                 style={{ width: '20px' }}
                                                 src={
                                                     isDarkMode
-                                                        ? 'svgs/edit_white.svg'
-                                                        : 'svgs/edit_black.svg'
+                                                        ? '/svgs/edit_white.svg'
+                                                        : '/svgs/edit_black.svg'
                                                 }
                                                 alt=""
                                             />
