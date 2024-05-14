@@ -50,24 +50,21 @@ public class UserService {
         String password = signinDto.getPassword();
 
         if(id == null || username == null || password == null) {
-            logUtil.resultLogging("Sign in failed");
-            throw new CustomException(ErrorCode.PARAMETER_IS_EMPTY);
+            logUtil.exceptionLogging(ErrorCode.PARAMETER_IS_EMPTY, "Sign in failed");
         }
 
         // 2. Id 중복검사
         boolean isExist = userRepository.existsById(id);
 
         if(isExist){
-            logUtil.resultLogging("Sign in failed");
-            throw new CustomException(ErrorCode.ID_DUPLICATE);
+            logUtil.exceptionLogging(ErrorCode.ID_DUPLICATE, "Sign in failed");
         }
 
         // 3. UserName 중복검사
         isExist = userRepository.existsByUserName(username);
 
         if(isExist){
-            logUtil.resultLogging("Sign in failed");
-            throw new CustomException(ErrorCode.USERNAME_DUPLICATE);
+            logUtil.exceptionLogging(ErrorCode.USERNAME_DUPLICATE, "Sign in failed");
         }
 
         // 4. 회원 등록
@@ -86,10 +83,10 @@ public class UserService {
 
     public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 
-        logUtil.serviceLogging("reIssue");
-
         // 1. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
+
+        logUtil.serviceLogging("reIssue");
 
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);

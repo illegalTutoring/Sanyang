@@ -58,16 +58,19 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         // 2. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
-        String username = jwtUtil.getUsername(refreshToken);
 
         logUtil.serviceLogging("logout");
 
+        if(refreshToken == null) {
+            return;
+        }
+
         // 3. Token 삭제
+        String username = jwtUtil.getUsername(refreshToken);
         accessService.deleteAccessToken(username);
         refreshService.deleteRefreshToken(username);
 
         response.addCookie(responseUtil.deleteCookie("refreshToken"));
-
 
         // 4. return
         logUtil.resultLogging("Logout success");
