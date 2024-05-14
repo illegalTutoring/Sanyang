@@ -9,212 +9,38 @@ import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
-import { galleryStore } from '@/utils/store/useGalleryStore'
-
-let defaultImages = getGalleryList().data
-if (!defaultImages) {
-    /**
-     * @todo 이미지가 존재하지 않을 때 예외 처리
-     */
-
-    defaultImages = [
-        {
-            galleryId: 0,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: ['apple', 'alalal', 'apricot', 'avocado', 'acai', 'acerola'],
-            original: 'https://placehold.co/600x400',
-            thumbnail: 'https://placehold.co/600x400',
-        },
-        {
-            galleryId: 1,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: [
-                'anchovy',
-                'antelope',
-                'ant',
-                'anaconda',
-                'asteroid',
-                'avenue',
-                'answer',
-                'astronomy',
-                'algebra',
-            ],
-            original: 'https://placehold.co/900x400',
-            thumbnail: 'https://placehold.co/900x400',
-        },
-        {
-            galleryId: 2,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: ['artifact', 'alchemy'],
-            original: 'https://placehold.co/900x1200',
-            thumbnail: 'https://placehold.co/900x1200',
-        },
-        {
-            galleryId: 3,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: ['angle', 'argyle', 'ascot', 'artifact'],
-            original: 'https://placehold.co/600x1100',
-            thumbnail: 'https://placehold.co/600x1100',
-        },
-        {
-            galleryId: 4,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: ['aviation'],
-            original: 'https://placehold.co/350X750',
-            thumbnail: 'https://placehold.co/350X750',
-        },
-        {
-            galleryId: 5,
-            userId: '',
-            title: '이미지가 존재하지 않습니다.',
-            startDate: '',
-            endDate: '',
-            uploadDate: '',
-            tags: ['aviary', 'axis'],
-            original: 'https://placehold.co/350X650',
-            thumbnail: 'https://placehold.co/350X650',
-        },
-    ]
-}
+import { galleryInfo } from '@/utils/api/DTO/gallery'
 
 /**
  * @todo Error Handling
  */
 
+let images: galleryInfo[] = []
+let tagList: string[] = []
+
+const fetchGallery = async () => {
+    const response = await getGalleryList()
+    images = response.data
+
+    console.log(images)
+
+    let tagSet = new Set<string>()
+    response.data.forEach((image) => {
+        image.tags.forEach((tag) => {
+            tagSet.add(tag)
+        })
+    })
+    tagList = Array.from(tagSet).sort()
+}
+
+fetchGallery()
+const images2 = images.slice(0, 4)
+
 const GalleryPage = () => {
+    console.log('rendering')
+
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
-
-    useEffect(() => {
-        galleryStore.getState().setImages(defaultImages)
-        galleryStore.getState().setTagList(defaultImages)
-
-        let imageDivs = document.getElementsByClassName('galleryImage')
-        galleryStore.getState().setImageDivs(imageDivs)
-    }, [])
-
-    // const defaultImages = [
-    //     {
-    //         galleryId: 1,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //     },
-    //     {
-    //         galleryId: 2,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-    //     },
-    //     {
-    //         galleryId: 3,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //     },
-    //     {
-    //         galleryId: 4,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-    //     },
-    //     {
-    //         galleryId: 5,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-    //     },
-    //     {
-    //         galleryId: 6,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-    //     },
-    //     {
-    //         galleryId: 7,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-    //     },
-    //     {
-    //         galleryId: 8,
-    //         userId: 'sanyang',
-    //         title: 'd&f 캐릭터 작업',
-    //         startDate: '2024-04-01',
-    //         endDate: '2024-04-30',
-    //         uploadDate: '2024-04-12 12:12:12',
-    //         tags: ['d&f', '캐릭터'],
-    //         original: 's3 path',
-    //         thumbnail:
-    //             'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-    //     },
-    // ]
-
-    const defaultImages2 = defaultImages.slice(0, 4)
-
-    const tags = galleryStore.getState().tagList
 
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -266,10 +92,10 @@ const GalleryPage = () => {
                     className={styles.galleryContainer}
                 >
                     <GridGallery
-                        images={defaultImages2}
+                        images={images2}
                         width={'100%'}
                         height={'300px'}
-                        colCount={defaultImages2.length}
+                        colCount={images2.length}
                         isDarkMode={isDarkMode}
                     />
                 </div>
@@ -281,7 +107,7 @@ const GalleryPage = () => {
 
             <div>
                 <Gallery
-                    images={defaultImages}
+                    images={images}
                     colCount={4}
                     isEditMode={isEditMode}
                     addTogle={() => {
@@ -332,7 +158,7 @@ const GalleryPage = () => {
                 }}
             >
                 <div className={styles.modalContent}>
-                    <TagInput availableTags={tags} />
+                    <TagInput availableTags={tagList} />
                 </div>
             </div>
         </div>

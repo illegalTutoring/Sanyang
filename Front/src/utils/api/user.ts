@@ -32,6 +32,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
                 },
             })
 
+            console.log(response.headers.authorization)
             userStore.getState().setId(data.username)
             userStore.getState().setUsername(response.data.username)
             userStore.getState().setAccessToken(response.headers.authorization)
