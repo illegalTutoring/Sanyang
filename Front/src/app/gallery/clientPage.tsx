@@ -20,10 +20,6 @@ interface ClientPageProps {
 }
 
 const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
-    const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
-    const [images2, setImages2] = useState<galleryInfo[]>(propsImages || [])
-    const [tagList, setTagList] = useState<string[]>([])
-
     const makeTagList = (arr: galleryInfo[]) => {
         let tagSet = new Set<string>()
         arr.forEach((el) => {
@@ -34,6 +30,13 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
 
         return Array.from(tagSet).sort()
     }
+
+    const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
+    const [images2, setImages2] = useState<galleryInfo[]>(
+        propsImages.slice(0, 4) || [],
+    )
+    const [tagList, setTagList] = useState<string[]>(makeTagList(propsImages))
+
     const fetchGallery = async () => {
         const response = await getGalleryList()
         setImages(response.data)
