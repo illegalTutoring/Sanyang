@@ -140,8 +140,8 @@ const Calendar: React.FC<CalendarProps> = ({
         setUpdateMode(false)
     }
 
-    const handleDelete = (calendarId: number) => {
-        deleteSchedule(calendarId)
+    const handleDelete = async (calendarId: number) => {
+        await deleteSchedule(calendarId)
 
         console.log('스케쥴 삭제:', { calendarId })
         setUpdateMode(false)

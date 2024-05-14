@@ -1,7 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './GridGallery.module.scss'
+import {
+    modifyWorkRequestDTO,
+    registWorkRequestDTO,
+} from '@/utils/api/DTO/work'
+import Modal from './layout/Modal'
 
 export interface ImageData {
     workId?: number
@@ -24,6 +29,10 @@ export interface GalleryProps {
     height?: string
     isEditMode?: boolean
     isDarkMode?: boolean
+    fetchGallery?: () => void
+    addGallery?: (data: registWorkRequestDTO, image: File) => void
+    updateGallery?: (data: modifyWorkRequestDTO, image: File | null) => void
+    deleteGallery?: (workId: number) => void
 }
 
 const GridGallery: React.FC<GalleryProps> = ({
@@ -33,7 +42,96 @@ const GridGallery: React.FC<GalleryProps> = ({
     height,
     isEditMode = false,
     isDarkMode = false,
+    fetchGallery,
+    addGallery,
+    updateGallery,
+    deleteGallery,
 }) => {
+    const [isAddMode, setAddMode] = useState(false)
+    const [isUpdateMode, setUpdateMode] = useState(false)
+    const [selectedWorkId, setSelectedWorkId] = useState<number | null>(null)
+    const [insertData, setInsertData] = useState({
+        title: '',
+        company: '',
+        startDate: '',
+        endDate: '',
+        tags: '',
+    })
+    const [selectedImage, setSelectedImage] = useState<File | null>(null)
+
+    const toggleAddMode = () => {
+        setAddMode(!isAddMode)
+    }
+
+    const toggleUpdateMode = (workId: number | null) => {
+        setSelectedWorkId(workId)
+        setUpdateMode(!isUpdateMode)
+    }
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target
+        setInsertData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setSelectedImage(event.target.files[0])
+        }
+    }
+
+    const handleAddSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        if (!addGallery || !selectedImage) return
+
+        const { title, company, startDate, endDate, tags } = insertData
+        const tagsArray = tags.split(',').map((tag) => tag.trim())
+
+        const data: registWorkRequestDTO = {
+            title,
+            company,
+            startDate,
+            endDate,
+            tags: tagsArray,
+        }
+
+        await addGallery(data, selectedImage)
+        fetchGallery && fetchGallery()
+        setAddMode(false)
+    }
+
+    const handleUpdateSubmit = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ) => {
+        event.preventDefault()
+        if (!updateGallery) return
+
+        const { title, company, startDate, endDate, tags } = insertData
+        const tagsArray = tags.split(',').map((tag) => tag.trim())
+
+        const data: modifyWorkRequestDTO = {
+            title,
+            company,
+            startDate,
+            endDate,
+            tags: tagsArray,
+        }
+
+        await updateGallery(data, selectedImage)
+        fetchGallery && fetchGallery()
+        setUpdateMode(false)
+    }
+
+    const handleDelete = async (workId: number) => {
+        if (!deleteGallery) return
+
+        await deleteGallery(workId)
+        fetchGallery && fetchGallery()
+        setUpdateMode(false)
+    }
+
     const gridTemplateColumns = `repeat(${colCount}, 1fr)`
 
     return (
@@ -73,6 +171,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                             height: '300px',
                             border: '5px solid #808080',
                         }}
+                        onClick={toggleAddMode}
                     >
                         <img
                             src="/svgs/add_card.svg"
@@ -100,8 +199,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                                     className={styles.deleteButton}
                                     src={'/svgs/delete_red.svg'}
                                     alt="Delete"
-                                    // onClick={(event) =>
-                                    // }
+                                    onClick={() => handleDelete(image.workId!)}
                                 />
                             )}
                             <div
@@ -128,6 +226,91 @@ const GridGallery: React.FC<GalleryProps> = ({
                     />
                 </div>
             ))}
+            <Modal
+                height="50%"
+                width="40%"
+                isVisible={isAddMode || isUpdateMode}
+                toggleModal={
+                    isAddMode ? toggleAddMode : () => toggleUpdateMode(null)
+                }
+            >
+                <form
+                    onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
+                >
+                    <label htmlFor="title">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={insertData.title}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="company">Company</label>
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value={insertData.company}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        value={insertData.startDate}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="endDate">End Date</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        value={insertData.endDate}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="tags">Tags</label>
+                    <input
+                        type="text"
+                        id="tags"
+                        name="tags"
+                        value={insertData.tags}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <br></br>
+                    <label htmlFor="image">Image</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        required={isAddMode}
+                    />
+                    <br></br>
+                    <button type="submit">
+                        {isAddMode ? 'Save' : 'Update'}
+                    </button>
+                    <br></br>
+                    {isUpdateMode && (
+                        <button
+                            type="button"
+                            onClick={() => handleDelete(selectedWorkId!)}
+                        >
+                            Delete
+                        </button>
+                    )}
+                </form>
+            </Modal>
         </div>
     )
 }
