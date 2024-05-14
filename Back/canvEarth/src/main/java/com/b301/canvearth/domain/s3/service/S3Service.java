@@ -53,11 +53,11 @@ public class S3Service {
 
         String[] extensionList = allowedExtension;
         for(String img: extensionList) {
-            if(!(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), img))) {
-                return false;
+            if(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), img)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
 
