@@ -19,7 +19,7 @@ function splitData(data: Array<workInfo>) {
         left++
         if (left % 2 !== 0) {
             const baseEntry = {
-                workId: item.workId,
+                workId: (item.workId ?? 0) * -1,
                 userId: item.userId,
                 uploadDate: item.uploadDate,
                 tags: item.tags,
@@ -29,6 +29,7 @@ function splitData(data: Array<workInfo>) {
             splitEntries.push(baseEntry)
 
             const workDetails = {
+                workId: item.workId,
                 company: item.company,
                 title: item.title,
                 startDate: item.startDate,
@@ -37,6 +38,7 @@ function splitData(data: Array<workInfo>) {
             splitEntries.push(workDetails)
         } else {
             const workDetails = {
+                workId: item.workId,
                 company: item.company,
                 title: item.title,
                 startDate: item.startDate,
@@ -45,7 +47,7 @@ function splitData(data: Array<workInfo>) {
             splitEntries.push(workDetails)
 
             const baseEntry = {
-                workId: item.workId,
+                workId: (item.workId ?? 0) * -1,
                 userId: item.userId,
                 uploadDate: item.uploadDate,
                 tags: item.tags,

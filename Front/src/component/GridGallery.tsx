@@ -47,10 +47,11 @@ const GridGallery: React.FC<GalleryProps> = ({
     updateGallery,
     deleteGallery,
 }) => {
+    // 지역변수
     const [isAddMode, setAddMode] = useState(false)
     const [isUpdateMode, setUpdateMode] = useState(false)
-    const [selectedWorkId, setSelectedWorkId] = useState<number | null>(null)
     const [insertData, setInsertData] = useState({
+        WorkId: -1,
         title: '',
         company: '',
         startDate: '',
@@ -59,13 +60,40 @@ const GridGallery: React.FC<GalleryProps> = ({
     })
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
 
+    // 토글 함수
     const toggleAddMode = () => {
         setAddMode(!isAddMode)
     }
 
-    const toggleUpdateMode = (workId: number | null) => {
-        setSelectedWorkId(workId)
+    const toggleUpdateMode = () => {
         setUpdateMode(!isUpdateMode)
+    }
+
+    // 이벤트 핸들러
+    const handleAddButtonCLick = () => {
+        setInsertData({
+            WorkId: -1,
+            title: '',
+            company: '',
+            startDate: '',
+            endDate: '',
+            tags: '',
+        })
+
+        setAddMode(true)
+    }
+
+    const handleUpdateClick = (data: ImageData) => {
+        setInsertData({
+            WorkId: data.workId!,
+            title: data.title!,
+            company: data.company!,
+            startDate: data.startDate!,
+            endDate: data.endDate!,
+            tags: '',
+        })
+        console.log(data)
+        setUpdateMode(true)
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,7 +199,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                             height: '300px',
                             border: '5px solid #808080',
                         }}
-                        onClick={toggleAddMode}
+                        onClick={handleAddButtonCLick}
                     >
                         <img
                             src="/svgs/add_card.svg"
@@ -197,9 +225,9 @@ const GridGallery: React.FC<GalleryProps> = ({
                             {isEditMode && (
                                 <img
                                     className={styles.deleteButton}
-                                    src={'/svgs/delete_red.svg'}
+                                    src={'/svgs/edit_white.svg'}
                                     alt="Delete"
-                                    onClick={() => handleDelete(image.workId!)}
+                                    onClick={() => handleUpdateClick(image)}
                                 />
                             )}
                             <div
@@ -230,9 +258,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                 height="50%"
                 width="40%"
                 isVisible={isAddMode || isUpdateMode}
-                toggleModal={
-                    isAddMode ? toggleAddMode : () => toggleUpdateMode(null)
-                }
+                toggleModal={isAddMode ? toggleAddMode : toggleUpdateMode}
             >
                 <form
                     onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
@@ -304,7 +330,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                     {isUpdateMode && (
                         <button
                             type="button"
-                            onClick={() => handleDelete(selectedWorkId!)}
+                            onClick={() => handleDelete(insertData.WorkId!)}
                         >
                             Delete
                         </button>

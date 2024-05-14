@@ -76,8 +76,6 @@ const Calendar: React.FC<CalendarProps> = ({
             endDate: format(day, 'yyyy-MM-dd'),
         })
         setAddMode(true)
-
-        //console.log(day)
     }
 
     const handleScheduleClick = (
