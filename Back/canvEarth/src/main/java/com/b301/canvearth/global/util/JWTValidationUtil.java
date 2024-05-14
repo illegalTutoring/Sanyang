@@ -22,6 +22,8 @@ public class JWTValidationUtil {
 
     private final RefreshService refreshService;
 
+    private final LogUtil logUtil;
+
 
     public String isValidAccessToken(HttpServletRequest request) throws CustomException {
 
@@ -32,26 +34,24 @@ public class JWTValidationUtil {
             return null;
         }
 
-        accessToken = accessToken.replace("Bearer ", "");
+        logUtil.serviceLogging("JWT(Access) token validation");
 
-        log.info("======================== START JWT (ACCESS) TOKEN FILTER =======================");
-        log.info("[JWT(ACCESS) INFO]]");
-        log.info("  accessToken: {}", accessToken);
+        accessToken = accessToken.replace("Bearer ", "");
 
         // 2. access 토큰 유효기간 검증
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-            unValidRefreshToken(ErrorCode.ACCESS_TOKEN_HAS_EXPIRED);
+            unValidRefreshToken(ErrorCode.ACCESS_TOKEN_HAS_EXPIRED, "Access token");
         } catch (Exception e) {
-            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN, "Access token");
         }
 
         // 3. 토큰 카테고리가 access 인지 대조
         String category = jwtUtil.getCategory(accessToken);
 
         if (!category.equals("access")) {
-            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN, "Access token");
         }
 
         // 4. Redis 에서 access 토큰 2차 검증
@@ -59,10 +59,10 @@ public class JWTValidationUtil {
         boolean isValid = accessService.isAccessTokenValid(username, accessToken);
 
         if (!isValid) {
-            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_ACCESS_TOKEN, "Access token");
         }
 
-        log.info("  result : Valid");
+        logUtil.resultLogging("Access token valid");
 
         return accessToken;
     }
@@ -81,26 +81,26 @@ public class JWTValidationUtil {
         }
 
         if (refreshToken == null) {
-            unValidRefreshToken(ErrorCode.REFRESH_TOKEN_DOES_NOT_EXIST);
+            unValidRefreshToken(ErrorCode.REFRESH_TOKEN_DOES_NOT_EXIST, "Refresh token");
+            return "";
         }
 
-        log.info("[JWT(REFRESH) INFO]]");
-        log.info("  refreshToken: {}", refreshToken);
+        logUtil.serviceLogging("JWT(Refresh) token validation");
 
         // 2. refresh 토큰 유효기간 검증
         try {
             jwtUtil.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
-            unValidRefreshToken(ErrorCode.REFRESH_TOKEN_HAS_EXPIRED);
+            unValidRefreshToken(ErrorCode.REFRESH_TOKEN_HAS_EXPIRED, "Refresh token");
         } catch (Exception e){
-            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN, "Refresh token");
         }
 
         // 3. 토큰 카테고리가 refresh 인지 대조
         String category = jwtUtil.getCategory(refreshToken);
 
         if (!category.equals("refresh")) {
-            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN, "Refresh token");
         }
 
         // 4. Redis 에서 refresh 토큰 2차 검증
@@ -108,14 +108,18 @@ public class JWTValidationUtil {
 
         boolean isValid = refreshService.isRefreshTokenValid(username, refreshToken);
         if (!isValid) {
-            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN);
+            unValidRefreshToken(ErrorCode.INVALID_REFRESH_TOKEN, "Refresh token");
         }
+
+        logUtil.resultLogging("Refresh token valid");
 
         return refreshToken;
     }
 
-    private void unValidRefreshToken(ErrorCode errorCode) throws CustomException {
-        log.info("  result : UnValid");
+    private void unValidRefreshToken(ErrorCode errorCode, String token) throws CustomException {
+
+        logUtil.resultLogging(token + "invalid");
+
         throw new CustomException(errorCode);
     }
 }

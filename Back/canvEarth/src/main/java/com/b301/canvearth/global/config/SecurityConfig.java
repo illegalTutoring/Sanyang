@@ -10,6 +10,7 @@ import com.b301.canvearth.global.filter.LogInFilter;
 import com.b301.canvearth.global.handler.JWTAuthenticationEntryPoint;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.JWTValidationUtil;
+import com.b301.canvearth.global.util.LogUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +60,8 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private final LogUtil logUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -122,14 +125,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService),
+                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService, responseUtil, logUtil),
                         UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new JWTFilter(jwtUtil, jwtValidationUtil),
                         LogInFilter.class);
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, jwtValidationUtil, refreshService, accessService, responseUtil),
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, jwtValidationUtil, refreshService, accessService, responseUtil, logUtil),
                         LogoutFilter.class);
 
         http
