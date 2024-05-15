@@ -7,6 +7,8 @@ import com.b301.canvearth.domain.gallery.dto.GalleryListResponseGetDto;
 import com.b301.canvearth.domain.gallery.entity.Gallery;
 import com.b301.canvearth.domain.gallery.repository.GalleryRepository;
 import com.b301.canvearth.domain.s3.service.S3Service;
+import com.b301.canvearth.global.util.JWTUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ public class GalleryService {
 
     private final GalleryRepository galleryRepository;
     private final S3Service s3Service;
+    private final JWTUtil jwtUtil;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -58,12 +61,15 @@ public class GalleryService {
         return responseList;
     }
 
-    public Gallery insertGallery(MultipartFile image, GalleryRequestPostDto requestPostDto) {
+    public Gallery insertGallery(MultipartFile image, GalleryRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [GalleryService] insertGallery start =====");
 
         Map<String, String> paths = s3Service.uploadS3AndGetPath(image);
 
-        Gallery gallery = Gallery.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.replace("Bearer ", "");
+        String username = jwtUtil.getUsername(accessToken);
+        Gallery gallery = Gallery.builder().userId(username).title(requestPostDto.getTitle())
                 .createDate(requestPostDto.getCreateDate())
                 .tags(requestPostDto.getTags())
                 .originalPath(paths.get("originalPath"))

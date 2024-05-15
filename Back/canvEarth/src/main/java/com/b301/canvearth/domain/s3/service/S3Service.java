@@ -20,9 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +32,9 @@ public class S3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    @Value("${app.allow.extension}")
+    private String[] allowedExtension;
 
     /////////////////////////////////
     // 워터마크 관련 변수
@@ -47,8 +48,27 @@ public class S3Service {
 //    private String watermarkText;
     ////////////////////////////////
 
+    public boolean checkExtension(MultipartFile image) {
+        log.info("===== [S3Service] checkExtension start =====");
+
+        String[] extensionList = allowedExtension;
+        for(String img: extensionList) {
+            if(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), img)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public String uploadImage(MultipartFile image, UUID uuid, String uploadType) {
         log.info("===== [S3Service] uploadImage start =====");
+
+        if(!checkExtension(image)) {
+            log.error("image extension: {}", StringUtils.getFilenameExtension(image.getOriginalFilename()));
+            throw new CustomException(ErrorCode.NOT_ALLOWED_EXTENSION);
+        }
+
         try {
             String saveFileName = String.format("%s_%s.%s",
                     uuid, uploadType, StringUtils.getFilenameExtension(image.getOriginalFilename()));

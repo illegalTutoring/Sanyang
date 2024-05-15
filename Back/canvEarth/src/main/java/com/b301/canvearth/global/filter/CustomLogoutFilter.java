@@ -5,6 +5,7 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.JWTValidationUtil;
+import com.b301.canvearth.global.util.LogUtil;
 import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,10 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
+
+    private final static String MESSAGE = "message";
 
     private final JWTUtil jwtUtil;
 
@@ -32,6 +37,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private final AccessService accessService;
 
     private final ResponseUtil responseUtil;
+
+    private final LogUtil logUtil;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException,CustomException {
@@ -51,15 +58,28 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         // 2. Refresh Token 유효성 검사
         String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
-        String username = jwtUtil.getUsername(refreshToken);
+
+        logUtil.serviceLogging("logout");
+
+        if(refreshToken == null) {
+            return;
+        }
 
         // 3. Token 삭제
+        String username = jwtUtil.getUsername(refreshToken);
         accessService.deleteAccessToken(username);
         refreshService.deleteRefreshToken(username);
 
         response.addCookie(responseUtil.deleteCookie("refreshToken"));
 
-        responseUtil.sendMessage(response, false,"", HttpStatus.OK, "로그아웃 성공");
+        // 4. return
+        logUtil.resultLogging("Logout success");
+
+        Map<String, String> data = new HashMap<>();
+        data.put(MESSAGE, "로그아웃 성공");
+
+        responseUtil.sendMessage(response, data, HttpStatus.OK);
+
     }
 
 }
