@@ -1,16 +1,20 @@
 import { useState, ChangeEvent, KeyboardEvent, useRef, useEffect } from 'react'
 import styles from './TagInput.module.scss'
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import { makeTagListByTagString } from '@/app/gallery/clientPage'
 
 interface TagInputProps {
     availableTags: string[]
+    tagString: string
 }
 
-const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
+const TagInput: React.FC<TagInputProps> = ({ availableTags, tagString }) => {
     const { isDarkMode } = useDarkModeStore()
-    const [tags, setTags] = useState<string[]>([])
+    const [tags, setTags] = useState<string[]>(
+        makeTagListByTagString(tagString),
+    )
     const [input, setInput] = useState('')
-    const [suggestions, setSuggestions] = useState<string[]>([])
+    const [suggestions, setSuggestions] = useState<string[]>(availableTags)
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
     const inputRef = useRef<HTMLInputElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -22,7 +26,9 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
                 containerRef.current &&
                 !containerRef.current.contains(target)
             ) {
-                setSuggestions([])
+                setSuggestions(
+                    availableTags.filter((tag) => !tags.includes(tag)),
+                )
             }
         }
 
@@ -45,7 +51,7 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
             setSuggestions(filteredSuggestions)
             setSelectedIndex(0)
         } else {
-            setSuggestions([])
+            setSuggestions(availableTags.filter((tag) => !tags.includes(tag)))
         }
     }
 
@@ -88,14 +94,17 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags }) => {
 
     const selectTag = (tag: string, index: number) => {
         if (!tags.includes(tag)) {
-            setTags([...tags, tag])
-            setSuggestions([])
+            // setTags([...tags, tag])
+            // setSuggestions([])
 
-            const updatedSuggestions = suggestions.filter(
-                (suggestion) => suggestion !== tag,
-            )
-            setSuggestions(updatedSuggestions)
+            // const updatedSuggestions = suggestions.filter(
+            //     (suggestion) => suggestion !== tag,
+            // )
+            // setSuggestions(updatedSuggestions)
 
+            tags.push(tag)
+            setInput('')
+            setSuggestions(availableTags.filter((tag) => !tags.includes(tag)))
             inputRef.current?.focus()
             setSelectedIndex(index)
         }

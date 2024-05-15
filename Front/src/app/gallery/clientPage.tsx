@@ -17,38 +17,57 @@ import { galleryInfo } from '@/utils/api/DTO/gallery'
 
 interface ClientPageProps {
     propsImages: galleryInfo[]
+    propsTagString: string
 }
 
-const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
-    const makeTagList = (arr: galleryInfo[]) => {
-        let tagSet = new Set<string>()
-        arr.forEach((el) => {
-            el.tags.forEach((tag) => {
-                tagSet.add(tag)
-            })
+export const makeTagListByImages = (arr: galleryInfo[]) => {
+    let tagSet = new Set<string>()
+    arr.forEach((el) => {
+        el.tags.forEach((tag) => {
+            tagSet.add(tag)
         })
+    })
 
-        return Array.from(tagSet).sort()
-    }
+    return Array.from(tagSet).sort()
+}
 
+export const makeTagListByTagString = (str: string) => {
+    if (!str) return []
+
+    let tags = str.split(',')
+    let tagSet = new Set<string>()
+
+    tags.forEach((tag) => {
+        tagSet.add(tag)
+    })
+
+    return Array.from(tagSet).sort()
+}
+
+const ClientPage: React.FC<ClientPageProps> = ({
+    propsImages,
+    propsTagString,
+}) => {
     const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
     const [images2, setImages2] = useState<galleryInfo[]>(
         propsImages.slice(0, 4) || [],
     )
-    const [tagList, setTagList] = useState<string[]>(makeTagList(propsImages))
+    const [tagList, setTagList] = useState<string[]>(
+        makeTagListByImages(propsImages),
+    )
 
     const fetchGallery = async () => {
         const response = await getGalleryList()
         setImages(response.data)
         setImages2(images.slice(0, 4))
-        setTagList(makeTagList(images))
+        setTagList(makeTagListByImages(images))
     }
 
     const fetchGalleryByTag = async (selectedTags: string[]) => {
         const response = await getGalleryListByTag(selectedTags)
         setImages(response.data)
         setImages2(images.slice(0, 4))
-        setTagList(makeTagList(images))
+        setTagList(makeTagListByImages(images))
     }
 
     const { isDarkMode } = useDarkModeStore()
@@ -170,7 +189,10 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                 }}
             >
                 <div className={styles.modalContent}>
-                    <TagInput availableTags={tagList} />
+                    <TagInput
+                        availableTags={tagList}
+                        tagString={propsTagString}
+                    />
                 </div>
             </div>
         </div>

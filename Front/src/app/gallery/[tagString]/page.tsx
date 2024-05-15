@@ -20,7 +20,12 @@ const GalleryPage = async ({ params }: { params: { tagString: string } }) => {
     tags = params.tagString.toString().split(',')
     images = (await fetchGalleryByTag(tags)) || []
 
-    return <ClientPage propsImages={images}></ClientPage>
+    return (
+        <ClientPage
+            propsImages={images}
+            propsTagString={params.tagString}
+        ></ClientPage>
+    )
 }
 
 export default GalleryPage
