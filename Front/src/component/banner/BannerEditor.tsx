@@ -1,26 +1,77 @@
 import React, { useState, useEffect } from 'react'
 
+// interfaces
+
 type PreviewImg = {
     name: string
     url: string
     yindex: number
 }
 
-interface BannerEditorProps {
-    addBanner: (images: PreviewImg[]) => void
+interface imageInfo {
+    coordinateX: number
+    coordinateY: number
 }
 
-const BannerEditor: React.FC<BannerEditorProps> = ({ addBanner }) => {
+export interface modifyBannerListRequestDTO {
+    images: Array<File>
+    infos: Array<imageInfo>
+}
+
+interface BannerEditorProps {
+    fetchImages: () => void
+    updateImages: (images: modifyBannerListRequestDTO) => void
+    toggleEditBanner: () => void
+}
+
+const BannerEditor: React.FC<BannerEditorProps> = ({
+    fetchImages,
+    updateImages,
+    toggleEditBanner,
+}) => {
+    // 지역변수
     const [files, setFiles] = useState<File[]>([])
     const [previewImgs, setPreviewImgs] = useState<PreviewImg[]>([])
-
     const [dragIndex, setDragIndex] = useState<number | null>(null)
     const [startY, setStartY] = useState<number>(0)
     const [startTopOffset, setStartTopOffset] = useState<number>(0)
+    const [gridTemplateColumns, setGridTemplateColumns] = useState<string>(
+        'repeat(auto-fill, 150px)',
+    )
 
+    // 함수
+
+    const filesChangedHandler = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        if (event.target.files) {
+            const newFile = event.target.files[0]
+            if (newFile) {
+                setFiles((prevFiles) => [...prevFiles, newFile])
+            }
+        }
+    }
+
+    const removeFileHandler = (index: number) => {
+        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
+        setPreviewImgs((prevImgs) => prevImgs.filter((_, i) => i !== index))
+    }
+
+    const startDrag = (
+        index: number,
+        event: React.MouseEvent<HTMLImageElement>,
+    ) => {
+        setDragIndex(index)
+        setStartY(event.clientY)
+        setStartTopOffset(previewImgs[index].yindex)
+        event.preventDefault()
+    }
+
+    // 훅
     useEffect(() => {
         if (!files.length) {
             setPreviewImgs([])
+            setGridTemplateColumns('repeat(auto-fill, 150px)')
             return
         }
 
@@ -40,25 +91,10 @@ const BannerEditor: React.FC<BannerEditorProps> = ({ addBanner }) => {
                 yindex: 0,
             }
         })
+
+        const columns = `repeat(${files.length + 1}, 1fr)`
+        setGridTemplateColumns(columns)
     }, [files])
-
-    const filesChangedHandler = (
-        event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        if (event.target.files) {
-            setFiles(Array.from(event.target.files))
-        }
-    }
-
-    const startDrag = (
-        index: number,
-        event: React.MouseEvent<HTMLImageElement>,
-    ) => {
-        setDragIndex(index)
-        setStartY(event.clientY)
-        setStartTopOffset(previewImgs[index].yindex)
-        event.preventDefault()
-    }
 
     useEffect(() => {
         const onMouseMove = (event: MouseEvent) => {
@@ -98,43 +134,87 @@ const BannerEditor: React.FC<BannerEditorProps> = ({ addBanner }) => {
         }
     }, [dragIndex, startY, startTopOffset])
 
-    const handleSubmit = () => {
-        // addBanner(previewImgs)
+    const convertPreviewImgsToRequestDTO = (
+        previews: PreviewImg[],
+        files: File[],
+    ): modifyBannerListRequestDTO => {
+        const infos: imageInfo[] = previews.map((preview) => ({
+            coordinateX: 0,
+            coordinateY: preview.yindex,
+        }))
 
-        console.log(previewImgs)
+        return {
+            images: files,
+            infos: infos,
+        }
+    }
+
+    const handleSubmit = () => {
+        const requestDTO = convertPreviewImgsToRequestDTO(previewImgs, files)
+        updateImages(requestDTO)
+        toggleEditBanner()
+
+        console.log(requestDTO)
     }
 
     return (
         <div>
-            <input
-                type="file"
-                onChange={filesChangedHandler}
-                accept="image/*"
-                multiple
-            />
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, 150px)',
+                    gridTemplateColumns: gridTemplateColumns,
                     gap: '0px',
                 }}
             >
                 {previewImgs.map((preview, index) => (
-                    <img
-                        key={preview.name}
-                        src={preview.url}
-                        alt={`Preview of ${preview.name}`}
-                        style={{
-                            width: '150px',
-                            height: 'auto',
-                            position: 'relative',
-                            top: `${preview.yindex}px`,
-                            cursor: 'ns-resize',
-                        }}
-                        onMouseDown={(e) => startDrag(index, e)}
-                    />
+                    <div key={preview.name} style={{ position: 'relative' }}>
+                        <img
+                            src={preview.url}
+                            alt={`Preview of ${preview.name}`}
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                position: 'relative',
+                                top: `${preview.yindex}px`,
+                                cursor: 'ns-resize',
+                            }}
+                            onMouseDown={(e) => startDrag(index, e)}
+                        />
+                        <button
+                            style={{
+                                position: 'absolute',
+                                top: '0',
+                                right: '0',
+                            }}
+                            onClick={() => removeFileHandler(index)}
+                        >
+                            -
+                        </button>
+                    </div>
                 ))}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <button
+                        onClick={() =>
+                            document.getElementById('fileInput')?.click()
+                        }
+                    >
+                        +
+                    </button>
+                </div>
             </div>
+            <input
+                id="fileInput"
+                type="file"
+                onChange={filesChangedHandler}
+                accept="image/*"
+                style={{ display: 'none' }}
+            />
             <button onClick={handleSubmit}>Submit</button>
         </div>
     )
