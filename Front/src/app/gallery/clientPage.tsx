@@ -7,9 +7,10 @@ import TagInput from '@/component/TagInput'
 import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import { getGalleryList, getGalleryListByTag } from '@/utils/api/gallery'
+import { getGalleryList } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import { galleryInfo } from '@/utils/api/DTO/gallery'
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 /**
  * @todo Error Handling
@@ -17,7 +18,6 @@ import { galleryInfo } from '@/utils/api/DTO/gallery'
 
 interface ClientPageProps {
     propsImages: galleryInfo[]
-    propsTagString: string
 }
 
 export const makeTagListByImages = (arr: galleryInfo[]) => {
@@ -31,23 +31,7 @@ export const makeTagListByImages = (arr: galleryInfo[]) => {
     return Array.from(tagSet).sort()
 }
 
-export const makeTagListByTagString = (str: string) => {
-    if (!str) return []
-
-    let tags = str.split(',')
-    let tagSet = new Set<string>()
-
-    tags.forEach((tag) => {
-        tagSet.add(tag)
-    })
-
-    return Array.from(tagSet).sort()
-}
-
-const ClientPage: React.FC<ClientPageProps> = ({
-    propsImages,
-    propsTagString,
-}) => {
+const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
     const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
     const [images2, setImages2] = useState<galleryInfo[]>(
         propsImages.slice(0, 4) || [],
@@ -55,16 +39,31 @@ const ClientPage: React.FC<ClientPageProps> = ({
     const [tagList, setTagList] = useState<string[]>(
         makeTagListByImages(propsImages),
     )
+    const [selectedTags, setSelectedTags] = useState<string[]>([])
+    const [tempNumForTagsEffect, setTempNumForTagsEffect] = useState<number>(0)
+
+    /**
+     * @todo
+     * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
+     * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
+     */
+    useEffect(() => {
+        setImages(
+            selectedTags.length > 0
+                ? propsImages.filter((image) => {
+                      let flag: boolean = true
+                      selectedTags.forEach((tag) => {
+                          if (!image.tags.includes(tag)) flag = false
+                      })
+                      return flag
+                  })
+                : propsImages,
+        )
+        setImages2(images.slice(0, 4))
+    }, [tempNumForTagsEffect])
 
     const fetchGallery = async () => {
         const response = await getGalleryList()
-        setImages(response.data)
-        setImages2(images.slice(0, 4))
-        setTagList(makeTagListByImages(images))
-    }
-
-    const fetchGalleryByTag = async (selectedTags: string[]) => {
-        const response = await getGalleryListByTag(selectedTags)
         setImages(response.data)
         setImages2(images.slice(0, 4))
         setTagList(makeTagListByImages(images))
@@ -90,7 +89,7 @@ const ClientPage: React.FC<ClientPageProps> = ({
     const toggleModal = () => {
         setIsModalOpen((prev) => !prev)
 
-        btnText === '태그검색' ? setBtnText('검색하기') : setBtnText('태그검색')
+        btnText === '태그검색' ? setBtnText('닫기') : setBtnText('태그검색')
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,6 +144,10 @@ const ClientPage: React.FC<ClientPageProps> = ({
                         toggleAddMode()
                     }}
                     isDarkMode={isDarkMode}
+                    tags={selectedTags}
+                    setTags={setSelectedTags}
+                    tempNumForTagsEffect={tempNumForTagsEffect}
+                    setTempNumForTagsEffect={setTempNumForTagsEffect}
                 />
             </div>
 
@@ -191,7 +194,10 @@ const ClientPage: React.FC<ClientPageProps> = ({
                 <div className={styles.modalContent}>
                     <TagInput
                         availableTags={tagList}
-                        tagString={propsTagString}
+                        tags={selectedTags}
+                        setTags={setSelectedTags}
+                        tempNumForTagsEffect={tempNumForTagsEffect}
+                        setTempNumForTagsEffect={setTempNumForTagsEffect}
                     />
                 </div>
             </div>

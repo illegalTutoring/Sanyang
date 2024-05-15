@@ -1,5 +1,5 @@
 import React from 'react'
-import { getGalleryList, getGalleryListByTag } from '@/utils/api/gallery'
+import { getGalleryList } from '@/utils/api/gallery'
 import { galleryInfo } from '@/utils/api/DTO/gallery'
 import ClientPage from './clientPage'
 

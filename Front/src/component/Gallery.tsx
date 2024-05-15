@@ -14,6 +14,10 @@ export interface GalleryProps {
     isEditMode: boolean
     isDarkMode: boolean
     addTogle: () => void
+    tags: string[]
+    setTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Gallery: React.FC<GalleryProps> = ({
@@ -22,6 +26,10 @@ const Gallery: React.FC<GalleryProps> = ({
     isEditMode,
     isDarkMode,
     addTogle,
+    tags,
+    setTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
     const [newColCount, setNewColCount] = useState(colCount)
@@ -181,6 +189,10 @@ const Gallery: React.FC<GalleryProps> = ({
                             galleryId={image.galleryId}
                             handleScroll={handleScroll}
                             isDarkMode={isDarkMode}
+                            selectedTags={tags}
+                            setSelectedTags={setTags}
+                            tempNumForTagsEffect={tempNumForTagsEffect}
+                            setTempNumForTagsEffect={setTempNumForTagsEffect}
                         />
                     </div>
                 ))}

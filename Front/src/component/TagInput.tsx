@@ -1,18 +1,23 @@
 import { useState, ChangeEvent, KeyboardEvent, useRef, useEffect } from 'react'
 import styles from './TagInput.module.scss'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import { makeTagListByTagString } from '@/app/gallery/clientPage'
 
 interface TagInputProps {
     availableTags: string[]
-    tagString: string
+    tags: string[]
+    setTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
 }
 
-const TagInput: React.FC<TagInputProps> = ({ availableTags, tagString }) => {
+const TagInput: React.FC<TagInputProps> = ({
+    availableTags,
+    tags,
+    setTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
+}) => {
     const { isDarkMode } = useDarkModeStore()
-    const [tags, setTags] = useState<string[]>(
-        makeTagListByTagString(tagString),
-    )
     const [input, setInput] = useState('')
     const [suggestions, setSuggestions] = useState<string[]>(availableTags)
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
@@ -103,6 +108,15 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags, tagString }) => {
             // setSuggestions(updatedSuggestions)
 
             tags.push(tag)
+            setTags(tags)
+
+            /**
+             * @todo
+             * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
+             * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
+             */
+            setTempNumForTagsEffect(tempNumForTagsEffect + 1)
+
             setInput('')
             setSuggestions(availableTags.filter((tag) => !tags.includes(tag)))
             inputRef.current?.focus()
@@ -113,6 +127,12 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags, tagString }) => {
     const deleteTag = (tagToDelete: string) => {
         const updatedTags = tags.filter((tag) => tag !== tagToDelete)
         setTags(updatedTags)
+        /**
+         * @todo
+         * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
+         * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
+         */
+        setTempNumForTagsEffect(tempNumForTagsEffect + 1)
 
         if (
             availableTags.includes(tagToDelete) &&
@@ -135,6 +155,13 @@ const TagInput: React.FC<TagInputProps> = ({ availableTags, tagString }) => {
 
     const deleteAllTag = () => {
         setTags([])
+        /**
+         * @todo
+         * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
+         * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
+         */
+        setTempNumForTagsEffect(tempNumForTagsEffect + 1)
+
         setSuggestions([])
         setInput('')
     }

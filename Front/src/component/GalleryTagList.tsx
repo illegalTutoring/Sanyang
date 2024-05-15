@@ -7,6 +7,10 @@ interface TagListProps {
     galleryId: number
     handleScroll: (index: number, direction: string) => void
     isDarkMode: boolean
+    selectedTags: string[]
+    setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
 }
 
 const GalleryTagList: React.FC<TagListProps> = ({
@@ -14,8 +18,12 @@ const GalleryTagList: React.FC<TagListProps> = ({
     galleryId,
     handleScroll,
     isDarkMode,
+    selectedTags,
+    setSelectedTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
 }) => {
-    const router = useRouter()
+    // const router = useRouter()
     return (
         <div className={styles.tagList}>
             <div
@@ -35,7 +43,13 @@ const GalleryTagList: React.FC<TagListProps> = ({
                         <div
                             key={idx}
                             className={`${styles.tag} ${isDarkMode ? styles.tagDark : styles.tagWhite}`}
-                            onClick={() => router.push(`/gallery/${tag}`)}
+                            onClick={() => {
+                                selectedTags.push(tag)
+                                setSelectedTags(selectedTags)
+                                setTempNumForTagsEffect(
+                                    tempNumForTagsEffect + 1,
+                                )
+                            }}
                         >
                             #{tag}
                         </div>
