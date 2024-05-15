@@ -5,7 +5,7 @@ interface imageInfo {
     coordinateY: number
 }
 
-interface bannerInfo {
+export interface bannerInfo {
     bannerId: number
     imagePath: string
     coordinateX: number

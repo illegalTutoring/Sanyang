@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './personal.module.scss'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import Calendar from '@/component/Calender'
@@ -13,6 +13,7 @@ import {
     modifyCalendar,
     deleteCalendar,
 } from '@/utils/api/admin'
+import { addMonths } from 'date-fns'
 
 const PersonalPage: React.FC = () => {
     // 전역변수
@@ -23,14 +24,39 @@ const PersonalPage: React.FC = () => {
     const [schedules, setSchedules] = useState<calendarInfo[]>([])
 
     // 함수
-    const fetchSchedules = async (year: number, month: number) => {
-        const response = await getCalendar(year, month)
-        setSchedules(response.data)
-    }
 
-    useEffect(() => {
-        fetchSchedules(new Date().getFullYear(), new Date().getMonth())
-    }, [])
+    const fetchSchedules = async (year: number, month: number) => {
+        // 현재, 전달, 후달의 Date 객체 생성
+        const currentDate = new Date(year, month)
+        const prevDate = addMonths(currentDate, -1)
+        const nextDate = addMonths(currentDate, 1)
+
+        try {
+            // 각 달에 대한 API 호출
+            const [prevMonthData, currentMonthData, nextMonthData] =
+                await Promise.all([
+                    getCalendar(prevDate.getFullYear(), prevDate.getMonth()),
+                    getCalendar(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                    ),
+                    getCalendar(nextDate.getFullYear(), nextDate.getMonth()),
+                ])
+
+            // 세 달의 데이터를 하나의 배열로 병합
+            const combinedData = [
+                ...prevMonthData.data,
+                ...currentMonthData.data,
+                ...nextMonthData.data,
+            ]
+
+            // 상태 업데이트
+            setSchedules(combinedData)
+            //console.log(combinedData)
+        } catch (error) {
+            console.error('Error fetching schedules:', error)
+        }
+    }
 
     return (
         <article

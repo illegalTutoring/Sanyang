@@ -34,7 +34,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
 
             userStore.getState().setId(data.username)
             userStore.getState().setUsername(response.data.username)
-            userStore.getState().setAccessToken(response.headers.accesstoken)
+            userStore.getState().setAccessToken(response.headers.authorization)
             userStore.getState().setRole(response.data.role)
 
             return {
@@ -105,7 +105,7 @@ export function reIssue(accessToken: string): reIssueResponseDTO {
             },
         })
 
-        userStore.getState().setAccessToken(response.headers.accesstoken)
+        userStore.getState().setAccessToken(response.headers.authorization)
 
         return {
             statusCode: response.status,

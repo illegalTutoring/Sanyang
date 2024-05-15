@@ -11,9 +11,8 @@ interface AuthState {
 const useAuthStore = create(
     persist<AuthState>(
         (set, get) => ({
-            isLoggedIn: true,
+            isLoggedIn: false,
             logIn: () => set({ isLoggedIn: true }),
-
             logOut: () => set({ isLoggedIn: false }),
         }),
         {

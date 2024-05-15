@@ -10,7 +10,6 @@ import java.util.List;
 @ToString
 public class WorkRequestPostDto {
 
-    private final String userId;
     private final String company;
     private final String title;
     private final String startDate;
@@ -18,9 +17,8 @@ public class WorkRequestPostDto {
     private final List<String> tags;
 
     @Builder
-    public WorkRequestPostDto(String userId, String company, String title, String startDate, String endDate,
+    public WorkRequestPostDto(String company, String title, String startDate, String endDate,
                               List<String> tags) {
-        this.userId = userId;
         this.company = company;
         this.title = title;
         this.startDate = startDate;
@@ -31,9 +29,7 @@ public class WorkRequestPostDto {
     public String isValid() {
         String isValid = "valid";
 
-        if(userId == null || userId.isEmpty()) {
-            isValid = "userId";
-        } else if(company == null || company.isEmpty()) {
+        if(company == null || company.isEmpty()) {
             isValid = "company";
         } else if(title == null || title.isEmpty()) {
             isValid = "title";
