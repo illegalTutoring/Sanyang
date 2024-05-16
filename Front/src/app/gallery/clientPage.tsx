@@ -10,7 +10,6 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import { getGalleryList } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import { galleryInfo } from '@/utils/api/DTO/gallery'
-import useDeepCompareEffect from 'use-deep-compare-effect'
 
 /**
  * @todo Error Handling
