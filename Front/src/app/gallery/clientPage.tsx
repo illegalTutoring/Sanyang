@@ -2,13 +2,23 @@
 
 import React, { useEffect, useState } from 'react'
 import styles from './gallery.module.scss'
+
+// Components
 import Gallery from '@/component/Gallery'
 import TagInput from '@/component/TagInput'
 import Modal from '@/component/layout/Modal'
 import GridGallery from '@/component/GridGallery'
+import SimpleTagInput from '@/component/SimpleTagInput'
+
+// Store
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import { getGalleryList } from '@/utils/api/gallery'
 import useEditModeStore from '@/utils/store/useEditModeStore'
+
+// API
+import { getGalleryList } from '@/utils/api/gallery'
+import { registGallery, deleteGallery } from '@/utils/api/admin'
+
+// DTO
 import { galleryInfo } from '@/utils/api/DTO/gallery'
 
 /**
@@ -31,6 +41,11 @@ export const makeTagListByImages = (arr: galleryInfo[]) => {
 }
 
 const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
+    // 전역변수
+    const { isDarkMode } = useDarkModeStore()
+    const { isEditMode } = useEditModeStore()
+
+    // 지역변수
     const [images, setImages] = useState<galleryInfo[]>(propsImages || [])
     const [images2, setImages2] = useState<galleryInfo[]>(
         propsImages.slice(0, 4) || [],
@@ -40,43 +55,23 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
     )
     const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [tempNumForTagsEffect, setTempNumForTagsEffect] = useState<number>(0)
-
-    /**
-     * @todo
-     * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
-     * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
-     */
-    useEffect(() => {
-        setImages(
-            selectedTags.length > 0
-                ? propsImages.filter((image) => {
-                      let flag: boolean = true
-                      selectedTags.forEach((tag) => {
-                          if (!image.tags.includes(tag)) flag = false
-                      })
-                      return flag
-                  })
-                : propsImages,
-        )
-        setImages2(images.slice(0, 4))
-    }, [tempNumForTagsEffect])
-
-    const fetchGallery = async () => {
-        const response = await getGalleryList()
-        setImages(response.data)
-        setImages2(images.slice(0, 4))
-        setTagList(makeTagListByImages(images))
-    }
-
-    const { isDarkMode } = useDarkModeStore()
-    const { isEditMode } = useEditModeStore()
-
     const [isGalleryVisible, setIsGalleryVisible] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [btnText, setBtnText] = useState('태그검색')
     const [addMode, setAddMode] = useState(false)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+    const [newTags, setNewTags] = useState<string[]>([])
+    const [file, setFile] = useState<File | null>(null)
 
+    // 훅
+    /**
+     * @todo
+     * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
+     * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
+     */
+    useEffect(() => {}, [tempNumForTagsEffect])
+
+    // 토글 함수
     const toggleAddMode = () => {
         setAddMode((prev) => !prev)
     }
@@ -91,12 +86,64 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
         btnText === '태그검색' ? setBtnText('닫기') : setBtnText('태그검색')
     }
 
+    // 함수
+    const fetchGallery = async () => {
+        const response = await getGalleryList()
+        setImages(response.data)
+        setImages2(response.data.slice(0, 4))
+        setTagList(makeTagListByImages(response.data))
+    }
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (file) {
+            setFile(file)
             const reader = new FileReader()
             reader.onload = () => setPreviewUrl(reader.result as string)
             reader.readAsDataURL(file)
+        }
+    }
+
+    interface registGalleryRequestDTO {
+        title: string
+        createDate: string
+        tags: Array<string>
+    }
+
+    const handleSubmit = async () => {
+        if (!file) {
+            alert('이미지를 선택해주세요.')
+            return
+        }
+
+        const newGallery: registGalleryRequestDTO = {
+            title: 'New Gallery Item', // 필요한 필드를 채워 넣으세요
+            createDate: new Date().toISOString(),
+            tags: newTags,
+        }
+
+        try {
+            const response = await registGallery(newGallery, file)
+            if (response.message) {
+                fetchGallery()
+                setAddMode(false)
+                setPreviewUrl(null)
+                setNewTags([])
+                setFile(null)
+            }
+        } catch (error) {
+            console.error('갤러리 등록 중 에러 발생:', error)
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteGallery(id)
+            setImages((images) =>
+                images.filter((image) => image.galleryId !== id),
+            )
+        } catch (error) {
+            console.error('갤러리 삭제 중 에러 발생:', error)
         }
     }
 
@@ -147,6 +194,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     setTags={setSelectedTags}
                     tempNumForTagsEffect={tempNumForTagsEffect}
                     setTempNumForTagsEffect={setTempNumForTagsEffect}
+                    deleteGallery={handleDelete}
                 />
             </div>
 
@@ -169,6 +217,8 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                             style={{ width: '100%', height: 'auto' }}
                         />
                     )}
+                    <SimpleTagInput tags={newTags} setTags={setNewTags} />
+                    <button onClick={handleSubmit}>Submit</button>
                 </div>
             </Modal>
 
