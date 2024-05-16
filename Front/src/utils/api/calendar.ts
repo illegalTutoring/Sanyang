@@ -7,7 +7,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 export function getCalendar(
     year: number,
     month: number,
-): getCalendarResponseDTO {
+): Promise<getCalendarResponseDTO> {
     /**
      * 월별 일정 리스트를 반환한다.
      *

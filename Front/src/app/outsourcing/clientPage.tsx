@@ -18,9 +18,9 @@ const ClientPage: React.FC<ClientPageProps> = ({ works }) => {
 
     const [worksData, setWorksData] = React.useState<Array<workInfo>>(works)
 
-    const fetchWorks = () => {
+    const fetchWorks = async () => {
         try {
-            const { data } = getWorkList()
+            const { data } = await getWorkList()
             setWorksData(splitData(data))
         } catch (error) {
             console.error('Error fetching works:', error)
