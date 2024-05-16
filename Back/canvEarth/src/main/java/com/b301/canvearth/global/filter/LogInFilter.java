@@ -85,11 +85,11 @@ public class LogInFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String accessToken = jwtUtil.createJwt("access", username, role, 1800000L);
+        String accessToken = jwtUtil.createJwt("access", username, role, 3600000L);
         String refreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // white list 작성
-        accessService.saveAccessToken(username, accessToken, 1800000L);
+        accessService.saveAccessToken(username, accessToken, 3600000L);
         refreshService.saveRefreshToken(username, refreshToken, 86400000L);
 
         // 토큰 발행
