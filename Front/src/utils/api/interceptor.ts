@@ -26,7 +26,8 @@ export async function axiosRequestHandler(
             return await request(...params)
         } else if (
             statusCode === 401 &&
-            message === '잘못된 refresh 토큰 입니다'
+            (message === '잘못된 refresh 토큰 입니다' ||
+                message === '잘못된 access 토큰 입니다')
         ) {
             userStore.getState().destroyAll()
             return {
