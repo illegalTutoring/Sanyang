@@ -10,7 +10,7 @@ export async function axiosRequestHandler(
     try {
         return await request(...params)
     } catch (error: any) {
-        const statusCode = error.response?.statusCode
+        const statusCode = error.response?.status
         const statusText = error.response?.statusText
         const message = error.response?.data?.messagee
 
