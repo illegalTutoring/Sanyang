@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios'
 import userStore from '../store/useUserStore'
 import { logout, reIssue } from './user'
 
@@ -25,7 +24,18 @@ export async function axiosRequestHandler(
             userStore.getState().destroyAccessToken()
             reIssue(tempAccessToken)
             return await request(...params)
+        } else if (
+            statusCode === 401 &&
+            message === '잘못된 refresh 토큰 입니다'
+        ) {
+            userStore.getState().destroyAll()
+            return {
+                statusCode: statusCode,
+                statusText: statusText,
+                message: message,
+            }
         } else {
+            userStore.getState().destroyAll()
             return await logout()
         }
 

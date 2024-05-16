@@ -60,8 +60,6 @@ export function logout(): Promise<serverResponseDTO> {
             url: `${SERVER_URL}/user/logout`,
         })
 
-        userStore.getState().destroyAll()
-
         return {
             statusCode: response.status,
             message: response.data.message,
