@@ -54,7 +54,11 @@ public class UserService {
         }
 
         // 2. Id 중복검사
-        boolean isExist = userRepository.existsById(id);
+        boolean isExist = false;
+
+        if(id != null) {
+            isExist = userRepository.existsById(id);
+        }
 
         if(isExist){
             logUtil.exceptionLogging(ErrorCode.ID_DUPLICATE, "Sign in failed");
@@ -92,12 +96,12 @@ public class UserService {
         String role = jwtUtil.getRole(refreshToken);
 
         // 2. access, refresh 토큰 재발급
-        String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
+        String newAccessToken = jwtUtil.createJwt("access", username, role, 3600000L);
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // 3. white list 갱신
         accessService.deleteAccessToken(username);
-        accessService.saveAccessToken(username, newAccessToken, 600000L);
+        accessService.saveAccessToken(username, newAccessToken, 3600000L);
 
         refreshService.deleteRefreshToken(username);
         refreshService.saveRefreshToken(username, newRefreshToken, 86400000L);
