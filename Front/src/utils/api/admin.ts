@@ -337,11 +337,20 @@ export function modifyBannerList(
 
     return axiosRequestHandler(
         async (data: modifyBannerListRequestDTO) => {
+            const blobData = new Blob([JSON.stringify(data.infos)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('infos', blobData)
+            data.images.forEach((image) => {
+                formData.append('images', image)
+            })
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
                 url: `${SERVER_URL}/admin/banner`,
-                data: data,
+                data: formData,
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     Authorization: userStore.getState().accessToken,
                 },
             })
