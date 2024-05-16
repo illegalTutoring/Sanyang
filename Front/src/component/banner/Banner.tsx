@@ -14,7 +14,7 @@ interface BannerProps {
 }
 
 const Banner: React.FC<BannerProps> = ({ width, height, images, interval }) => {
-    const extendedImages = [...images, images[0]]
+    const extendedImages = images.length > 0 ? [...images, images[0]] : []
 
     const [currentIdx, setCurrentIdx] = useState(0)
     const [transitionEnabled, setTransitionEnabled] = useState(true)
@@ -53,7 +53,7 @@ const Banner: React.FC<BannerProps> = ({ width, height, images, interval }) => {
                         : 'none',
                 }}
             >
-                {extendedImages.map((image, index) => (
+                {extendedImages?.map((image, index) => (
                     <div
                         key={index}
                         className={styles.imageItem}

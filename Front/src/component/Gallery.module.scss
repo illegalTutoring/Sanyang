@@ -53,6 +53,19 @@
     }
 }
 
+.deleteButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 10%;
+}
+
 @media (min-width: 768px) {
     .expandedImg {
         margin-left: 200px;

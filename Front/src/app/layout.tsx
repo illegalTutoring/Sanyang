@@ -3,6 +3,8 @@ import Header from '@/component/layout/Header' // 해더 컴포넌트
 import Sidebar from '@/component/layout/Sidebar' // 사이드바 컴포넌트
 import Footer from '@/component/layout/Footer' // 푸터 컴포넌트
 import { Metadata } from 'next'
+import Head from 'next/head'
+import Analytics from '../component/Analytics'
 
 // 메타데이터 설정
 export const metadata: Metadata = {
@@ -20,6 +22,9 @@ export default function RootLayout({
 }) {
     return (
         <html lang="ko">
+            <Head>
+                <Analytics />
+            </Head>
             <body>
                 <Header />
                 <Sidebar />

@@ -16,23 +16,21 @@ public class GalleryListResponseGetDto {
     private final Date uploadDate;
     private final String createDate;
     private final List<String> tags;
-    private final String originalPath;
-    private final String thumbnailPath;
-    private final String watermarkPath;
+    private final String original;
+    private final String thumbnail;
 
 
     @Builder
 
     public GalleryListResponseGetDto(Long galleryId, String userId, String title, Date uploadDate, String createDate,
-                                     List<String> tags, String originalPath, String thumbnailPath, String watermarkPath) {
+                                     List<String> tags, String original, String thumbnail) {
         this.galleryId = galleryId;
         this.userId = userId;
         this.title = title;
         this.uploadDate = uploadDate;
         this.createDate = createDate;
         this.tags = tags;
-        this.originalPath = originalPath;
-        this.thumbnailPath = thumbnailPath;
-        this.watermarkPath = watermarkPath;
+        this.original = original;
+        this.thumbnail = thumbnail;
     }
 }

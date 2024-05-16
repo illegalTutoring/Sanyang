@@ -3,3 +3,97 @@
     border: '1px solid #ccc';
     border-radius: '5px';
 }
+
+.supportTag {
+    padding: 1px 5px 1px 5px;
+    width: 38px;
+    border-radius: 10px;
+}
+
+.supportTagDark {
+    color: #ccc;
+    border: 1px solid #aaa;
+    background: linear-gradient(to right, rgb(88, 50, 88), rgb(147, 79, 98));
+}
+
+.supportTagLight {
+    color: #333;
+    border: 1px solid black;
+    background: linear-gradient(
+        to right,
+        rgb(246, 247, 202),
+        rgb(208, 204, 146),
+        rgb(143, 179, 92)
+    );
+}
+
+.card {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.addCard {
+    border: 3px solid #808080;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+}
+
+.dateBox {
+    margin-top: 2px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Pretendard-Regular';
+}
+
+.contentBox {
+    font-family: 'Pretendard-Regular';
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.linkBox {
+    border-radius: 10px;
+    padding: 10px 10px 5px 10px;
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+    justify-content: center;
+    font-family: 'Pretendard-Regular';
+    font-size: 16px;
+
+    .link {
+        margin-bottom: 5px;
+    }
+}
+
+.linkBoxDark {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.linkBoxLight {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 10%;
+}

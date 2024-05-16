@@ -7,14 +7,48 @@
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 500px) {
+    .toggleLoginButton {
+        display: none;
+    }
+
+    .toggleDarkModeButton {
+        width: 20px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 370px) {
+    .profile {
+        h3 {
+            font-size: 13px;
+        }
+    }
+}
+
 .profile {
+    border-radius: 25px;
+    width: 100%;
+    height: 45px;
     align-items: center;
-    display: grid;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 20px 5px 10px;
     grid-template-columns: 50px 1fr;
+    cursor: pointer;
+}
+
+.profileDark {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profileLight {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .toggleDarkModeButton {
     width: 35px;
+    cursor: pointer;
 }
 
 .toggleLoginButton {
@@ -29,7 +63,7 @@
     display: grid;
 
     label {
-        margin: 1rem;
+        margin-top: 10px;
     }
 
     input {
@@ -55,11 +89,30 @@
 }
 
 .profileMenu {
+    margin-right: 25px;
     position: absolute;
     top: 60px;
     right: 0;
-    width: 160px;
-    box-shadow: 0 4px 6px -6px gray;
+    width: 110px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: -5px;
+    cursor: pointer;
 
-    padding: 10px;
+    .profileItem {
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+
+        h3 {
+            font-size: 16px;
+            font-family: 'Pretendard-Regular';
+        }
+    }
+
+    img {
+        width: 25px;
+    }
 }

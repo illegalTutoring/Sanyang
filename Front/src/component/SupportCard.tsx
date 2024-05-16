@@ -23,6 +23,7 @@ interface SupportProps {
     height?: string
     cardMinWidth?: string
     cardMaxWidth?: string
+    addTogle: () => void
 }
 
 const SupportCard: React.FC<SupportProps> = ({
@@ -31,9 +32,12 @@ const SupportCard: React.FC<SupportProps> = ({
     isDarkMode,
     width = '100%',
     height = 'auto',
-    cardMinWidth = '350px',
+    cardMinWidth = '315px',
     cardMaxWidth = '1fr',
+    addTogle,
 }) => {
+    const currentDate = new Date().toISOString().slice(0, 7)
+
     return (
         <div
             className={`${isDarkMode ? 'dark' : 'light'}`}
@@ -46,20 +50,34 @@ const SupportCard: React.FC<SupportProps> = ({
                 padding: '10px',
             }}
         >
-            {items.map((item) => (
+            {isEditMode && (
                 <div
-                    className={styles.card}
-                    key={item.supportId}
-                    style={{
-                        border: '1px solid #ccc',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'left',
-                        padding: '30px',
-                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    }}
+                    className={`${styles.card} ${styles.addCard}`}
+                    style={{ padding: '0' }}
+                    key={-1}
                 >
+                    <img
+                        src={'/svgs/add_card.svg'}
+                        alt={'addButton'}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                        }}
+                    />
+                </div>
+            )}
+            {items.map((item) => (
+                <div className={styles.card} key={item.supportId}>
+                    {isEditMode && (
+                        <img
+                            className={styles.deleteButton}
+                            src={'/svgs/delete_red.svg'}
+                            alt="Delete"
+                            // onClick={(event) =>
+                            // }
+                        />
+                    )}
                     <div
                         style={{
                             display: 'grid',
@@ -72,26 +90,44 @@ const SupportCard: React.FC<SupportProps> = ({
                             style={{ width: '50px', height: '50px' }}
                         />
                         <div>
-                            <div>{item.title}</div>
-                            <div>Uploaded: {item.uploadDate}</div>
+                            <div style={{ fontSize: '20px' }}>{item.title}</div>
+                            <hr></hr>
+                            <div className={styles.dateBox}>
+                                <div>{item.uploadDate}</div>
+                                {item.uploadDate === currentDate && (
+                                    <div
+                                        className={`${styles.supportTag} ${isDarkMode ? styles.supportTagDark : styles.supportTagLight}`}
+                                    >
+                                        New!
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                    <br />
-                    <small>{item.content}</small>
-                    <br />
-                    <ul>
+                    <div className={styles.contentBox}>{item.content}</div>
+                    <div
+                        className={`${styles.linkBox} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                    >
                         {item.supportLink.map((link, index) => (
-                            <ol key={index}>
+                            <div className={styles.link} key={index}>
                                 <a
                                     href={link.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    - {link.name}
+                                    <img
+                                        style={{ width: '13px' }}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/diamond_white.svg'
+                                                : '/svgs/diamond_black.svg'
+                                        }
+                                    ></img>{' '}
+                                    {link.name}
                                 </a>
-                            </ol>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             ))}
         </div>

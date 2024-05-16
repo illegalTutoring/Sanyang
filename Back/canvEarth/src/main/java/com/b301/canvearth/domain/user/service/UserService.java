@@ -5,13 +5,21 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.domain.user.dto.SignInDto;
 import com.b301.canvearth.domain.user.entity.User;
 import com.b301.canvearth.domain.user.repository.UserRepository;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
 import com.b301.canvearth.global.util.JWTUtil;
-import jakarta.servlet.http.Cookie;
+import com.b301.canvearth.global.util.JWTValidationUtil;
+import com.b301.canvearth.global.util.LogUtil;
+import com.b301.canvearth.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
@@ -21,114 +29,86 @@ public class UserService {
 
     private final JWTUtil jwtUtil;
 
-    private final RefreshService refreshService;
+    private final JWTValidationUtil jwtValidationUtil;
 
     private final AccessService accessService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JWTUtil jwtUtil, RefreshService refreshService, AccessService accessService) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtUtil = jwtUtil;
-        this.refreshService = refreshService;
-        this.accessService = accessService;
-    }
+    private final RefreshService refreshService;
+
+    private final ResponseUtil responseUtil;
+
+    private final LogUtil logUtil;
 
 
-    public String signInProcess(SignInDto signinDto) {
+    public String signInProcess(SignInDto signinDto) throws CustomException {
 
-        // 1. 회원중복 조회
+        logUtil.serviceLogging("sign in");
+
+        // 1. 파라미터 검증
         String id = signinDto.getId();
-        String userName = signinDto.getUsername();
-        String userPassword = signinDto.getPassword();
+        String username = signinDto.getUsername();
+        String password = signinDto.getPassword();
 
-        // 1-1. Id 중복검사
+        if(id == null || username == null || password == null) {
+            logUtil.exceptionLogging(ErrorCode.PARAMETER_IS_EMPTY, "Sign in failed");
+        }
+
+        // 2. Id 중복검사
         boolean isExist = userRepository.existsById(id);
 
         if(isExist){
-            return "회원가입 실패";
+            logUtil.exceptionLogging(ErrorCode.ID_DUPLICATE, "Sign in failed");
         }
 
-        // 회원 등록
+        // 3. UserName 중복검사
+        isExist = userRepository.existsByUserName(username);
+
+        if(isExist){
+            logUtil.exceptionLogging(ErrorCode.USERNAME_DUPLICATE, "Sign in failed");
+        }
+
+        // 4. 회원 등록
         User data = new User();
         data.setId(id);
-        data.setUserName(userName);
-        data.setUserPassword(bCryptPasswordEncoder.encode(userPassword));
+        data.setUserName(username);
+        data.setUserPassword(bCryptPasswordEncoder.encode(password));
         data.setRole("ROLE_USER");
 
         userRepository.save(data);
 
+        logUtil.resultLogging("Sign in success");
+
         return "회원가입 성공";
     }
 
-    public String reIssueProcess(HttpServletRequest request, HttpServletResponse response){
+    public String reIssueProcess(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 
-        // 1. 쿠키에서 refresh 토큰 검색
-        String refreshToken = null;
-        Cookie[] cookies = request.getCookies();
+        // 1. Refresh Token 유효성 검사
+        String refreshToken = jwtValidationUtil.isValidRefreshToken(request);
 
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    refreshToken = cookie.getValue();
-                }
-            }
-        }
+        logUtil.serviceLogging("reIssue");
 
-        if (refreshToken == null) {
-            return "refresh 토큰이 존재하지 않습니다";
-        }
-
-        // 2. 토큰 카테고리가 refresh 인지 대조
-        String category = jwtUtil.getCategory(refreshToken);
-
-        System.out.println("refresh = " + refreshToken);
-        System.out.println("category = " + category);
-
-        if (!category.equals("refresh")) {
-            return "잘못된 refresh 토큰입니다";
-        }
-
-        // 3. refresh 토큰 유효기간 검증
-        boolean isExpired = jwtUtil.isExpired(refreshToken);
-        if (isExpired) {
-            return "만료된 refresh 토큰입니다";
-        }
-
-        // 4. Redis 에서 refresh 토큰 2차 검증
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        boolean isExist = refreshService.isRefreshTokenValid(username, refreshToken);
-        if(!isExist){
-            return "사용하지 않는 refresh 토큰입니다";
-        }
 
-        // 5. access, refresh 토큰 재발급
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        // 2. access, refresh 토큰 재발급
+        String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
-        // white list 갱신
+        // 3. white list 갱신
         accessService.deleteAccessToken(username);
-        accessService.saveAccessToken(username, newAccess, 600000L);
+        accessService.saveAccessToken(username, newAccessToken, 600000L);
 
         refreshService.deleteRefreshToken(username);
-        refreshService.saveRefreshToken(username, newRefresh, 86400000L);
+        refreshService.saveRefreshToken(username, newRefreshToken, 86400000L);
 
-        response.setHeader("accessToken", newAccess);
-        response.addCookie(createCookie(newRefresh));
+        // 4. JWT Token 전달
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
+        response.addCookie(responseUtil.createCookie("refreshToken", newRefreshToken));
+
+        logUtil.resultLogging("ReIssue success");
 
         return "refresh 토큰 재발행 성공";
-    }
-
-    private Cookie createCookie(String value) {
-
-        Cookie cookie = new Cookie("refreshToken", value);
-        cookie.setPath("/");
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-
-        return cookie;
     }
 
 }

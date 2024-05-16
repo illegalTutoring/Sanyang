@@ -49,3 +49,22 @@
 .shake {
     animation: shake 1s ease-in-out infinite;
 }
+
+.embedLink {
+    padding: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+.deleteButton {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 10%;
+}
