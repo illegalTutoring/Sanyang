@@ -9,6 +9,7 @@ import {
 } from './DTO/user'
 import userStore from '../store/useUserStore'
 import { serverResponseDTO } from './DTO/common'
+import useAuthStore from '../store/useAuthStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -59,6 +60,8 @@ export function logout(): Promise<serverResponseDTO> {
             method: 'POST',
             url: `${SERVER_URL}/user/logout`,
         })
+
+        useAuthStore.getState().logOut()
 
         return {
             statusCode: response.status,

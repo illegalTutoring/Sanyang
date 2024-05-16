@@ -1,3 +1,4 @@
+import useAuthStore from '../store/useAuthStore'
 import userStore from '../store/useUserStore'
 import { logout, reIssue } from './user'
 
@@ -29,6 +30,7 @@ export async function axiosRequestHandler(
                 message === '잘못된 access 토큰 입니다')
         ) {
             userStore.getState().destroyAll()
+            useAuthStore.getState().logOut()
             return {
                 statusCode: statusCode,
                 statusText: statusText,
