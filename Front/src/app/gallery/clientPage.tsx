@@ -69,7 +69,20 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
      * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
      * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
      */
-    useEffect(() => {}, [tempNumForTagsEffect])
+    useEffect(() => {
+        setImages(
+            selectedTags.length > 0
+                ? propsImages.filter((image) => {
+                      let flag: boolean = true
+                      selectedTags.forEach((tag) => {
+                          if (!image.tags.includes(tag)) flag = false
+                      })
+                      return flag
+                  })
+                : propsImages,
+        )
+        setImages2(images.slice(0, 4))
+    }, [tempNumForTagsEffect])
 
     // 토글 함수
     const toggleAddMode = () => {
