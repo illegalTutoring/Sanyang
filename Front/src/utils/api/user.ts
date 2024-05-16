@@ -56,7 +56,7 @@ export function logout(): Promise<serverResponseDTO> {
 
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
-            method: 'GET',
+            method: 'POST',
             url: `${SERVER_URL}/user/logout`,
         })
 

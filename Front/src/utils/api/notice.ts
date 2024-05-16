@@ -12,7 +12,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 export function getNoticeList(
     page: number,
     size: number,
-): getNoticeListResponseDTO {
+): Promise<getNoticeListResponseDTO> {
     /**
      * 공지 사항 목록을 반환한다.
      *
@@ -36,7 +36,7 @@ export function getNoticeList(
     )
 }
 
-export function getRecentNotice(): getRecentNoticeResponseDTO {
+export function getRecentNotice(): Promise<getRecentNoticeResponseDTO> {
     /**
      * 가장 최신 공지 사항의 정보를 반환한다.
      *
@@ -55,7 +55,9 @@ export function getRecentNotice(): getRecentNoticeResponseDTO {
     }, [])
 }
 
-export function getNoticeDetail(noticeId: number): getNoticeDetailResponseDTO {
+export function getNoticeDetail(
+    noticeId: number,
+): Promise<getNoticeDetailResponseDTO> {
     /**
      * 가장 최신 공지 사항의 정보를 반환한다.
      *
@@ -77,7 +79,7 @@ export function getNoticeDetail(noticeId: number): getNoticeDetailResponseDTO {
     )
 }
 
-export function getTotalNotice(): getTotalNoticeResponseDTO {
+export function getTotalNotice(): Promise<getTotalNoticeResponseDTO> {
     /**
      * 공지 사항의 전체 페이지 수를 반환한다.
      *

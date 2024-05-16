@@ -4,7 +4,7 @@ import { getSupportListResponseDTO } from './DTO/support'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getSupportList(): getSupportListResponseDTO {
+export function getSupportList(): Promise<getSupportListResponseDTO> {
     /**
      * 후원 목록을 반환한다.
      */

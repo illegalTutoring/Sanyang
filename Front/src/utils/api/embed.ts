@@ -4,7 +4,7 @@ import { getEmbedLinkResponseDTO } from './DTO/embed'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getEmbedLink(): getEmbedLinkResponseDTO {
+export function getEmbedLink(): Promise<getEmbedLinkResponseDTO> {
     /**
      * 임베드 링크 목록 정보를 반환한다.
      */
