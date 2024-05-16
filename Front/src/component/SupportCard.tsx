@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './SupportCard.module.scss'
+import { deleteSupport } from '@/utils/api/admin'
 
 interface SupportLink {
     name: string
@@ -24,6 +25,8 @@ interface SupportProps {
     cardMinWidth?: string
     cardMaxWidth?: string
     addTogle: () => void
+    tempNumForSupportEffect: number
+    setTempNumForSupportEffect: React.Dispatch<React.SetStateAction<number>>
 }
 
 const SupportCard: React.FC<SupportProps> = ({
@@ -35,8 +38,15 @@ const SupportCard: React.FC<SupportProps> = ({
     cardMinWidth = '315px',
     cardMaxWidth = '1fr',
     addTogle,
+    tempNumForSupportEffect,
+    setTempNumForSupportEffect,
 }) => {
     const currentDate = new Date().toISOString().slice(0, 7)
+
+    const deleteHandler = async (supportId: number) => {
+        await deleteSupport(supportId)
+        setTempNumForSupportEffect(tempNumForSupportEffect + 1)
+    }
 
     return (
         <div
@@ -74,8 +84,7 @@ const SupportCard: React.FC<SupportProps> = ({
                             className={styles.deleteButton}
                             src={'/svgs/delete_red.svg'}
                             alt="Delete"
-                            // onClick={(event) =>
-                            // }
+                            onClick={(event) => deleteHandler(item.supportId)}
                         />
                     )}
                     <div

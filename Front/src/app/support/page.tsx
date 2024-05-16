@@ -3,10 +3,12 @@
 import SupportCard from '@/component/SupportCard'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './support.module.scss'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Modal from '@/component/layout/Modal'
+import { getSupportList } from '@/utils/api/support'
+import { supportDetailInfo } from '@/utils/api/DTO/support'
 
 const components: { [key: string]: React.ComponentType<any> } = {
     artstation: dynamic(() => import('@/component/support/Artstation')),
@@ -64,157 +66,24 @@ const SupportPage: React.FC = () => {
     const { isEditMode } = useEditModeStore()
 
     const [addMode, setAddMode] = useState(false)
+    const [supportData, setSupportData] = useState<supportDetailInfo[]>([])
+    const [tempNumForSupportEffect, setTempNumForSupportEffect] =
+        useState<number>(0)
 
     const toggleAddMode = () => {
         setAddMode((prev) => !prev)
     }
 
-    const supportData = [
-        {
-            supportId: 1,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-05',
-            supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
-            ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 2,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-05',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 7,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-04',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 0,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-        {
-            supportId: 3,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
-            ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 4,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-02',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 5,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 6,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-    ]
+    const fetchSupport = async () => {
+        const response = await getSupportList()
+        return response.data
+    }
+
+    useEffect(() => {
+        fetchSupport().then((data) => {
+            setSupportData(data)
+        })
+    }, [tempNumForSupportEffect])
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -234,6 +103,8 @@ const SupportPage: React.FC = () => {
                     addTogle={() => {}}
                     isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
+                    tempNumForSupportEffect={tempNumForSupportEffect}
+                    setTempNumForSupportEffect={setTempNumForSupportEffect}
                 />
             </div>
 
