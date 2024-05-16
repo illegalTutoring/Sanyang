@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import styles from './BannerEditor.module.scss'
 
 // interfaces
 
@@ -22,12 +23,14 @@ interface BannerEditorProps {
     fetchImages: () => void
     updateImages: (images: modifyBannerListRequestDTO) => void
     toggleEditBanner: () => void
+    isDarkMode: boolean
 }
 
 const BannerEditor: React.FC<BannerEditorProps> = ({
     fetchImages,
     updateImages,
     toggleEditBanner,
+    isDarkMode,
 }) => {
     // 지역변수
     const [files, setFiles] = useState<File[]>([])
@@ -92,47 +95,47 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
             }
         })
 
-        const columns = `repeat(${files.length + 1}, 1fr)`
+        const columns = `repeat(${files.length}, 1fr)`
         setGridTemplateColumns(columns)
     }, [files])
 
-    useEffect(() => {
-        const onMouseMove = (event: MouseEvent) => {
-            if (dragIndex !== null) {
-                let deltaY = event.clientY - startY
+    // useEffect(() => {
+    //     const onMouseMove = (event: MouseEvent) => {
+    //         if (dragIndex !== null) {
+    //             let deltaY = event.clientY - startY
 
-                deltaY = Math.max(-50, Math.min(50, deltaY))
+    //             deltaY = Math.max(-50, Math.min(50, deltaY))
 
-                setPreviewImgs((prev) =>
-                    prev.map((preview, idx) => {
-                        if (idx === dragIndex) {
-                            return {
-                                ...preview,
-                                yindex: startTopOffset + deltaY,
-                            }
-                        }
-                        return preview
-                    }),
-                )
-            }
-        }
+    //             setPreviewImgs((prev) =>
+    //                 prev.map((preview, idx) => {
+    //                     if (idx === dragIndex) {
+    //                         return {
+    //                             ...preview,
+    //                             yindex: startTopOffset + deltaY,
+    //                         }
+    //                     }
+    //                     return preview
+    //                 }),
+    //             )
+    //         }
+    //     }
 
-        const onMouseUp = () => {
-            setDragIndex(null)
-            window.removeEventListener('mousemove', onMouseMove)
-            window.removeEventListener('mouseup', onMouseUp)
-        }
+    //     const onMouseUp = () => {
+    //         setDragIndex(null)
+    //         window.removeEventListener('mousemove', onMouseMove)
+    //         window.removeEventListener('mouseup', onMouseUp)
+    //     }
 
-        if (dragIndex !== null) {
-            window.addEventListener('mousemove', onMouseMove)
-            window.addEventListener('mouseup', onMouseUp)
-        }
+    //     if (dragIndex !== null) {
+    //         window.addEventListener('mousemove', onMouseMove)
+    //         window.addEventListener('mouseup', onMouseUp)
+    //     }
 
-        return () => {
-            window.removeEventListener('mousemove', onMouseMove)
-            window.removeEventListener('mouseup', onMouseUp)
-        }
-    }, [dragIndex, startY, startTopOffset])
+    //     return () => {
+    //         window.removeEventListener('mousemove', onMouseMove)
+    //         window.removeEventListener('mouseup', onMouseUp)
+    //     }
+    // }, [dragIndex, startY, startTopOffset])
 
     const convertPreviewImgsToRequestDTO = (
         previews: PreviewImg[],
@@ -158,17 +161,11 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
     }
 
     return (
-        <div>
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: gridTemplateColumns,
-                    gap: '0px',
-                }}
-            >
+        <div className={styles.bannerEditContainer}>
+            <div className={styles.bannerEditContent}>
                 {previewImgs.map((preview, index) => (
-                    <div key={preview.name} style={{ position: 'relative' }}>
-                        <img
+                    <>
+                        {/* <img
                             src={preview.url}
                             alt={`Preview of ${preview.name}`}
                             style={{
@@ -176,46 +173,52 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
                                 height: 'auto',
                                 position: 'relative',
                                 top: `${preview.yindex}px`,
-                                cursor: 'ns-resize',
                             }}
                             onMouseDown={(e) => startDrag(index, e)}
-                        />
-                        <button
+                        /> */}
+                        <div
+                            className={styles.bannerEditItem}
                             style={{
-                                position: 'absolute',
-                                top: '0',
-                                right: '0',
+                                backgroundColor: isDarkMode
+                                    ? 'rgba(255,255,255,0.1)'
+                                    : 'rgba(0,0,0,0.2)',
                             }}
-                            onClick={() => removeFileHandler(index)}
                         >
-                            -
-                        </button>
-                    </div>
+                            {preview.name}
+                            <img
+                                onClick={() => removeFileHandler(index)}
+                                style={{ width: '30px' }}
+                                src={'/svgs/delete_red.svg'}
+                                alt="Delete"
+                            />
+                        </div>
+                    </>
                 ))}
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <button
-                        onClick={() =>
-                            document.getElementById('fileInput')?.click()
-                        }
-                    >
-                        +
-                    </button>
-                </div>
             </div>
-            <input
-                id="fileInput"
-                type="file"
-                onChange={filesChangedHandler}
-                accept="image/*"
-                style={{ display: 'none' }}
-            />
-            <button onClick={handleSubmit}>Submit</button>
+            <div className={styles.bannerEditButton}>
+                <button
+                    className={styles.blueButton}
+                    onClick={() =>
+                        document.getElementById('fileInput')?.click()
+                    }
+                >
+                    <img
+                        style={{ width: '16px' }}
+                        src="/svgs/image_plus_white.svg"
+                    />
+                    추가
+                </button>
+                <input
+                    id="fileInput"
+                    type="file"
+                    onChange={filesChangedHandler}
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                />
+                <button className={styles.redButton} onClick={handleSubmit}>
+                    저장
+                </button>
+            </div>
         </div>
     )
 }
