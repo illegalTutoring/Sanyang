@@ -35,6 +35,7 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
     // 지역변수
     const [files, setFiles] = useState<File[]>([])
     const [previewImgs, setPreviewImgs] = useState<PreviewImg[]>([])
+    const [defaultItem, setDefaultItem] = useState<boolean>(true)
     const [dragIndex, setDragIndex] = useState<number | null>(null)
     const [startY, setStartY] = useState<number>(0)
     const [startTopOffset, setStartTopOffset] = useState<number>(0)
@@ -51,6 +52,7 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
             const newFile = event.target.files[0]
             if (newFile) {
                 setFiles((prevFiles) => [...prevFiles, newFile])
+                setDefaultItem(false) // 새로운 파일이 추가되면 기본 항목을 숨김
             }
         }
     }
@@ -58,6 +60,9 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
     const removeFileHandler = (index: number) => {
         setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
         setPreviewImgs((prevImgs) => prevImgs.filter((_, i) => i !== index))
+        if (files.length === 1) {
+            setDefaultItem(true) // 마지막 파일이 삭제되면 기본 항목을 표시
+        }
     }
 
     const startDrag = (
@@ -163,20 +168,21 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
     return (
         <div className={styles.bannerEditContainer}>
             <div className={styles.bannerEditContent}>
-                {previewImgs.map((preview, index) => (
-                    <>
-                        {/* <img
-                            src={preview.url}
-                            alt={`Preview of ${preview.name}`}
-                            style={{
-                                width: '100%',
-                                height: 'auto',
-                                position: 'relative',
-                                top: `${preview.yindex}px`,
-                            }}
-                            onMouseDown={(e) => startDrag(index, e)}
-                        /> */}
+                {defaultItem ? (
+                    <div
+                        className={styles.bannerEditItem}
+                        style={{
+                            backgroundColor: isDarkMode
+                                ? 'rgba(255,255,255,0.1)'
+                                : 'rgba(0,0,0,0.2)',
+                        }}
+                    >
+                        버튼을 눌러 이미지를 추가해주세요
+                    </div>
+                ) : (
+                    previewImgs.map((preview, index) => (
                         <div
+                            key={preview.name}
                             className={styles.bannerEditItem}
                             style={{
                                 backgroundColor: isDarkMode
@@ -192,8 +198,8 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
                                 alt="Delete"
                             />
                         </div>
-                    </>
-                ))}
+                    ))
+                )}
             </div>
             <div className={styles.bannerEditButton}>
                 <button

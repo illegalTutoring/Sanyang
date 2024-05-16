@@ -4,11 +4,10 @@
     .bannerEditContent {
         display: flex;
         flex-direction: column;
-        max-width: 300px;
-        min-height: 30px;
         border-radius: 10px;
 
         .bannerEditItem {
+            min-height: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
