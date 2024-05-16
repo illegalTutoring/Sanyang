@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/*
+    User 정보 검색을 위한 CustomUserDetailsService
+ */
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,9 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 
-        Optional<User> optionalUser = userRepository.findById(username);
+        Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
             return new CustomUserDetails(optionalUser.get());
