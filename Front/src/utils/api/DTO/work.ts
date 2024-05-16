@@ -18,7 +18,6 @@ export interface getWorkListResponseDTO extends serverResponseDTO {
 }
 
 export interface registWorkRequestDTO {
-    userId: string
     company: string
     title: string
     startDate: string

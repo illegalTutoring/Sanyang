@@ -4,16 +4,18 @@ import { logout, reIssue } from './user'
 
 type RequestFunction = (...params: any[]) => any
 
-export function axiosRequestHandler(
+export async function axiosRequestHandler(
     request: RequestFunction,
     params: any[],
-): any {
+): Promise<any> {
     try {
-        return request(...params)
+        return await request(...params)
     } catch (error: any) {
-        const statusCode = error.response.statusCode
-        const statusText = error.response.statusText
-        const message = error.response.data.message
+        const statusCode = error.response?.statusCode
+        const statusText = error.response?.statusText
+        const message = error.response?.data?.messagee
+
+        console.error('Custom Error: ', message)
 
         if (axios.isAxiosError(error)) {
             console.error('네트워크 혹은 서버 연결에 문제가 발생했습니다.')
@@ -25,8 +27,8 @@ export function axiosRequestHandler(
                  * @beta
                  * @todo 로그아웃 화면 전환
                  */
-                userStore.getState().destroyAll()
-                return logout()
+                console.log(111111)
+                return await logout()
             } else {
                 /**
                  * @beta
@@ -35,10 +37,11 @@ export function axiosRequestHandler(
                  * reIssue
                  * 기존 API 재요청
                  */
+                console.log(222222)
                 let tempAccessToken = userStore.getState().accessToken
                 userStore.getState().destroyAccessToken()
                 reIssue(tempAccessToken)
-                return request(...params)
+                return await request(...params)
             }
         } else if (
             statusCode === 401 &&
@@ -48,8 +51,8 @@ export function axiosRequestHandler(
              * @beta
              * @todo 로그아웃
              */
-            userStore.getState().destroyAll()
-            return logout()
+            console.log(333333)
+            return await logout()
         } else if (
             statusCode === 401 &&
             message === 'S3 접근 권한이 없습니다.'
@@ -58,6 +61,9 @@ export function axiosRequestHandler(
              * @beta
              * @todo S3 접근 권한에 대한 화면 전환
              */
+        } else {
+            console.log(444444)
+            return await logout()
         }
 
         /**

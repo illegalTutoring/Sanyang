@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import styles from './Gallery.module.scss'
@@ -12,6 +14,11 @@ export interface GalleryProps {
     isEditMode: boolean
     isDarkMode: boolean
     addTogle: () => void
+    tags: string[]
+    setTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
+    deleteGallery: (id: number) => void
 }
 
 const Gallery: React.FC<GalleryProps> = ({
@@ -20,6 +27,11 @@ const Gallery: React.FC<GalleryProps> = ({
     isEditMode,
     isDarkMode,
     addTogle,
+    tags,
+    setTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
+    deleteGallery,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
     const [newColCount, setNewColCount] = useState(colCount)
@@ -57,7 +69,8 @@ const Gallery: React.FC<GalleryProps> = ({
 
     const deleteImage = (id: number, event: React.MouseEvent) => {
         event.stopPropagation()
-        console.log('delete image', id)
+
+        deleteGallery(id)
     }
 
     const handleScroll = (index: number, direction: string) => {
@@ -179,6 +192,10 @@ const Gallery: React.FC<GalleryProps> = ({
                             galleryId={image.galleryId}
                             handleScroll={handleScroll}
                             isDarkMode={isDarkMode}
+                            selectedTags={tags}
+                            setSelectedTags={setTags}
+                            tempNumForTagsEffect={tempNumForTagsEffect}
+                            setTempNumForTagsEffect={setTempNumForTagsEffect}
                         />
                     </div>
                 ))}

@@ -5,7 +5,7 @@ interface supportLink {
     link: string
 }
 
-interface supportDetailInfo {
+export interface supportDetailInfo {
     supportId: number
     thumbnail: string
     title: string

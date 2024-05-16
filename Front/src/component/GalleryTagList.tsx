@@ -1,11 +1,16 @@
 import React from 'react'
 import styles from './GalleryTagList.module.scss'
+import { useRouter } from 'next/navigation'
 
 interface TagListProps {
     tags: string[]
     galleryId: number
     handleScroll: (index: number, direction: string) => void
     isDarkMode: boolean
+    selectedTags: string[]
+    setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
 }
 
 const GalleryTagList: React.FC<TagListProps> = ({
@@ -13,7 +18,12 @@ const GalleryTagList: React.FC<TagListProps> = ({
     galleryId,
     handleScroll,
     isDarkMode,
+    selectedTags,
+    setSelectedTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
 }) => {
+    // const router = useRouter()
     return (
         <div className={styles.tagList}>
             <div
@@ -23,7 +33,7 @@ const GalleryTagList: React.FC<TagListProps> = ({
             >
                 <img
                     width="10px"
-                    src={`${isDarkMode ? 'svgs/arrow_left_white.svg' : 'svgs/arrow_left_black.svg'}`}
+                    src={`${isDarkMode ? '/svgs/arrow_left_white.svg' : '/svgs/arrow_left_black.svg'}`}
                     alt="Scroll Left"
                 />
             </div>
@@ -33,6 +43,13 @@ const GalleryTagList: React.FC<TagListProps> = ({
                         <div
                             key={idx}
                             className={`${styles.tag} ${isDarkMode ? styles.tagDark : styles.tagWhite}`}
+                            onClick={() => {
+                                selectedTags.push(tag)
+                                setSelectedTags(selectedTags)
+                                setTempNumForTagsEffect(
+                                    tempNumForTagsEffect + 1,
+                                )
+                            }}
                         >
                             #{tag}
                         </div>
@@ -46,7 +63,7 @@ const GalleryTagList: React.FC<TagListProps> = ({
             >
                 <img
                     width="10px"
-                    src={`${isDarkMode ? 'svgs/arrow_right_white.svg' : 'svgs/arrow_right_black.svg'}`}
+                    src={`${isDarkMode ? '/svgs/arrow_right_white.svg' : '/svgs/arrow_right_black.svg'}`}
                     alt="Scroll Right"
                 />
             </div>
