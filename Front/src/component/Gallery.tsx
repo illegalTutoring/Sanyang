@@ -18,6 +18,7 @@ export interface GalleryProps {
     setTags: React.Dispatch<React.SetStateAction<string[]>>
     tempNumForTagsEffect: number
     setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
+    deleteGallery: (id: number) => void
 }
 
 const Gallery: React.FC<GalleryProps> = ({
@@ -30,6 +31,7 @@ const Gallery: React.FC<GalleryProps> = ({
     setTags,
     tempNumForTagsEffect,
     setTempNumForTagsEffect,
+    deleteGallery,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
     const [newColCount, setNewColCount] = useState(colCount)
@@ -67,7 +69,8 @@ const Gallery: React.FC<GalleryProps> = ({
 
     const deleteImage = (id: number, event: React.MouseEvent) => {
         event.stopPropagation()
-        console.log('delete image', id)
+
+        deleteGallery(id)
     }
 
     const handleScroll = (index: number, direction: string) => {

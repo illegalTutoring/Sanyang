@@ -16,7 +16,7 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 
 // API
 import { getGalleryList } from '@/utils/api/gallery'
-import { registGallery, modifyGallery, deleteGallery } from '@/utils/api/admin'
+import { registGallery, deleteGallery } from '@/utils/api/admin'
 
 // DTO
 import { galleryInfo } from '@/utils/api/DTO/gallery'
@@ -90,8 +90,8 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
     const fetchGallery = async () => {
         const response = await getGalleryList()
         setImages(response.data)
-        setImages2(images.slice(0, 4))
-        setTagList(makeTagListByImages(images))
+        setImages2(response.data.slice(0, 4))
+        setTagList(makeTagListByImages(response.data))
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,6 +133,17 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
             }
         } catch (error) {
             console.error('갤러리 등록 중 에러 발생:', error)
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteGallery(id)
+            setImages((images) =>
+                images.filter((image) => image.galleryId !== id),
+            )
+        } catch (error) {
+            console.error('갤러리 삭제 중 에러 발생:', error)
         }
     }
 
@@ -183,6 +194,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     setTags={setSelectedTags}
                     tempNumForTagsEffect={tempNumForTagsEffect}
                     setTempNumForTagsEffect={setTempNumForTagsEffect}
+                    deleteGallery={handleDelete}
                 />
             </div>
 
