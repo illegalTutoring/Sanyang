@@ -9,6 +9,7 @@ import {
 } from './DTO/user'
 import userStore from '../store/useUserStore'
 import { serverResponseDTO } from './DTO/common'
+import useAuthStore from '../store/useAuthStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -56,11 +57,11 @@ export function logout(): Promise<serverResponseDTO> {
 
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
-            method: 'GET',
+            method: 'POST',
             url: `${SERVER_URL}/user/logout`,
         })
 
-        userStore.getState().destroyAll()
+        useAuthStore.getState().logOut()
 
         return {
             statusCode: response.status,
@@ -93,14 +94,11 @@ export function signin(data: signinRequestDTO): Promise<signinResponseDTO> {
     )
 }
 
-export function reIssue(accessToken: string): Promise<reIssueResponseDTO> {
+export function reIssue(): Promise<reIssueResponseDTO> {
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
             method: 'POST',
             url: `${SERVER_URL}/user/reissue`,
-            headers: {
-                accessToken,
-            },
         })
 
         userStore.getState().setAccessToken(response.headers.authorization)

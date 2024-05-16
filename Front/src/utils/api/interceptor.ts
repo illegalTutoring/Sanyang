@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import useAuthStore from '../store/useAuthStore'
 import userStore from '../store/useUserStore'
 import { logout, reIssue } from './user'
 
@@ -11,58 +11,33 @@ export async function axiosRequestHandler(
     try {
         return await request(...params)
     } catch (error: any) {
-        const statusCode = error.response?.statusCode
+        const statusCode = error.response?.status
         const statusText = error.response?.statusText
-        const message = error.response?.data?.messagee
+        const message = error.response?.data?.message
 
-        console.error('Custom Error: ', message)
-
-        if (axios.isAxiosError(error)) {
-            console.error('네트워크 혹은 서버 연결에 문제가 발생했습니다.')
-        }
-
-        if (statusCode === 401 && message === '만료된 access 토큰입니다') {
-            if (userStore.getState().accessToken === '') {
-                /**
-                 * @beta
-                 * @todo 로그아웃 화면 전환
-                 */
-                console.log(111111)
-                return await logout()
-            } else {
-                /**
-                 * @beta
-                 * @todo
-                 * Access Token 파기
-                 * reIssue
-                 * 기존 API 재요청
-                 */
-                console.log(222222)
-                let tempAccessToken = userStore.getState().accessToken
-                userStore.getState().destroyAccessToken()
-                reIssue(tempAccessToken)
-                return await request(...params)
+        console.error('Custom Error: ', statusCode, statusText, message)
+        if (
+            statusCode === 401 &&
+            message === '만료된 access 토큰입니다' &&
+            userStore.getState().accessToken !== ''
+        ) {
+            userStore.getState().destroyAccessToken()
+            reIssue()
+            return await request(...params)
+        } else if (
+            statusCode === 401 &&
+            (message === '잘못된 refresh 토큰 입니다' ||
+                message === '잘못된 access 토큰 입니다')
+        ) {
+            userStore.getState().destroyAll()
+            useAuthStore.getState().logOut()
+            return {
+                statusCode: statusCode,
+                statusText: statusText,
+                message: message,
             }
-        } else if (
-            statusCode === 401 &&
-            message === '만료된 refresh 토큰입니다'
-        ) {
-            /**
-             * @beta
-             * @todo 로그아웃
-             */
-            console.log(333333)
-            return await logout()
-        } else if (
-            statusCode === 401 &&
-            message === 'S3 접근 권한이 없습니다.'
-        ) {
-            /**
-             * @beta
-             * @todo S3 접근 권한에 대한 화면 전환
-             */
         } else {
-            console.log(444444)
+            userStore.getState().destroyAll()
             return await logout()
         }
 
