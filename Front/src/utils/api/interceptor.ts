@@ -12,7 +12,7 @@ export async function axiosRequestHandler(
     } catch (error: any) {
         const statusCode = error.response?.status
         const statusText = error.response?.statusText
-        const message = error.response?.data?.messagee
+        const message = error.response?.data?.message
 
         console.error('Custom Error: ', statusCode, statusText, message)
         if (
