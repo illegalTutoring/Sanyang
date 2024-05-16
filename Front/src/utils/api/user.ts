@@ -91,14 +91,11 @@ export function signin(data: signinRequestDTO): Promise<signinResponseDTO> {
     )
 }
 
-export function reIssue(accessToken: string): Promise<reIssueResponseDTO> {
+export function reIssue(): Promise<reIssueResponseDTO> {
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
             method: 'POST',
             url: `${SERVER_URL}/user/reissue`,
-            headers: {
-                accessToken,
-            },
         })
 
         userStore.getState().setAccessToken(response.headers.authorization)

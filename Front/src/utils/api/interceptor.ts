@@ -20,9 +20,8 @@ export async function axiosRequestHandler(
             message === '만료된 access 토큰입니다' &&
             userStore.getState().accessToken !== ''
         ) {
-            let tempAccessToken = userStore.getState().accessToken
             userStore.getState().destroyAccessToken()
-            reIssue(tempAccessToken)
+            reIssue()
             return await request(...params)
         } else if (
             statusCode === 401 &&
