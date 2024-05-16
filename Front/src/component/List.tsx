@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './List.module.scss'
-import useDarkModeStore from '@/utils/store/useThemaStore'
-import Modal from './layout/Modal'
-import { title } from 'process'
-import { modifyCalendar } from '@/utils/api/admin'
+import Modal from '@/component/layout/Modal'
+import {
+    getNoticeDetailResponseDTO,
+    modifyNoticeRequestDTO,
+    noticeDetailInfo,
+    registNoticeRequestDTO,
+} from '@/utils/api/DTO/notice'
 
 interface DataItem {
     [key: string]: any
@@ -17,7 +20,14 @@ interface ListProps {
     columns: string[]
     columnWidth: string[]
     data: DataItem[]
+    isDarkMode: boolean
     isEditMode: boolean
+    currentPage: number
+    fetchData: (page: number) => void
+    getDetail: (noticeId: number) => getNoticeDetailResponseDTO
+    addNotice: (data: registNoticeRequestDTO) => void
+    updateNotice: (data: modifyNoticeRequestDTO) => void
+    deleteNotice: (noticeId: number) => void
 }
 
 const List: React.FC<ListProps> = ({
@@ -27,72 +37,135 @@ const List: React.FC<ListProps> = ({
     columnNames,
     columns,
     columnWidth,
+    currentPage,
     data,
+    isDarkMode,
     isEditMode,
+    fetchData,
+    getDetail,
+    addNotice,
+    updateNotice,
+    deleteNotice,
 }) => {
-    const { isDarkMode } = useDarkModeStore()
-    const [isAddMode, setIsAddMode] = useState(false)
-    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false)
-    const [selectedItem, setSelectedItem] = useState<DataItem | null>(null)
-    const [editableItem, setEditableItem] = useState<DataItem | null>(null)
+    // 지역 변수
+    const [isAddModalVisible, setAddModalVisible] = useState(false)
+    const [isEditModalVisible, setEditModalVisible] = useState(false)
+    const [isDetailModalVisible, setDetailModalVisible] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<DataItem>({
+        id: 0,
+        username: '',
+        title: '',
+        content: '',
+        registDate: '',
+        views: 0,
+    })
 
-    const toggleEditMode = () => {
-        setIsAddMode(!isAddMode)
-    }
+    const [editableItem, setEditableItem] = useState<DataItem>({
+        id: 0,
+        username: '',
+        title: '',
+        content: '',
+        registDate: '',
+        views: 0,
+    })
 
-    const toggleDetailModal = () => {
-        setIsDetailModalVisible(!isDetailModalVisible)
-    }
+    // 토글 함수
+    const toggleAddMode = () => setAddModalVisible(!isAddModalVisible)
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const toggleDetailModal = () => setDetailModalVisible(!isDetailModalVisible)
+
+    const toggleEditModal = () => setEditModalVisible(!isEditModalVisible)
+
+    //훅
+    useEffect(() => {
+        fetchData(currentPage)
+    }, [isAddModalVisible, isEditModalVisible])
+
+    // 이벤트 핸들러
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const title = event.currentTarget.title1.value
-        const content = event.currentTarget.content.value
 
-        console.log('Submitting:', title, content)
+        const data: registNoticeRequestDTO = {
+            title: event.currentTarget.title1.value,
+            content: event.currentTarget.content.value,
+        }
+
+        await addNotice(data)
+
+        toggleAddMode()
     }
 
-    const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const title = event.currentTarget.title1.value
-        const content = event.currentTarget.content.value
 
-        console.log('Updating:', title, content)
+        console.log(event.currentTarget.noticeId.value)
+
+        const data: modifyNoticeRequestDTO = {
+            noticeId: parseInt(event.currentTarget.noticeId.value, 10),
+            title: event.currentTarget.title1.value,
+            content: event.currentTarget.content.value,
+        }
+
+        console.log(data)
+
+        await updateNotice(data)
+
+        toggleEditModal()
     }
 
-    const handleRowClick = (item: DataItem) => {
-        //Axios 요청으로 notice 상세정보 가져오기
-        setSelectedItem({
-            id: 18,
-            username: 'admin',
-            title: '공지',
-            content: '공지입니다.',
-            registDate: '2024-05-02',
-            views: 3,
-        })
+    const handleRowClick = async (item: DataItem) => {
+        const noticeId = item.id
 
-        setIsDetailModalVisible(true)
+        const result = await getDetail(noticeId)
+
+        const data: noticeDetailInfo = {
+            id: result.data.id || 0,
+            username: result.data.username || '',
+            title: result.data.title || '',
+            content: result.data.content || '',
+            registDate: result.data.registDate || '',
+            views: result.data.views || 0,
+        }
+
+        await setSelectedItem(data)
+
+        setDetailModalVisible(true)
     }
 
-    const handleDelete = (index: number) => {
-        console.log(`Deleting item at index ${index}`)
-    }
-
-    const handleEditClick = (event: React.MouseEvent) => {
+    const handleEditClick = async (event: React.MouseEvent, item: DataItem) => {
         event.stopPropagation()
 
-        //Axios 요청으로 notice 상세정보 가져오기
-        setEditableItem({
-            id: 18,
-            username: 'admin',
-            title: '공지',
-            content: '공지입니다.',
-            registDate: '2024-05-02',
-            views: 3,
-        })
+        const noticeId = item.id
 
-        setIsEditModalVisible(true)
+        const result = await getDetail(noticeId)
+
+        const data: noticeDetailInfo = {
+            id: result.data.id || 0,
+            username: result.data.username || '',
+            title: result.data.title || '',
+            content: result.data.content || '',
+            registDate: result.data.registDate || '',
+            views: result.data.views || 0,
+        }
+
+        await setEditableItem(data)
+
+        setEditModalVisible(true)
+    }
+
+    const handleDelete = async (noticeId: number) => {
+        await deleteNotice(noticeId)
+
+        setEditModalVisible(false)
+    }
+
+    const handleInputChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        const { name, value } = event.target
+        setEditableItem((prevItem) =>
+            prevItem ? { ...prevItem, [name]: value } : null,
+        )
     }
 
     return (
@@ -100,8 +173,8 @@ const List: React.FC<ListProps> = ({
             <Modal
                 width="60%"
                 height="fit-content"
-                isVisible={isAddMode}
-                toggleModal={toggleEditMode}
+                isVisible={isAddModalVisible}
+                toggleModal={toggleAddMode}
             >
                 <div className={styles.postContainer}>
                     <form onSubmit={handleSubmit}>
@@ -163,7 +236,7 @@ const List: React.FC<ListProps> = ({
                 width="50%"
                 height="fit-content"
                 isVisible={isEditModalVisible}
-                toggleModal={() => setIsEditModalVisible(false)}
+                toggleModal={toggleEditModal}
             >
                 <form
                     className={styles.modifyContainer}
@@ -171,63 +244,60 @@ const List: React.FC<ListProps> = ({
                 >
                     <h3 style={{ fontSize: '25px' }}>글 수정</h3>
                     <hr></hr>
-                    <div className={styles.modifyTitle}>
-                        {editableItem && (
-                            <>
-                                <input
-                                    id="title1"
-                                    name="title1"
-                                    type="text"
-                                    value={editableItem.title}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px',
-                                        margin: '10px 0',
-                                    }}
-                                />
-                            </>
-                        )}
-                    </div>
-                    <div className={styles.modifyContent}>
-                        {editableItem && (
-                            <div>
-                                <textarea
-                                    id="content"
-                                    name="content"
-                                    value={editableItem.content}
-                                    rows={4}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px',
-                                        resize: 'none',
-                                    }}
-                                />
-                            </div>
-                        )}
-                    </div>
-                    <div className={styles.modifyButton}>
-                        <button className={styles.blueButton} type="submit">
-                            수정
-                        </button>
-                        {editableItem && (
+                    <>
+                        <input
+                            type="hidden"
+                            name="noticeId"
+                            value={editableItem.id}
+                        />
+                        <div className={styles.modifyTitle}>
+                            <input
+                                id="title1"
+                                name="title"
+                                type="text"
+                                value={editableItem.title}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    margin: '10px 0',
+                                }}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className={styles.modifyContent}>
+                            <textarea
+                                id="content"
+                                name="content"
+                                value={editableItem.content}
+                                rows={4}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    resize: 'none',
+                                }}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className={styles.modifyButton}>
+                            <button className={styles.blueButton} type="submit">
+                                수정
+                            </button>
                             <button
                                 className={styles.redButton}
-                                onClick={(event) => {
-                                    event.stopPropagation()
-                                    handleDelete(editableItem.id)
-                                }}
+                                type="button"
+                                onClick={() => handleDelete(editableItem.id)}
                             >
                                 삭제
                             </button>
-                        )}
-                    </div>
+                        </div>
+                    </>
                 </form>
             </Modal>
 
             <div style={{ width, height }}>
                 <div className={styles.tags}>
                     {isEditMode ? (
-                        <button onClick={toggleEditMode}>게시글 작성</button>
+                        <button onClick={toggleAddMode}>게시글 작성</button>
                     ) : (
                         <div></div>
                     )}
@@ -268,8 +338,7 @@ const List: React.FC<ListProps> = ({
                                         <div
                                             onClick={(event) => {
                                                 event.stopPropagation()
-                                                //여기서 ID 넘겨줘야됨
-                                                handleEditClick(event)
+                                                handleEditClick(event, item)
                                             }}
                                             style={{ cursor: 'pointer' }}
                                         >
