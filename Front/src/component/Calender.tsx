@@ -200,6 +200,9 @@ const Calendar: React.FC<CalendarProps> = ({
     //훅
     const scheduleMap = useMemo(() => {
         const map = new Map()
+
+        //console.log(schedules)
+
         schedules.forEach((schedule) => {
             let currentLevel = 0
 
