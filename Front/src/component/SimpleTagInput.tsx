@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, KeyboardEvent, useRef, useEffect } from 'react'
-import styles from './TagInput.module.scss'
+import styles from './SimpleTagInput.module.scss'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface SimpleTagInputProps {
@@ -68,12 +68,16 @@ const SimpleTagInput: React.FC<SimpleTagInputProps> = ({ tags, setTags }) => {
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
-                        placeholder="검색할 태그..."
+                        placeholder="추가할 태그..."
                     />
                     <div className={styles.resetButton} onClick={deleteAllTag}>
                         <img
                             style={{ height: '40px' }}
-                            src="/svgs/restart.svg"
+                            src={
+                                isDarkMode
+                                    ? '/svgs/restart_white.svg'
+                                    : '/svgs/restart.svg'
+                            }
                             alt="reset"
                         />
                     </div>

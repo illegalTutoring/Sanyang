@@ -201,24 +201,51 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
             <Modal
                 isVisible={addMode}
                 toggleModal={toggleAddMode}
-                width="60vw"
-                height="60vh"
+                width="fit-content"
+                height="fit-content"
             >
-                <div>
-                    <input
-                        type="file"
-                        onChange={handleFileChange}
-                        accept="image/*"
-                    />
-                    {previewUrl && (
+                <div className={styles.galleryModalContainer}>
+                    <div
+                        className={styles.galleryModalFileInput}
+                        style={{
+                            background: isDarkMode
+                                ? 'rgba(255, 255, 255, 0.1)'
+                                : 'rgba(0, 0, 0, 0.1)',
+                        }}
+                    >
+                        <img
+                            src={`${isDarkMode ? '/svgs/image_plus_white.svg' : '/svgs/image_plus_black.svg'}`}
+                        />
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            accept="image/*"
+                        />
+                    </div>
+
+                    {previewUrl ? (
                         <img
                             src={previewUrl}
                             alt="Image Preview"
-                            style={{ width: '100%', height: 'auto' }}
+                            style={{ width: '300px', height: 'auto' }}
                         />
+                    ) : (
+                        <>
+                            <div className={styles.defaultImg}>
+                                <img src="svgs/add_card.svg"></img>
+                            </div>
+                        </>
                     )}
                     <SimpleTagInput tags={newTags} setTags={setNewTags} />
-                    <button onClick={handleSubmit}>Submit</button>
+
+                    <div className={styles.galleryModalButton}>
+                        <button
+                            className={styles.blueButton}
+                            onClick={handleSubmit}
+                        >
+                            업로드
+                        </button>
+                    </div>
                 </div>
             </Modal>
 
