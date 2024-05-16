@@ -3,6 +3,7 @@ import { serverResponseDTO } from './common'
 export interface noticeInfo {
     id: number
     title: string
+    registDate: string
 }
 
 export interface noticeDetailInfo {

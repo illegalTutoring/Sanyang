@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
     format,
     startOfMonth,
@@ -69,9 +69,13 @@ const Calendar: React.FC<CalendarProps> = ({
     // 이벤트 핸들러
     const handleDateClick = (event: React.MouseEvent, day: Date) => {
         event.stopPropagation()
+        setInsertData({
+            calendarId: -1,
+            title: '',
+            startDate: format(day, 'yyyy-MM-dd'),
+            endDate: format(day, 'yyyy-MM-dd'),
+        })
         setAddMode(true)
-
-        //console.log(day)
     }
 
     const handleScheduleClick = (
@@ -90,7 +94,7 @@ const Calendar: React.FC<CalendarProps> = ({
         //console.log(schedule)
     }
 
-    const handleAddSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleAddSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         const calendarId = formData.get('calendarId')
@@ -98,19 +102,19 @@ const Calendar: React.FC<CalendarProps> = ({
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        addSchedule({
+        await addSchedule({
             title: title as string,
             startDate: startDate as string,
             endDate: endDate as string,
         })
 
         console.log('스케쥴 추가: ', { title, startDate, endDate })
-
-        fetchSchedules(selectedYear, selectedMonth)
         setAddMode(false)
     }
 
-    const handleUpdateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleUpdateSubmit = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         const calendarId = formData.get('calendarId')
@@ -118,7 +122,7 @@ const Calendar: React.FC<CalendarProps> = ({
         const startDate = formData.get('startDate')
         const endDate = formData.get('endDate')
 
-        updateSchedules({
+        await updateSchedules({
             calendarId: parseInt(calendarId as string, 10),
             title: title as string,
             startDate: startDate as string,
@@ -131,17 +135,13 @@ const Calendar: React.FC<CalendarProps> = ({
             startDate,
             endDate,
         })
-
-        fetchSchedules(selectedYear, selectedMonth)
         setUpdateMode(false)
     }
 
-    const handleDelete = (calendarId: number) => {
-        deleteSchedule(calendarId)
+    const handleDelete = async (calendarId: number) => {
+        await deleteSchedule(calendarId)
 
         console.log('스케쥴 삭제:', { calendarId })
-
-        fetchSchedules(selectedYear, selectedMonth)
         setUpdateMode(false)
     }
 
@@ -175,8 +175,34 @@ const Calendar: React.FC<CalendarProps> = ({
         ),
     })
 
+    const dayStyle = (day: Date) => {
+        const isThisMonth = day.getMonth() === selectedMonth
+        return {
+            color: isThisMonth
+                ? isDarkMode
+                    ? 'white'
+                    : 'black'
+                : isDarkMode
+                  ? '#444'
+                  : '#ccc',
+        }
+    }
+
+    // handleInputChange 함수 정의
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target
+        setInsertData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
+    //훅
     const scheduleMap = useMemo(() => {
         const map = new Map()
+
+        //console.log(schedules)
+
         schedules.forEach((schedule) => {
             let currentLevel = 0
 
@@ -243,18 +269,13 @@ const Calendar: React.FC<CalendarProps> = ({
         return map
     }, [schedules])
 
-    const dayStyle = (day: Date) => {
-        const isThisMonth = day.getMonth() === selectedMonth
-        return {
-            color: isThisMonth
-                ? isDarkMode
-                    ? 'white'
-                    : 'black'
-                : isDarkMode
-                  ? '#444'
-                  : '#ccc',
-        }
-    }
+    useEffect(() => {
+        fetchSchedules(selectedYear, selectedMonth + 1)
+    }, [selectedYear, selectedMonth, isAddMode, isUpdateMode])
+
+    useEffect(() => {
+        fetchSchedules(new Date().getFullYear(), new Date().getMonth())
+    }, [])
 
     const yearOptions = Array.from({ length: 10 }).map((_, idx) => ({
         value: year - 5 + idx,
@@ -271,6 +292,7 @@ const Calendar: React.FC<CalendarProps> = ({
             <div className={styles.selectBox}>
                 <div className={styles.selectDateBox}>
                     <Select
+                        id="year-select"
                         value={yearOptions.find(
                             (option) => option.value === selectedYear,
                         )}
@@ -282,14 +304,9 @@ const Calendar: React.FC<CalendarProps> = ({
                         }}
                         className={styles.customSelect}
                         isSearchable={false}
-                        styles={{
-                            menu: (provided) => ({
-                                ...provided,
-                                marginTop: -10,
-                            }),
-                        }}
                     />
                     <Select
+                        id="month-select"
                         value={monthOptions.find(
                             (option) => option.value === selectedMonth + 1,
                         )}
@@ -301,12 +318,6 @@ const Calendar: React.FC<CalendarProps> = ({
                         }}
                         className={styles.customSelect}
                         isSearchable={false}
-                        styles={{
-                            menu: (provided) => ({
-                                ...provided,
-                                marginTop: -10,
-                            }),
-                        }}
                     />
                 </div>
                 <div className={styles.selectButtonBox}>
@@ -382,79 +393,75 @@ const Calendar: React.FC<CalendarProps> = ({
                     ))}
                 </div>
             </div>
+
             <Modal
-                height="50%"
-                width="40%"
-                isVisible={isAddMode}
-                toggleModal={toggleAddMode}
+                height="fit-content"
+                width="fit-content"
+                isVisible={isAddMode || isUpdateMode}
+                toggleModal={isAddMode ? toggleAddMode : toggleUpdateMode}
             >
-                <form onSubmit={handleAddSubmit}>
+                <form
+                    className={styles.calendarFormContainer}
+                    onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
+                >
                     <input
                         type="hidden"
                         name="calendarId"
                         value={insertData.calendarId}
                     />
-                    <label htmlFor="title">Title</label>
-                    <input type="text" id="title" name="title" required />
-                    <br></br>
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="endDate">End Date</label>
-                    <input type="date" id="endDate" name="endDate" required />
-                    <br></br>
-                    <button type="submit">Save</button>
+                    <div className={styles.calendarFormTitle}>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={insertData.title}
+                            style={{ color: isDarkMode ? 'white' : 'black' }}
+                            onChange={handleInputChange}
+                            placeholder="제목"
+                            required
+                        />
+                    </div>
+                    <div className={styles.calendarFormDate}>
+                        <img
+                            src={`${isDarkMode ? '/svgs/clock_white.svg' : '/svgs/clock_black.svg'}`}
+                        />
+                        <div className={styles.date}>
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                value={insertData.startDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                            <label htmlFor="endDate">~</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                value={insertData.endDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.calendarFormButton}>
+                        <button className={styles.blueButton} type="submit">
+                            {isAddMode ? '저장' : '수정'}
+                        </button>
+                        {isUpdateMode && (
+                            <button
+                                className={styles.redButton}
+                                type="button"
+                                onClick={() =>
+                                    handleDelete(insertData.calendarId)
+                                }
+                            >
+                                삭제
+                            </button>
+                        )}
+                    </div>
                 </form>
-            </Modal>
-            <Modal
-                height="50%"
-                width="40%"
-                isVisible={isUpdateMode}
-                toggleModal={toggleUpdateMode}
-            >
-                <form onSubmit={handleUpdateSubmit}>
-                    <input
-                        type="hidden"
-                        name="calendarId"
-                        value={insertData.calendarId}
-                    />
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={insertData.title}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        value={insertData.startDate}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="endDate">End Date</label>
-                    <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={insertData.endDate}
-                        required
-                    />
-                    <br></br>
-                    <button type="submit">update</button>
-                </form>
-                <button onClick={() => handleDelete(insertData.calendarId)}>
-                    delete
-                </button>
             </Modal>
         </>
     )

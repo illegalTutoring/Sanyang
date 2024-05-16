@@ -1,16 +1,16 @@
 import { serverResponseDTO } from './common'
 
-interface workInfo {
-    workId: number
-    userId: string
-    title: string
-    company: string
-    startDate: string
-    endDate: string
-    uploadDate: string
-    tags: Array<string>
-    original: string
-    thumbnail: string
+export interface workInfo {
+    workId?: number
+    userId?: string
+    title?: string
+    company?: string
+    startDate?: string
+    endDate?: string
+    uploadDate?: string
+    tags?: Array<string>
+    original?: string
+    thumbnail?: string
 }
 
 export interface getWorkListResponseDTO extends serverResponseDTO {
@@ -18,7 +18,6 @@ export interface getWorkListResponseDTO extends serverResponseDTO {
 }
 
 export interface registWorkRequestDTO {
-    userId: string
     company: string
     title: string
     startDate: string

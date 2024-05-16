@@ -1,7 +1,10 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import styles from './Gallery.module.scss'
 import { galleryInfo } from '@/utils/api/DTO/gallery'
+import GalleryTagList from './GalleryTagList'
 
 export interface GalleryProps {
     images: galleryInfo[]
@@ -9,16 +12,40 @@ export interface GalleryProps {
     width?: string
     height?: string
     isEditMode: boolean
+    isDarkMode: boolean
     addTogle: () => void
+    tags: string[]
+    setTags: React.Dispatch<React.SetStateAction<string[]>>
+    tempNumForTagsEffect: number
+    setTempNumForTagsEffect: React.Dispatch<React.SetStateAction<number>>
+    deleteGallery: (id: number) => void
 }
 
 const Gallery: React.FC<GalleryProps> = ({
     images,
     colCount,
     isEditMode,
+    isDarkMode,
     addTogle,
+    tags,
+    setTags,
+    tempNumForTagsEffect,
+    setTempNumForTagsEffect,
+    deleteGallery,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
+    const [newColCount, setNewColCount] = useState(colCount)
+
+    const updateColCount = () => {
+        const width = window.innerWidth
+        let newColCount = colCount
+
+        if (width <= 500) newColCount = 1
+        else if (width <= 700) newColCount = colCount > 2 ? 2 : colCount
+        else if (width <= 1100) newColCount = colCount > 3 ? 3 : colCount
+
+        setNewColCount(newColCount)
+    }
 
     const breakpointColumnsObj = {
         default: colCount,
@@ -35,13 +62,70 @@ const Gallery: React.FC<GalleryProps> = ({
         setSelectedImage(null)
     }
 
-    const handleRightClick = (event: React.MouseEvent) => {
+    const handleOpenImage = (event: React.MouseEvent) => {
+        event.stopPropagation()
         event.preventDefault()
     }
 
-    const deleteImage = (id: number) => {
-        console.log('delete image', id)
+    const deleteImage = (id: number, event: React.MouseEvent) => {
+        event.stopPropagation()
+
+        deleteGallery(id)
     }
+
+    const handleScroll = (index: number, direction: string) => {
+        const tagBox = document.querySelector(`#tag-box-${index}`)
+        if (tagBox) {
+            if (direction === 'left') {
+                tagBox.scrollLeft -= 200
+            } else {
+                tagBox.scrollLeft += 200
+            }
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', updateColCount)
+
+        images.forEach((image) => {
+            const leftBtn = document.querySelector(
+                `#scroll-btn-left-${image.galleryId}`,
+            )
+            const rightBtn = document.querySelector(
+                `#scroll-btn-right-${image.galleryId}`,
+            )
+
+            if (leftBtn && rightBtn) {
+                leftBtn.addEventListener('click', () =>
+                    handleScroll(image.galleryId, 'left'),
+                )
+                rightBtn.addEventListener('click', () =>
+                    handleScroll(image.galleryId, 'right'),
+                )
+            }
+        })
+
+        return () => {
+            images.forEach((image) => {
+                const leftBtn = document.querySelector(
+                    `#scroll-btn-left-${image.galleryId}`,
+                )
+                const rightBtn = document.querySelector(
+                    `#scroll-btn-right-${image.galleryId}`,
+                )
+
+                if (leftBtn && rightBtn) {
+                    leftBtn.removeEventListener('click', () =>
+                        handleScroll(image.galleryId, 'left'),
+                    )
+                    rightBtn.removeEventListener('click', () =>
+                        handleScroll(image.galleryId, 'right'),
+                    )
+                }
+            })
+            window.removeEventListener('resize', updateColCount)
+        }
+    }, [images, newColCount])
 
     return (
         <div>
@@ -49,7 +133,7 @@ const Gallery: React.FC<GalleryProps> = ({
                 <div
                     className={styles.galleryModal}
                     onClick={handleClose}
-                    onContextMenu={handleRightClick}
+                    onContextMenu={handleOpenImage}
                 >
                     <img src={selectedImage} className={styles.expandedImg} />
                 </div>
@@ -78,16 +162,18 @@ const Gallery: React.FC<GalleryProps> = ({
                     <div
                         key={image.galleryId}
                         className={`${styles.column} galleryImage`}
-                        onClick={() => handleImageClick(image.original)}
                     >
-                        <div className={styles.card}>
+                        <div
+                            className={styles.card}
+                            onClick={() => handleImageClick(image.original)}
+                        >
                             {isEditMode && (
                                 <img
                                     className={styles.deleteButton}
                                     src={'/svgs/delete_red.svg'}
                                     alt="Delete"
                                     onClick={(event) =>
-                                        deleteImage(image.galleryId)
+                                        deleteImage(image.galleryId, event)
                                     }
                                 />
                             )}
@@ -101,6 +187,16 @@ const Gallery: React.FC<GalleryProps> = ({
                                 }}
                             />
                         </div>
+                        <GalleryTagList
+                            tags={image.tags}
+                            galleryId={image.galleryId}
+                            handleScroll={handleScroll}
+                            isDarkMode={isDarkMode}
+                            selectedTags={tags}
+                            setSelectedTags={setTags}
+                            tempNumForTagsEffect={tempNumForTagsEffect}
+                            setTempNumForTagsEffect={setTempNumForTagsEffect}
+                        />
                     </div>
                 ))}
             </Masonry>

@@ -231,6 +231,7 @@ const SupportPage: React.FC = () => {
 
                 <SupportCard
                     items={supportData}
+                    addTogle={() => {}}
                     isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
                 />

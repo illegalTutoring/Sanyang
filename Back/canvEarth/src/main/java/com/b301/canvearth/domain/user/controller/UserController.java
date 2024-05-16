@@ -6,6 +6,7 @@ import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ public class UserController {
     @ApiResponse(responseCode = "401", description = "refresh 토큰이 존재하지 않습니다")
     @ApiResponse(responseCode = "401", description = "만료된 refresh 토큰입니다")
     @ApiResponse(responseCode = "401", description = "잘못된 refresh 토큰입니다")
-    @ApiResponse(responseCode = "401", description = "사용하지 않는 refresh 토큰입니다")
+    @SecurityRequirement(name = "refreshToken")
     @PostMapping("/reissue")
     public ResponseEntity<Object> reIssue(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 

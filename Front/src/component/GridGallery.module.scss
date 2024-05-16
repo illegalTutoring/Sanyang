@@ -27,7 +27,6 @@
 
         .deleteButton {
             border-radius: 50%;
-            background-color: #ddd;
             position: absolute;
             right: 10px;
             top: 10px;
@@ -54,5 +53,134 @@
     &:hover {
         background-color: rgba(0, 0, 0, 0.2);
         cursor: pointer;
+    }
+}
+
+.outsourcingFormContainer {
+    padding: 10px 10px 0px 10px;
+
+    .outsourcingFormTitle {
+        input {
+            border: none;
+            background-color: transparent;
+            font-size: 25px;
+            width: 100%;
+            border-bottom: 2px solid rgb(72, 72, 72);
+            transition: border-bottom 0.3s ease;
+
+            &:focus {
+                outline: none;
+                border-bottom: 2px solid rgb(135, 135, 238);
+            }
+        }
+    }
+
+    .outsourcingFormContent {
+        margin-top: 10px;
+        padding: 5px;
+        border-radius: 5px;
+
+        .outsourcingFormCompany {
+            display: flex;
+
+            img {
+                width: 20px;
+            }
+
+            input {
+                border: none;
+                margin-left: 5px;
+                background-color: transparent;
+                border-bottom: 2px solid rgb(72, 72, 72);
+                transition: border-bottom 0.3s ease;
+
+                &:focus {
+                    outline: none;
+                    border-bottom: 2px solid rgb(135, 135, 238);
+                }
+            }
+        }
+
+        .outsourcingFormDate {
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .date {
+                width: 100%;
+                display: flex;
+                justify-content: right;
+            }
+
+            img {
+                width: 20px;
+            }
+
+            input {
+                margin-left: 5px;
+                width: 46%;
+            }
+        }
+
+        .outsourcingFormImageSelect {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+
+            img {
+                width: 20px;
+            }
+
+            input {
+                margin-left: 5px;
+                width: 100%;
+            }
+        }
+    }
+
+    .outsourcingFormButton {
+        display: flex;
+        justify-content: right;
+        margin-top: 5px;
+
+        .redButton {
+            background-color: rgb(231, 116, 116);
+            justify-content: center;
+            align-items: center;
+
+            margin-left: 3px;
+            width: 50px;
+            height: 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(188, 94, 94);
+                transition: 0.3s ease-in-out;
+            }
+        }
+
+        .blueButton {
+            background-color: rgb(109, 131, 255);
+            justify-content: center;
+            align-items: center;
+
+            margin-left: 3px;
+            width: 50px;
+            height: 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(51, 87, 157);
+                transition: 0.3s ease-in-out;
+            }
+        }
     }
 }

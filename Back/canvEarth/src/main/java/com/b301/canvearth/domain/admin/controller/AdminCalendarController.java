@@ -6,8 +6,11 @@ import com.b301.canvearth.domain.calendar.entity.Calendar;
 import com.b301.canvearth.domain.calendar.service.CalendarService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
+import com.b301.canvearth.global.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,10 +29,12 @@ public class AdminCalendarController {
 
     private final CalendarService calendarService;
     private static final String MESSAGE = "message";
+    private final JWTUtil jwtUtil;
 
     @PostMapping
     @Operation(summary = "REQ-ADMIN-07", description = "일정 등록")
-    public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto) {
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<Object> registCalendar(@RequestBody CalendarRequestPostDto requestPostDto, HttpServletRequest request) {
         log.info("===== [AdminCalendarController] registCalendar start =====");
         log.info("[requestData]: {}", requestPostDto);
 
@@ -39,10 +44,13 @@ public class AdminCalendarController {
         if(!isValidCalendarDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidCalendarDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
-        Calendar calendar = Calendar.builder().userId(requestPostDto.getUserId()).title(requestPostDto.getTitle())
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.replace("Bearer ", "");
+        String username = jwtUtil.getUsername(accessToken);
+        Calendar calendar = Calendar.builder().userId(username).title(requestPostDto.getTitle())
                 .startDate(requestPostDto.getStartDate()).endDate(requestPostDto.getEndDate()).build();
 
         Calendar insertCalendar = calendarService.insertCalendar(calendar);
@@ -55,6 +63,7 @@ public class AdminCalendarController {
 
     @PutMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 수정")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyCalendar(@PathVariable("calendarId") Long calendarId,
                                                  @RequestBody CalendarRequestPutDto requestPutDto) {
         log.info("===== [AdminCalendarController] modifyCalendar start =====");
@@ -72,6 +81,7 @@ public class AdminCalendarController {
 
     @DeleteMapping("/{calendarId}")
     @Operation(summary = "REQ-ADMIN-07", description = "일정 삭제")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> deleteCalendar(@PathVariable("calendarId") Long calendarId) {
         log.info("===== [AdminCalendarController] deleteCalendar start =====");
         log.info("[path variable]: {}", calendarId);

@@ -1,15 +1,23 @@
 'use client'
 
 import styles from './home.module.scss'
-import EditableBanner from '@/component/banner/EditableBanner'
-import useDarkModeStore from '@/utils/store/useThemaStore'
-import useEditModeStore from '@/utils/store/useEditModeStore'
-import DraggableProfile from '@/component/DraggableProfile'
-
 import { useCallback, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+
+// Component
+import EditableBanner, { Images } from '@/component/banner/EditableBanner'
+import DraggableProfile from '@/component/DraggableProfile'
 import Profile from '@/component/Profile'
+
+// Store
+import useDarkModeStore from '@/utils/store/useThemaStore'
+import useEditModeStore from '@/utils/store/useEditModeStore'
+
+// API
+import { getBanner } from '@/utils/api/banner'
+import { modifyBannerList } from '@/utils/api/admin'
+import { getNoticeList } from '@/utils/api/notice'
 
 interface ProfileData {
     type: number
@@ -24,28 +32,38 @@ const HomePage = () => {
     //지역변수
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
-    const [editBanner, setEditBanner] = useState(false)
-    const [images, setImages] = useState([
-        {
-            url: 'https://pbs.twimg.com/media/Feng68VakAAKD6u?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68WaEAIQvfS?format=jpg&name=large',
-            yindex: 0,
-        },
-        {
-            url: 'https://pbs.twimg.com/media/Feng68SagAAfkW3?format=jpg&name=4096x4096',
-            yindex: 0,
-        },
-    ])
-    const [notice, setNotice] = useState(
-        '안녕하세요. 작가 산양입니다.\n 1년정도 쉬고 돌아오겠습니다. 손가락 빨고 기다리고 계십셔',
-    )
+    const [images, setImages] = useState<Images[]>([])
+    const [notice, setNotice] = useState<string>()
 
-    //함수
-    const toggleEditBanner = () => setEditBanner(!editBanner)
+    // 함수
+    const fetchBanners = async () => {
+        const response = await getBanner()
 
+        let result: Images[] = []
+        response.data.forEach((image) => {
+            result.push({
+                url: image.imagePath,
+                yindex: image.coordinateY,
+            })
+        })
+
+        setImages(result)
+    }
+
+    const fetchNotices = async (page: number, size: number) => {
+        const response = await getNoticeList(page, size)
+
+        let result: string = ''
+        if (response.data) {
+            result = response.data[0].title
+        } else {
+            result = '공지사항이 없습니다.'
+        }
+
+        setNotice(result)
+    }
+
+    // 핸들러
     const handleArrowClick = () => {
         setShowArrow(false)
         setShowContent(true)
@@ -54,6 +72,12 @@ const HomePage = () => {
             contentDiv?.scrollIntoView({ behavior: 'smooth' })
         }, 100)
     }
+
+    //훅
+    useEffect(() => {
+        fetchBanners()
+        fetchNotices(1, 1)
+    }, [])
 
     // 더미 데이터
     const [embedData, setEmbedData] = useState<ProfileData[]>([
@@ -119,6 +143,8 @@ const HomePage = () => {
                 interval={5000}
                 isEditMode={isEditMode}
                 isDarkMode={isDarkMode}
+                fetchImages={fetchBanners}
+                updateImages={modifyBannerList}
             />
 
             <div

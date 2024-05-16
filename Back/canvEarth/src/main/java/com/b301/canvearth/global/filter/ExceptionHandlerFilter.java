@@ -9,32 +9,41 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
+    private final static String MESSAGE = "message";
+
     private final ResponseUtil responseUtil;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) {
 
-        try{
+        try {
             filterChain.doFilter(request, response);
-        } catch (CustomException e){
+        } catch (CustomException e) {
             handleExceptionInternal(e, e.getErrorCode().getHttpStatus(), e.getErrorCode().getErrorMessage(), request, response);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             handleExceptionInternal(e, HttpStatus.BAD_REQUEST, e.getMessage(), request, response);
-        }catch (Exception e){
-            handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR,"서버에러", request, response);
+        } catch (AuthenticationException e) {
+            handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "인증 실패", request, response);
+        } catch (AccessDeniedException e) {
+            handleExceptionInternal(e, HttpStatus.FORBIDDEN, "접근 거부", request, response);
+        } catch (Exception e) {
+            handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR, "서버에러", request, response);
         }
     }
 
     protected void handleExceptionInternal(Exception ex, HttpStatus httpStatus, String message, HttpServletRequest request, HttpServletResponse response) {
-
-        log.info("=========================== START EXCEPTION INFO ===============================");
-
+        log.info("======================= START SECURITY EXCEPTION INFO ==========================");
 
         if (response != null && response.isCommitted()) {
             if (log.isWarnEnabled()) {
@@ -42,10 +51,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             }
 
             return;
-        }
-
-        if (httpStatus.equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-            request.setAttribute("jakarta.servlet.error.exception", ex);
         }
 
         log.error("Exception name: [{}]", ex.toString());
@@ -60,14 +65,14 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         log.error("Exception uri [{}]", request.getRequestURI());
 
-        log.info("================================================================================");
+        log.info("======================== END SECURITY EXCEPTION INFO ===========================");
 
-        if(response != null){
-            try{
-                responseUtil.sendMessage(response, false, "", httpStatus, message);
-            }catch(Exception e){
-                log.error("Exception cause: ", e);
-            }
+        if (response != null) {
+
+            Map<String, String> data = new HashMap<>();
+            data.put(MESSAGE, message);
+
+            responseUtil.sendMessage(response, data, httpStatus);
         }
 
     }

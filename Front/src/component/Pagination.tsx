@@ -5,7 +5,8 @@ import {
     FaAngleRight,
     FaAngleDoubleRight,
 } from 'react-icons/fa'
-import styles from './Pagination.module.css'
+import styles from './Pagination.module.scss'
+import useDarkModeStore from '@/utils/store/useThemaStore'
 
 interface PaginationProps {
     totalPage: number
@@ -21,58 +22,68 @@ const Pagination: React.FC<PaginationProps> = ({
     setPage,
 }) => {
     const [currentPageArray, setCurrentPageArray] = useState<number[]>([])
-    const [totalPageArray, setTotalPageArray] = useState<number[][]>([])
+    const { isDarkMode } = useDarkModeStore()
 
     useEffect(() => {
-        const startIndex = Math.floor((page - 1) / limit) * limit
-        if (totalPageArray.length > 0) {
-            setCurrentPageArray(totalPageArray[Math.floor(startIndex / limit)])
+        updateCurrentPageArray(page, totalPage)
+    }, [page, totalPage])
+
+    function updateCurrentPageArray(currentPage: number, totalPage: number) {
+        const centerIndex = Math.floor(limit / 2)
+        let startPage = Math.max(currentPage - centerIndex, 1)
+        let endPage = startPage + limit - 1
+
+        if (endPage > totalPage) {
+            endPage = totalPage
+            startPage = Math.max(endPage - limit + 1, 1)
         }
-    }, [page, totalPageArray, limit])
 
-    useEffect(() => {
-        const pages = Array.from({ length: totalPage }, (_, i) => i + 1)
-        const slicedPageArray = sliceArrayByLimit(pages, limit)
-        setTotalPageArray(slicedPageArray)
-        setCurrentPageArray(slicedPageArray[0])
-    }, [totalPage, limit])
+        const newPageArray = Array.from(
+            { length: endPage - startPage + 1 },
+            (_, i) => startPage + i,
+        )
 
-    function sliceArrayByLimit(array: number[], limit: number): number[][] {
-        return new Array(Math.ceil(array.length / limit))
-            .fill(null)
-            .map((_, i) => array.slice(i * limit, i * limit + limit))
+        setCurrentPageArray(newPageArray)
     }
 
     return (
-        <div className={styles.paginationWrapper}>
-            <FaAngleDoubleLeft
-                onClick={() => setPage(1)}
-                className={page === 1 ? styles.pageButtonDisabled : ''}
-            />
-            <FaAngleLeft
-                onClick={() => setPage(page - 1)}
-                className={page === 1 ? styles.pageButtonDisabled : ''}
-            />
-            <div className={styles.buttonWrapper}>
-                {currentPageArray.map((i) => (
-                    <button
-                        key={i}
-                        onClick={() => setPage(i)}
-                        className={`${styles.pageButton} ${page === i ? styles.pageButtonActive : ''}`}
-                        aria-current={page === i ? 'page' : undefined}
-                    >
-                        {i}
-                    </button>
-                ))}
+        <div>
+            <div className={styles.paginationWrapper}>
+                <FaAngleDoubleLeft
+                    onClick={() => setPage(1)}
+                    className={styles.arrowButton}
+                />
+                <FaAngleLeft
+                    onClick={() => setPage(Math.max(page - 1, 1))}
+                    className={styles.arrowButton}
+                />
+                <div className={styles.buttonWrapper}>
+                    {currentPageArray.map((i) => (
+                        <div
+                            key={i}
+                            onClick={() => setPage(i)}
+                            className={`${styles.pageButton} ${
+                                page === i
+                                    ? isDarkMode
+                                        ? styles.pageButtonActive
+                                        : styles.pageButtonActiveDark
+                                    : ''
+                            }`}
+                            aria-current={page === i ? 'page' : undefined}
+                        >
+                            {i}
+                        </div>
+                    ))}
+                </div>
+                <FaAngleRight
+                    onClick={() => setPage(Math.min(page + 1, totalPage))}
+                    className={styles.arrowButton}
+                />
+                <FaAngleDoubleRight
+                    onClick={() => setPage(totalPage)}
+                    className={styles.arrowButton}
+                />
             </div>
-            <FaAngleRight
-                onClick={() => setPage(page + 1)}
-                className={page === totalPage ? styles.pageButtonDisabled : ''}
-            />
-            <FaAngleDoubleRight
-                onClick={() => setPage(totalPage)}
-                className={page === totalPage ? styles.pageButtonDisabled : ''}
-            />
         </div>
     )
 }
