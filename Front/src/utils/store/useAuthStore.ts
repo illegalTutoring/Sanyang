@@ -13,7 +13,10 @@ const useAuthStore = create(
         (set, get) => ({
             isLoggedIn: false,
             logIn: () => set({ isLoggedIn: true }),
-            logOut: () => set({ isLoggedIn: false }),
+            logOut: () => {
+                set({ isLoggedIn: false })
+                useEditModeStore.getState().setEditMode(false)
+            },
         }),
         {
             name: 'AuthStorage',

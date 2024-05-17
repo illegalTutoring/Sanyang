@@ -10,12 +10,14 @@ interface ProfileComponentProps {
     item: embedLinkInfo
     index: number
     moveProfile: (dragIndex: number, hoverIndex: number) => void
+    modifyProfile: () => void
 }
 
 const DraggableProfile: React.FC<ProfileComponentProps> = ({
     item,
     index,
     moveProfile,
+    modifyProfile,
 }) => {
     const ref = useRef<HTMLDivElement>(null)
     const { isDarkMode } = useDarkModeStore()
@@ -89,6 +91,9 @@ const DraggableProfile: React.FC<ProfileComponentProps> = ({
                 moveProfile(dragIndex, hoverIndex)
                 item.index = hoverIndex
             }
+        },
+        drop(item: { id: string; index: number }, monitor) {
+            modifyProfile()
         },
     })
 
