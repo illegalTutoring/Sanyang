@@ -478,9 +478,9 @@ const HomePage = () => {
                                         <div
                                             key={-1}
                                             className={styles.embedLink}
-                                            // onClick={
-                                            //      이곳에 임베드 추가 이벤트
-                                            // }
+                                            onClick={() => {
+                                                setEmbedAddMode(true)
+                                            }}
                                         >
                                             <Profile
                                                 src={getImageSource(6)}
