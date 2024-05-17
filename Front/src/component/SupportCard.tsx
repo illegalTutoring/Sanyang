@@ -25,7 +25,7 @@ interface SupportProps {
     cardMaxWidth?: string
     addTogle: () => void
     updateTogle: () => void
-    setInitData: (item: SupportItem) => void
+    setInitData: (item: SupportItem, imageURL: string) => void
 }
 
 const SupportCard: React.FC<SupportProps> = ({
@@ -50,7 +50,7 @@ const SupportCard: React.FC<SupportProps> = ({
     }
 
     const updateHandler = async (item: SupportItem) => {
-        await setInitData(item)
+        await setInitData(item, item.thumbnail)
         await updateTogle()
     }
 
