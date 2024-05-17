@@ -16,6 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    (Custom) ExceptionHandlerFilter
+        1. extends OncePerRequestFilter : 요청이 들어올 때마다 한번 실행함
+        2. @Override doFilterInternal : 커스텀 할 수 있는 필터중 최상단에 위치하게 하여 이후의 필터에서 예외가 발생하면 지금의 필터에서 헨들링 할 수 있도록 만듬
+        3. handleExceptionInternal : 에러 메세지 커스텀
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class ExceptionHandlerFilter extends OncePerRequestFilter {

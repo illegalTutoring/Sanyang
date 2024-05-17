@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/*
+    Redis AccessToken Service
+ */
 @Service
 public class AccessService {
 

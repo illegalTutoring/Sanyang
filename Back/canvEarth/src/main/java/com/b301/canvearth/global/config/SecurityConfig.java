@@ -6,7 +6,7 @@ import com.b301.canvearth.domain.authorization.service.RefreshService;
 import com.b301.canvearth.global.filter.CustomLogoutFilter;
 import com.b301.canvearth.global.filter.ExceptionHandlerFilter;
 import com.b301.canvearth.global.filter.JWTFilter;
-import com.b301.canvearth.global.filter.LogInFilter;
+import com.b301.canvearth.global.filter.LoginFilter;
 import com.b301.canvearth.global.handler.JWTAuthenticationEntryPoint;
 import com.b301.canvearth.global.util.JWTUtil;
 import com.b301.canvearth.global.util.JWTValidationUtil;
@@ -36,12 +36,15 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // cors url
     @Value("${cors.allowedOrigins}")
     private String[] allowedOrigins;
 
+    // ROLE_ADMIN 없이 API 테스트 용
     @Value("${security.permitTestList}")
     private String[] permitTestList;
 
+    // ROLE_ADMIN 을 포함한 배포 용
     @Value("${security.permitAccessList}")
     private String[] permitAccessList;
 
@@ -63,18 +66,21 @@ public class SecurityConfig {
 
     private final LogUtil logUtil;
 
+    // AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 
         return configuration.getAuthenticationManager();
     }
 
+    // 비밀번호 인코더
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
         return new BCryptPasswordEncoder();
     }
 
+    // SecurityFilterChain 커스텀
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -90,20 +96,21 @@ public class SecurityConfig {
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
 
+                    // ExposedHeaders
                     configuration.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
 
                     return configuration;
                 })));
 
-        // CSRF Disable
+        // CSRF 보호 비활성화
         http
                 .csrf(AbstractHttpConfigurer::disable);
 
-        // FormLogin Disable
+        // FormLogin 비활성화
         http
                 .formLogin(AbstractHttpConfigurer::disable);
 
-        // HttpBasic Disable
+        // HttpBasic 비활성화
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
@@ -124,27 +131,34 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated());
 
+        // (Custom)LogInFilter at UsernamePasswordAuthenticationFilter : 커스텀 로그인 필터
         http
-                .addFilterAt(new LogInFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService, responseUtil, logUtil),
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshService, accessService, responseUtil, logUtil),
                         UsernamePasswordAuthenticationFilter.class);
+
+        // (Custom)JWTFilter Before (Custom)LogInFilter : 커스텀 JWT 검증 필터
         http
                 .addFilterBefore(new JWTFilter(jwtUtil, jwtValidationUtil),
-                        LogInFilter.class);
+                        LoginFilter.class);
 
+        // (Custom)CustomLogoutFilter At LogoutFilter : 커스텀 로그아웃 필터
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, jwtValidationUtil, refreshService, accessService, responseUtil, logUtil),
+                .addFilterAt(new CustomLogoutFilter(jwtUtil, jwtValidationUtil, refreshService, accessService, responseUtil, logUtil),
                         LogoutFilter.class);
 
+        // (Custom)ExceptionHandlerFilter Before (Custom)CustomLogoutFilter : 커스텀 예외 헨들러 필터
         http
                 .addFilterBefore(new ExceptionHandlerFilter(responseUtil),
                         CustomLogoutFilter.class);
 
+        // ExceptionHandler[AuthenticationEntryPoint, AccessDeniedHandler] : 예외 헨들러 커스텀
         http
                 .exceptionHandling((exceptionHandling) ->
                         exceptionHandling
                                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                                 .accessDeniedHandler(customAccessDeniedHandler));
 
+        // 세션 관리 정책 StateLess 설정
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

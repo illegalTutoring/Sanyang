@@ -14,6 +14,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
+/*
+    RedisConfig
+    다중 커넥션 생성
+        1. Redis 0번 데이터베이스 AccessToken White List
+        2. Redis 1번 데이터베이스 RefreshToken White List
+ */
 @Configuration
 @Slf4j
 public class RedisConfig {

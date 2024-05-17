@@ -19,6 +19,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/*
+    (Custom) JWTFilter
+        1. extends OncePerRequestFilter : 요청이 들어올 때마다 한번 실행함
+        2. @Override doFilterInternal 모든 요청에서 AccessToken 을 인식하여 SecurityContextHolder 를 통해 유저 정보를 관리한다.
+        3. 토큰이 없는 경우 /api/admin 요청일 때는 예외를 발생시키고 다른 url 이라면 통과 시킨다.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {

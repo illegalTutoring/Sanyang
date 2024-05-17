@@ -18,6 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+/*
+    UserService
+        1. 회원가입 Service
+        2. AccessToken 재발급(RefreshToken) Service
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
