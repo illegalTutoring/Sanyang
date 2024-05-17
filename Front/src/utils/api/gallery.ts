@@ -4,7 +4,7 @@ import { getGalleryListResponseDTO } from './DTO/gallery'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getGalleryList(): getGalleryListResponseDTO {
+export function getGalleryList(): Promise<getGalleryListResponseDTO> {
     /**
      * 갤러리 이미지 정보 목록을 반환한다.
      */

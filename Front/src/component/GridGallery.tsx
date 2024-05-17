@@ -7,6 +7,7 @@ import {
     registWorkRequestDTO,
 } from '@/utils/api/DTO/work'
 import Modal from './layout/Modal'
+import { style } from 'dynamic-import'
 
 export interface ImageData {
     workId?: number
@@ -245,7 +246,7 @@ const GridGallery: React.FC<GalleryProps> = ({
                         </div>
                     )}
                     <img
-                        src={image.thumbnail}
+                        src={image.original}
                         alt={image.title}
                         style={{
                             width: '100%',
@@ -256,86 +257,110 @@ const GridGallery: React.FC<GalleryProps> = ({
                 </div>
             ))}
             <Modal
-                height="50%"
-                width="40%"
+                height="fit-content"
+                width="fit-content"
                 isVisible={isAddMode || isUpdateMode}
                 toggleModal={isAddMode ? toggleAddMode : toggleUpdateMode}
             >
                 <form
+                    className={styles.outsourcingFormContainer}
                     onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
                 >
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={insertData.title}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="company">Company</label>
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={insertData.company}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        value={insertData.startDate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="endDate">End Date</label>
-                    <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={insertData.endDate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="tags">Tags</label>
-                    <input
-                        type="text"
-                        id="tags"
-                        name="tags"
-                        value={insertData.tags}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="image">Image</label>
-                    <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required={isAddMode}
-                    />
-                    <br></br>
-                    <button type="submit">
-                        {isAddMode ? 'Save' : 'Update'}
-                    </button>
-                    <br></br>
-                    {isUpdateMode && (
-                        <button
-                            type="button"
-                            onClick={() => handleDelete(insertData.WorkId!)}
-                        >
-                            Delete
+                    <div className={styles.outsourcingFormTitle}>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={insertData.title}
+                            onChange={handleInputChange}
+                            placeholder="새 타이틀"
+                            style={{
+                                color: isDarkMode ? 'white' : 'black',
+                                borderBottom: isDarkMode
+                                    ? '2px solid #CCC'
+                                    : '2px solid #444',
+                            }}
+                            required
+                        />
+                    </div>
+                    <div
+                        className={styles.outsourcingFormContent}
+                        style={{
+                            backgroundColor: isDarkMode
+                                ? 'rgba(255,255,255,0.1)'
+                                : 'rgba(0,0,0,0.1)',
+                        }}
+                    >
+                        <div className={styles.outsourcingFormCompany}>
+                            <img
+                                src={`${isDarkMode ? '/svgs/company_white.svg' : '/svgs/company_black.svg'}`}
+                            />
+                            <input
+                                type="text"
+                                id="company"
+                                name="company"
+                                value={insertData.company}
+                                onChange={handleInputChange}
+                                placeholder="회사명"
+                                style={{
+                                    color: isDarkMode ? 'white' : 'black',
+                                    borderBottom: isDarkMode
+                                        ? '2px solid white'
+                                        : '2px solid black',
+                                }}
+                                required
+                            />
+                        </div>
+                        <div className={styles.outsourcingFormDate}>
+                            <img
+                                src={`${isDarkMode ? '/svgs/clock_white.svg' : '/svgs/clock_black.svg'}`}
+                            />
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                value={insertData.startDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                            ~
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                value={insertData.endDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className={styles.outsourcingFormImageSelect}>
+                            <img
+                                src={`${isDarkMode ? '/svgs/image_plus_white.svg' : '/svgs/image_plus_black.svg'}`}
+                            />
+                            <input
+                                type="file"
+                                id="image"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                required={isAddMode}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.outsourcingFormButton}>
+                        <button className={styles.blueButton} type="submit">
+                            {isAddMode ? '저장' : '수정'}
                         </button>
-                    )}
+                        {isUpdateMode && (
+                            <button
+                                type="button"
+                                className={styles.redButton}
+                                onClick={() => handleDelete(insertData.WorkId!)}
+                            >
+                                삭제
+                            </button>
+                        )}
+                    </div>
                 </form>
             </Modal>
         </div>

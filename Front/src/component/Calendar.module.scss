@@ -50,6 +50,7 @@
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6, 1fr);
     border: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .day {
@@ -62,8 +63,11 @@
 }
 
 .schedule {
+    display: flex;
+    align-items: center;
+    padding-left: 3px;
+    color: black;
     height: 20px;
-    background-color: lightblue;
     font-size: 0.8rem;
     overflow: hidden;
 }

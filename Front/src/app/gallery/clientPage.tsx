@@ -69,7 +69,20 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
      * temp__ 변수는 Tags의 useEffect Trigger를 위해 임시로 설정했다.
      * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
      */
-    useEffect(() => {}, [tempNumForTagsEffect])
+    useEffect(() => {
+        setImages(
+            selectedTags.length > 0
+                ? propsImages.filter((image) => {
+                      let flag: boolean = true
+                      selectedTags.forEach((tag) => {
+                          if (!image.tags.includes(tag)) flag = false
+                      })
+                      return flag
+                  })
+                : propsImages,
+        )
+        setImages2(images.slice(0, 4))
+    }, [tempNumForTagsEffect])
 
     // 토글 함수
     const toggleAddMode = () => {
@@ -168,10 +181,10 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     className={styles.galleryContainer}
                 >
                     <GridGallery
-                        images={images2}
+                        images={propsImages.slice(0, 4)}
                         width={'100%'}
                         height={'300px'}
-                        colCount={images2.length}
+                        colCount={propsImages.slice(0, 4).length}
                         isDarkMode={isDarkMode}
                     />
                 </div>
@@ -201,24 +214,51 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
             <Modal
                 isVisible={addMode}
                 toggleModal={toggleAddMode}
-                width="60vw"
-                height="60vh"
+                width="fit-content"
+                height="fit-content"
             >
-                <div>
-                    <input
-                        type="file"
-                        onChange={handleFileChange}
-                        accept="image/*"
-                    />
-                    {previewUrl && (
+                <div className={styles.galleryModalContainer}>
+                    <div
+                        className={styles.galleryModalFileInput}
+                        style={{
+                            background: isDarkMode
+                                ? 'rgba(255, 255, 255, 0.1)'
+                                : 'rgba(0, 0, 0, 0.1)',
+                        }}
+                    >
+                        <img
+                            src={`${isDarkMode ? '/svgs/image_plus_white.svg' : '/svgs/image_plus_black.svg'}`}
+                        />
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            accept="image/*"
+                        />
+                    </div>
+
+                    {previewUrl ? (
                         <img
                             src={previewUrl}
                             alt="Image Preview"
-                            style={{ width: '100%', height: 'auto' }}
+                            style={{ width: '300px', height: 'auto' }}
                         />
+                    ) : (
+                        <>
+                            <div className={styles.defaultImg}>
+                                <img src="svgs/add_card.svg"></img>
+                            </div>
+                        </>
                     )}
                     <SimpleTagInput tags={newTags} setTags={setNewTags} />
-                    <button onClick={handleSubmit}>Submit</button>
+
+                    <div className={styles.galleryModalButton}>
+                        <button
+                            className={styles.blueButton}
+                            onClick={handleSubmit}
+                        >
+                            업로드
+                        </button>
+                    </div>
                 </div>
             </Modal>
 

@@ -2,11 +2,20 @@
 
 import styles from './notification.module.scss'
 import React, { useState, useEffect } from 'react'
+
+// Store
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
+
+// Component
 import List from '@/component/List'
 import Pagination from '@/component/Pagination'
-import { getNoticeList } from '@/utils/api/notice'
+
+// API
+import { getNoticeList, getNoticeDetail } from '@/utils/api/notice'
+import { registNotice, modifyNotice, deleteNotice } from '@/utils/api/admin'
+
+//DTO
 import { noticeInfo } from '@/utils/api/DTO/notice'
 
 const NotificationPage = () => {
@@ -15,31 +24,19 @@ const NotificationPage = () => {
     const { isEditMode } = useEditModeStore()
 
     // 지역 변수
-    // const [data, setData] = useState<noticeInfo[]>([])
-
-    const data = [
-        {
-            id: 1,
-            title: '제목',
-            registDate: 'YYYY-MM-DD',
-        },
-        {
-            id: 2,
-            title: '제목',
-            registDate: 'YYYY-MM-DD',
-        },
-    ]
-
+    const [data, setData] = useState<noticeInfo[]>([])
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 7
+    const [totalPage, setTotalPage] = useState(0)
+    const itemsPerPage = 10
 
     // 함수
     const fetchData = async (page: number) => {
         const response = await getNoticeList(page, itemsPerPage)
-        console.log(response.data)
-        // setData(response.data)
+        setTotalPage(response.page)
+        setData(response.data)
     }
 
+    // 훅
     useEffect(() => {
         fetchData(currentPage)
     }, [currentPage])
@@ -64,13 +61,20 @@ const NotificationPage = () => {
                         pageSize={10}
                         columnNames={['No', '제목', '등록일자']}
                         columns={['id', 'title', 'registDate']}
-                        columnWidth={['1%', '54%', '30%']}
+                        columnWidth={['5%', '50%', '30%']}
                         data={data}
+                        isDarkMode={isDarkMode}
                         isEditMode={isEditMode}
+                        currentPage={currentPage}
+                        fetchData={fetchData}
+                        getDetail={getNoticeDetail}
+                        updateNotice={modifyNotice}
+                        deleteNotice={deleteNotice}
+                        addNotice={registNotice}
                     />
                 </div>
                 <Pagination
-                    totalPage={20}
+                    totalPage={totalPage}
                     limit={itemsPerPage}
                     page={currentPage}
                     setPage={setCurrentPage}

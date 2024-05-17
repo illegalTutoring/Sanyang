@@ -1,11 +1,11 @@
 import { serverResponseDTO } from './common'
 
-interface embedInfo {
+export interface embedInfo {
     type: number
     link: string
 }
 
-interface embedLinkInfo {
+export interface embedLinkInfo {
     embedId: number
     type: number
     link: string
