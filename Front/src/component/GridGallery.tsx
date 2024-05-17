@@ -159,6 +159,11 @@ const GridGallery: React.FC<GalleryProps> = ({
         setUpdateMode(false)
     }
 
+    const handleOpenImage = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+    }
+
     // 훅
 
     useEffect(() => {
@@ -219,7 +224,11 @@ const GridGallery: React.FC<GalleryProps> = ({
                 </>
             )}
             {images.map((image) => (
-                <div className={styles.workContainer} key={image.galleryId}>
+                <div
+                    onContextMenu={handleOpenImage}
+                    className={styles.workContainer}
+                    key={image.galleryId}
+                >
                     {image.company && (
                         <div
                             className={`${styles.titleContainer} ${isDarkMode ? styles.darkTitle : styles.lightTitle}`}
