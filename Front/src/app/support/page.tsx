@@ -64,7 +64,7 @@ const SupportPage: React.FC = () => {
 
     // fetch 함수
     const fetchSupport = async () => {
-        const response = await getSupportList()
+        const response = (await getSupportList()) || []
         setSupportData(response.data)
     }
 

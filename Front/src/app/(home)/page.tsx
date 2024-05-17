@@ -18,7 +18,7 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 // API
 import { getBanner } from '@/utils/api/banner'
 import { modifyBannerList, modifyEmbedLink } from '@/utils/api/admin'
-import { getNoticeList, getRecentNotice } from '@/utils/api/notice'
+import { getRecentNotice } from '@/utils/api/notice'
 import { getEmbedLink } from '@/utils/api/embed'
 import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
 interface OptionType {
