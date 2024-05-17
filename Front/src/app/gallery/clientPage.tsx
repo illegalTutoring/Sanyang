@@ -70,6 +70,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
      * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
      */
     useEffect(() => {
+        fetchGallery()
         setImages(
             selectedTags.length > 0
                 ? propsImages.filter((image) => {
