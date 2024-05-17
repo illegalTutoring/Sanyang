@@ -384,7 +384,7 @@ export function modifyEmbedLink(
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
                 url: `${SERVER_URL}/admin/embed`,
-                data: data,
+                data: data.data,
                 headers: {
                     Authorization: userStore.getState().accessToken,
                 },
