@@ -12,6 +12,7 @@ import {
     supportDetailInfo,
 } from '@/utils/api/DTO/support'
 import { registSupport, modifySupport, deleteSupport } from '@/utils/api/admin'
+import { color } from 'framer-motion'
 
 export interface registSupportRequestDTO {
     title: string
@@ -43,6 +44,7 @@ const SupportPage: React.FC = () => {
         })
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [imageURL, setImageURL] = useState<string | null>(null)
 
     const toggleAddMode = () => {
         setAddMode((prev) => !prev)
@@ -70,7 +72,14 @@ const SupportPage: React.FC = () => {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setSelectedFile(e.target.files[0])
+            const file = e.target.files[0]
+            setSelectedFile(file)
+
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setImageURL(reader.result as string)
+            }
+            reader.readAsDataURL(file)
         }
     }
 
@@ -163,6 +172,15 @@ const SupportPage: React.FC = () => {
         toggleUpdateMode()
     }
 
+    function getCurrentDate() {
+        const today = new Date()
+        const year = today.getFullYear()
+        const month = String(today.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 +1 필요
+        const day = String(today.getDate()).padStart(2, '0')
+
+        return `${year}-${month}-${day}`
+    }
+
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
             <div className={styles.container}>
@@ -189,185 +207,299 @@ const SupportPage: React.FC = () => {
             <Modal
                 isVisible={addMode}
                 toggleModal={toggleAddMode}
-                width="60vw"
-                height="60vh"
+                width="fit-content"
+                height="fit-content"
             >
-                <form onSubmit={handleAddSubmit}>
-                    <input type="file" onChange={handleFileChange} required />
-                    <br></br>
-                    <label>
-                        제목:
+                <form
+                    onSubmit={handleAddSubmit}
+                    className={`${isDarkMode ? 'dark' : 'light'}`}
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(auto-fit, 250px, 1fr)`,
+                        gridGap: '20px',
+                        padding: '10px',
+                    }}
+                >
+                    <div className={styles.cardAddModal}>
+                        <div
+                            className={styles.cardAddModalHeader}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '60px 1fr',
+                            }}
+                        >
+                            <div
+                                className={styles.cardAddModalHeaderAddImage}
+                                onClick={() =>
+                                    document
+                                        .getElementById('fileInput')
+                                        ?.click()
+                                }
+                            >
+                                {imageURL ? (
+                                    <img src={imageURL} alt="Selected" />
+                                ) : isDarkMode ? (
+                                    <img
+                                        src="/svgs/image_plus_white.svg"
+                                        alt="Plus"
+                                    />
+                                ) : (
+                                    <img
+                                        src="/svgs/image_plus_black.svg"
+                                        alt="Plus"
+                                    />
+                                )}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '20px' }}>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={addFormData.title}
+                                        onChange={handleInputChange}
+                                        placeholder="제목"
+                                        style={{
+                                            color: isDarkMode
+                                                ? 'white'
+                                                : 'black',
+                                        }}
+                                        required
+                                    />
+                                </div>
+                                <hr></hr>
+                                <div className={styles.dateBox}>
+                                    <div>{getCurrentDate()}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.cardAddModalContent}>
+                            <textarea
+                                name="content"
+                                placeholder="내용을 입력해주세요.."
+                                value={addFormData.content}
+                                onChange={handleInputChange}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    resize: 'none',
+                                }}
+                                required
+                            />
+                        </div>
+                        <div
+                            className={`${styles.cardAddModalLinkContainer} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                        >
+                            {addFormData.supportLink.map((link, index) => (
+                                <div
+                                    className={styles.cardAddModalLink}
+                                    key={index}
+                                >
+                                    <input
+                                        className={styles.cardAddModalLinkTitle}
+                                        type="text"
+                                        name="name"
+                                        value={link.name}
+                                        onChange={(e) =>
+                                            handleInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="후원링크 제목 입력"
+                                    />
+                                    <input
+                                        className={styles.cardAddModalLinkUrl}
+                                        type="url"
+                                        name="link"
+                                        value={link.link}
+                                        onChange={(e) =>
+                                            handleInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="링크 url 입력"
+                                    />
+                                    {index > 0 ? (
+                                        <img
+                                            onClick={() =>
+                                                handleRemoveSupportLink(index)
+                                            }
+                                            src="svgs/delete_red.svg"
+                                        />
+                                    ) : (
+                                        <img
+                                            onClick={handleAddSupportLink}
+                                            src="svgs/add_blue.svg"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.cardAddModalSubmit}>
+                            <button className={styles.blueButton} type="submit">
+                                후원카드 등록
+                            </button>
+                        </div>
                         <input
-                            type="text"
-                            name="title"
-                            value={addFormData.title}
-                            onChange={handleInputChange}
+                            id="fileInput"
+                            type="file"
                             required
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
                         />
-                    </label>
-                    <br></br>
-                    <label>
-                        업로드 날짜:
                         <input
                             type="date"
                             name="uploadDate"
-                            value={addFormData.uploadDate}
-                            onChange={handleInputChange}
+                            value={getCurrentDate()}
+                            style={{ display: 'none' }}
                             required
                         />
-                    </label>
-                    <br></br>
-                    {addFormData.supportLink.map((link, index) => (
-                        <div key={index}>
-                            <label>
-                                이름:
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={link.name}
-                                    onChange={(e) =>
-                                        handleInputChange(e, index)
-                                    }
-                                    required
-                                />
-                            </label>
-                            <label>
-                                지원 링크 link:
-                                <input
-                                    type="url"
-                                    name="link"
-                                    value={link.link}
-                                    onChange={(e) =>
-                                        handleInputChange(e, index)
-                                    }
-                                    required
-                                />
-                            </label>
-                            {index > 0 && (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleRemoveSupportLink(index)
-                                    }
-                                >
-                                    링크 제거
-                                </button>
-                            )}
-                        </div>
-                    ))}
-
-                    <button type="button" onClick={handleAddSupportLink}>
-                        링크 추가
-                    </button>
-
-                    <br></br>
-                    <label>
-                        내용:
-                        <br></br>
-                        <textarea
-                            name="content"
-                            value={addFormData.content}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </label>
-
-                    <br></br>
-                    <button type="submit">제출</button>
+                    </div>
                 </form>
             </Modal>
 
             <Modal
                 isVisible={updateMode}
                 toggleModal={toggleUpdateMode}
-                width="60vw"
-                height="60vh"
+                width="fit-content"
+                height="fit-content"
             >
                 <form onSubmit={handleUpdateSubmit}>
-                    <input
-                        type="hidden"
-                        name="supportId"
-                        value={modifyFormData.supportId}
-                    />
-                    <input type="file" onChange={handleFileChange} />
-                    <br></br>
-                    <label>
-                        제목:
-                        <input
-                            type="text"
-                            name="title"
-                            value={modifyFormData.title}
-                            onChange={handleUpdateChange}
-                            required
-                        />
-                    </label>
-                    <br></br>
-                    {modifyFormData.supportLink.map((link, index) => (
-                        <div key={index}>
-                            <label>
-                                이름:
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={link.name}
-                                    onChange={(e) =>
-                                        handleUpdateChange(e, index)
-                                    }
-                                    required
-                                />
-                            </label>
-                            <label>
-                                지원 링크 link:
-                                <input
-                                    type="url"
-                                    name="link"
-                                    value={link.link}
-                                    onChange={(e) =>
-                                        handleUpdateChange(e, index)
-                                    }
-                                    required
-                                />
-                            </label>
-                            {index > 0 && (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleRemoveSupportLink(index)
-                                    }
-                                >
-                                    링크 제거
-                                </button>
-                            )}
+                    <div className={styles.cardAddModal}>
+                        <div
+                            className={styles.cardAddModalHeader}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '60px 1fr',
+                            }}
+                        >
+                            <div
+                                className={styles.cardAddModalHeaderAddImage}
+                                onClick={() =>
+                                    document
+                                        .getElementById('fileInput')
+                                        ?.click()
+                                }
+                            >
+                                {imageURL ? (
+                                    <img src={imageURL} alt="Selected" />
+                                ) : isDarkMode ? (
+                                    <img
+                                        src="/svgs/image_plus_white.svg"
+                                        alt="Plus"
+                                    />
+                                ) : (
+                                    <img
+                                        src="/svgs/image_plus_black.svg"
+                                        alt="Plus"
+                                    />
+                                )}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '20px' }}>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={modifyFormData.title}
+                                        onChange={handleUpdateChange}
+                                        required
+                                        style={{
+                                            color: isDarkMode
+                                                ? 'white'
+                                                : 'black',
+                                        }}
+                                    />
+                                </div>
+                                <hr></hr>
+                                <div className={styles.dateBox}>
+                                    <div>{getCurrentDate()}</div>
+                                </div>
+                            </div>
                         </div>
-                    ))}
-
-                    <button type="button" onClick={handleAddSupportLink}>
-                        링크 추가
-                    </button>
-
-                    <br></br>
-                    <label>
-                        내용:
-                        <br></br>
-                        <textarea
-                            name="content"
-                            value={modifyFormData.content}
-                            onChange={handleUpdateChange}
+                        <div className={styles.cardAddModalContent}>
+                            <textarea
+                                placeholder="내용을 입력해주세요.."
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    resize: 'none',
+                                }}
+                                name="content"
+                                value={modifyFormData.content}
+                                onChange={handleUpdateChange}
+                                required
+                            />
+                        </div>
+                        <div
+                            className={`${styles.cardAddModalLinkContainer} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                        >
+                            {modifyFormData.supportLink.map((link, index) => (
+                                <div
+                                    className={styles.cardAddModalLink}
+                                    key={index}
+                                >
+                                    <input
+                                        className={styles.cardAddModalLinkTitle}
+                                        type="text"
+                                        name="name"
+                                        value={link.name}
+                                        onChange={(e) =>
+                                            handleInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="후원링크 제목 입력"
+                                    />
+                                    <input
+                                        className={styles.cardAddModalLinkUrl}
+                                        type="url"
+                                        name="link"
+                                        value={link.link}
+                                        onChange={(e) =>
+                                            handleInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="링크 url 입력"
+                                    />
+                                    {index > 0 ? (
+                                        <img
+                                            onClick={() =>
+                                                handleRemoveSupport(
+                                                    modifyFormData.supportId,
+                                                )
+                                            }
+                                            src="svgs/delete_red.svg"
+                                        />
+                                    ) : (
+                                        <img
+                                            onClick={handleAddSupportLink}
+                                            src="svgs/add_blue.svg"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.cardAddModalSubmit}>
+                            <button className={styles.blueButton} type="submit">
+                                후원카드 업데이트
+                            </button>
+                        </div>
+                        <input
+                            id="fileInput"
+                            type="file"
+                            required
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+                        <input
+                            type="date"
+                            name="uploadDate"
+                            value={getCurrentDate()}
+                            style={{ display: 'none' }}
                             required
                         />
-                    </label>
-
-                    <br></br>
-                    <button type="submit">업데이트</button>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            handleRemoveSupport(modifyFormData.supportId)
-                        }}
-                    >
-                        삭제
-                    </button>
+                        <input
+                            type="hidden"
+                            name="supportId"
+                            value={modifyFormData.supportId}
+                        />
+                    </div>
                 </form>
             </Modal>
         </article>
