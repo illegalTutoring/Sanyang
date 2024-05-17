@@ -51,7 +51,7 @@ $dark-blue-hover: #2980b9;
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
-        top: 60px;
+        padding-top: 80px;
         left: -250px;
         width: 250px;
         height: 100%;
@@ -63,8 +63,5 @@ $dark-blue-hover: #2980b9;
         &.open {
             left: 0;
         }
-    }
-    .toggleButton {
-        display: block;
     }
 }
