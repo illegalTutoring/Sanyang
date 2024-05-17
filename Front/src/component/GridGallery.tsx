@@ -92,7 +92,7 @@ const GridGallery: React.FC<GalleryProps> = ({
             endDate: data.endDate!,
             tags: '',
         })
-        console.log(data)
+
         setUpdateMode(true)
     }
 

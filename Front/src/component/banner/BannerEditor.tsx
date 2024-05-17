@@ -161,8 +161,6 @@ const BannerEditor: React.FC<BannerEditorProps> = ({
         const requestDTO = convertPreviewImgsToRequestDTO(previewImgs, files)
         updateImages(requestDTO)
         toggleEditBanner()
-
-        console.log(requestDTO)
     }
 
     return (
