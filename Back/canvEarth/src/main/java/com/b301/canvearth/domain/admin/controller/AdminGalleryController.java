@@ -8,7 +8,9 @@ import com.b301.canvearth.domain.gallery.service.GalleryService;
 import com.b301.canvearth.global.error.CustomException;
 import com.b301.canvearth.global.error.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,8 +35,10 @@ public class AdminGalleryController {
 
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> registGallery(@RequestPart MultipartFile image,
-                                                @RequestPart("data") GalleryRequestPostDto requestPostDto){
+                                                @RequestPart("data") GalleryRequestPostDto requestPostDto,
+                                                HttpServletRequest request){
         log.info("===== [AdminGalleryController] registGallery start =====");
         log.info("[requestImageName]: {}", image.getOriginalFilename());
         log.info("[requestData]: {}", requestPostDto);
@@ -53,10 +57,10 @@ public class AdminGalleryController {
         if(!isValidGalleryDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidGalleryDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
-        Gallery insertGallery =  galleryService.insertGallery(image, requestPostDto);
+        Gallery insertGallery =  galleryService.insertGallery(image, requestPostDto, request);
         log.info("insertGallery: {}", insertGallery);
 
         responseBody.put(MESSAGE, "갤러리 등록을 완료하였습니다.");
@@ -64,8 +68,26 @@ public class AdminGalleryController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @Operation(summary = "REQ-ADMIN-02", description = "갤러리 삭제")
+    @DeleteMapping("/{galleryId}")
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<Object> deleteGallery(@PathVariable("galleryId") Long galleryId) {
+        log.info("===== [AdminGalleryController] deleteGallery start =====");
+        log.info("[path variable]: {}", galleryId);
+
+        Map<String, Object> responseBody = new HashMap<>();
+
+        galleryService.deleteGallery(galleryId);
+
+        responseBody.put(MESSAGE, "갤러리 삭제가 완료되었습니다.");
+        log.info("[responseData] {}", responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+
+    }
+
     @Operation(summary = "REQ-ADMIN-02", description = "갤러리 수정")
     @PutMapping("/{galleryId}")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Object> modifyGallery(@PathVariable("galleryId") Long galleryId,
                                                 @RequestPart(value="image", required = false) MultipartFile image,
                                                 @RequestPart("data") GalleryRequestPutDto requestPutDto) {
@@ -79,7 +101,7 @@ public class AdminGalleryController {
         if(!isValidGalleryDto.equals("valid")) {
             String errorMessage = String.format("입력한 값에 문제가 있습니다. [%s] 데이터를 확인해주세요.", isValidGalleryDto);
             log.error(errorMessage);
-            throw new CustomException(ErrorCode.NO_REQUIRE_ARUGUMENT, errorMessage);
+            throw new CustomException(ErrorCode.NO_REQUIRE_ARGUMENT, errorMessage);
         }
 
         Gallery modifyGallery = galleryService.modifyGallery(galleryId, image, requestPutDto);
@@ -93,21 +115,5 @@ public class AdminGalleryController {
         responseBody.put("data", responsePutDto);
         log.info("[responseData] {}", responseBody);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    @Operation(summary = "REQ-ADMIN-02", description = "갤러리 삭제")
-    @DeleteMapping("/{galleryId}")
-    public ResponseEntity<Object> deleteGallery(@PathVariable("galleryId") Long galleryId) {
-        log.info("===== [AdminGalleryController] deleteGallery start =====");
-        log.info("[path variable]: {}", galleryId);
-
-        Map<String, Object> responseBody = new HashMap<>();
-
-        galleryService.deleteGallery(galleryId);
-
-        responseBody.put(MESSAGE, "갤러리 삭제가 완료되었습니다.");
-        log.info("[responseData] {}", responseBody);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-
     }
 }

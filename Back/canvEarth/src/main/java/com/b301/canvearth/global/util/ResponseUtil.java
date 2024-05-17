@@ -3,6 +3,7 @@ package com.b301.canvearth.global.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,12 +12,22 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    ResponseUtil
+        1. createResponseEntity : controller 계층에서 return 할 때 사용하는 ResponseEntity 생성
+        2. sendMessage : Filter Chain 계층에서 response 에 data 를 인코딩하여 추가
+        3. createCookie : JWT(RTK) 쿠키 생성
+        4. deleteCookie : JWT(RTK) 쿠키 삭제
+ */
+@Slf4j
 @Component
 public class ResponseUtil {
 
     private final static String MESSAGE = "message";
 
     private final static String USERNAME = "username";
+
+    private final static String ROLE = "role";
 
     public ResponseEntity<Object> createResponseEntity(String message, HttpStatus httpStatus){
         Map<String, Object> data = new HashMap<>();
@@ -25,19 +36,23 @@ public class ResponseUtil {
         return ResponseEntity.status(httpStatus).body(data);
     }
 
-    public void sendMessage(HttpServletResponse response, boolean isLogIn, String username, HttpStatus httpStatus, String message) throws IOException {
-        Map<String, String> data = new HashMap<>();
-        data.put(MESSAGE, message);
+    public void sendMessage(HttpServletResponse response, Map<String, String>data, HttpStatus httpStatus) {
+        data.put(MESSAGE, data.get(MESSAGE));
 
-        if(isLogIn){
-            data.put(USERNAME, username);
+        if(data.containsKey(USERNAME)){
+            data.put(USERNAME, data.get(USERNAME));
+            data.put(ROLE, data.get(ROLE));
         }
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getWriter().write(objectMapper.writeValueAsString(data));
+        try{
+            response.getWriter().write(objectMapper.writeValueAsString(data));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
         response.setStatus(httpStatus.value());
     }
 

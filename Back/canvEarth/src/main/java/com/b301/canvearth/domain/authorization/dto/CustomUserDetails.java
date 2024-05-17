@@ -8,6 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/*
+    Security 인증 인가를 위한 커스텀 UserDetails
+     - UserEntity 사용
+ */
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 

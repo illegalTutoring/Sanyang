@@ -2,219 +2,212 @@
 
 import SupportCard from '@/component/SupportCard'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './support.module.scss'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Modal from '@/component/layout/Modal'
+import { getSupportList } from '@/utils/api/support'
+import {
+    modifySupportRequestDTO,
+    supportDetailInfo,
+} from '@/utils/api/DTO/support'
+import { registSupport, modifySupport, deleteSupport } from '@/utils/api/admin'
 
-const components: { [key: string]: React.ComponentType<any> } = {
-    artstation: dynamic(() => import('@/component/support/Artstation')),
-    cafe: dynamic(() => import('@/component/support/Cafe')),
-    instagram: dynamic(() => import('@/component/support/Instagram')),
-    pixiv: dynamic(() => import('@/component/support/Pixiv')),
-    x: dynamic(() => import('@/component/support/X')),
-    youtube: dynamic(() => import('@/component/support/Youtube')),
-}
-
-interface Domain {
-    key: string
-    url: string
-    text: string
-}
-
-const getDomains = (): Domain[] => {
-    return [
-        {
-            key: 'artstation',
-            url: 'https://www.artstation.com/yourprofile',
-            text: 'ArtStation에서 제 작품들을 확인해보세요!',
-        },
-        {
-            key: 'cafe',
-            url: 'https://cafe.naver.com/yourcommunity',
-            text: '네이버 카페에서 저와 함께 다양한 주제로 이야기해요!',
-        },
-        {
-            key: 'instagram',
-            url: 'https://www.instagram.com/yourusername',
-            text: 'Instagram에서 제 일상과 작품들을 만나보세요!',
-        },
-        {
-            key: 'pixiv',
-            url: 'https://www.pixiv.net/users/yourid',
-            text: 'Pixiv에서 제 그림들을 감상하실 수 있습니다!',
-        },
-        {
-            key: 'x',
-            url: 'https://www.x.com/yourprofile',
-            text: 'X에서 실시간으로 저와 소통할 수 있어요!',
-        },
-        {
-            key: 'youtube',
-            url: 'https://www.youtube.com/c/yourchannel',
-            text: 'YouTube에서 제 콘텐츠를 구독하고 최신 비디오를 확인하세요!',
-        },
-    ]
+export interface registSupportRequestDTO {
+    title: string
+    uploadDate: string
+    supportLink: Array<{ link: string; name: string }>
+    content: string
 }
 
 const SupportPage: React.FC = () => {
-    const domains = getDomains()
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
+    // 지역 변수
     const [addMode, setAddMode] = useState(false)
+    const [updateMode, setUpdateMode] = useState(false)
+    const [supportData, setSupportData] = useState<supportDetailInfo[]>([])
+    const [addFormData, setAddFormData] = useState<registSupportRequestDTO>({
+        title: '',
+        uploadDate: '',
+        supportLink: [{ link: '', name: '' }],
+        content: '',
+    })
+    const [modifyFormData, setModifyFormData] =
+        useState<modifySupportRequestDTO>({
+            supportId: -1,
+            title: '',
+            supportLink: [{ link: '', name: '' }],
+            content: '',
+        })
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [imageURL, setImageURL] = useState<string | null>(null)
 
+    // 토글 함수
     const toggleAddMode = () => {
+        setAddFormData({
+            title: '',
+            uploadDate: '',
+            supportLink: [{ link: '', name: '' }],
+            content: '',
+        })
+        setSelectedFile(null)
         setAddMode((prev) => !prev)
     }
 
-    const supportData = [
-        {
-            supportId: 1,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-05',
+    const toggleUpdateMode = () => {
+        setSelectedFile(null)
+        setUpdateMode((prev) => !prev)
+    }
+
+    // fetch 함수
+    const fetchSupport = async () => {
+        const response = (await getSupportList()) || []
+        setSupportData(response.data)
+    }
+
+    const fetchFormData = async (item: modifySupportRequestDTO) => {
+        setModifyFormData(item)
+    }
+
+    // 훅
+    useEffect(() => {
+        fetchSupport()
+    }, [addMode, updateMode])
+
+    // 이밴트 핸들러
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0]
+            setSelectedFile(file)
+
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setImageURL(reader.result as string)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleAddInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        index?: number,
+    ) => {
+        const { name, value } = e.target
+        if (index !== undefined) {
+            const updatedSupportLink = [...addFormData.supportLink]
+            updatedSupportLink[index] = {
+                ...updatedSupportLink[index],
+                [name]: value,
+            }
+            setAddFormData({ ...addFormData, supportLink: updatedSupportLink })
+        } else {
+            setAddFormData({ ...addFormData, [name]: value })
+        }
+    }
+
+    const handleUpdateInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        index?: number,
+    ) => {
+        const { name, value } = e.target
+        if (index !== undefined) {
+            const updatedSupportLink = [...modifyFormData.supportLink]
+            updatedSupportLink[index] = {
+                ...updatedSupportLink[index],
+                [name]: value,
+            }
+            setModifyFormData({
+                ...modifyFormData,
+                supportLink: updatedSupportLink,
+            })
+        } else {
+            setModifyFormData({ ...modifyFormData, [name]: value })
+        }
+    }
+
+    const handleAddModalAddSupportLink = () => {
+        setAddFormData({
+            ...addFormData,
+            supportLink: [...addFormData.supportLink, { link: '', name: '' }],
+        })
+    }
+
+    const handleAddModalRemoveSupportLink = (index: number) => {
+        const updatedSupportLink = addFormData.supportLink.filter(
+            (_, i) => i !== index,
+        )
+        setAddFormData({ ...addFormData, supportLink: updatedSupportLink })
+    }
+
+    const handleUpdateModalAddSupportLink = () => {
+        setModifyFormData({
+            ...modifyFormData,
             supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
+                ...modifyFormData.supportLink,
+                { link: '', name: '' },
             ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 2,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-05',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 7,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-04',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 0,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-        {
-            supportId: 3,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
-            ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 4,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-02',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 5,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 6,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-    ]
+        })
+    }
+
+    const handleUpdateModalRemoveSupportLink = (index: number) => {
+        const updatedSupportLink = modifyFormData.supportLink.filter(
+            (_, i) => i !== index,
+        )
+        setModifyFormData({
+            ...modifyFormData,
+            supportLink: updatedSupportLink,
+        })
+    }
+
+    const handleAddSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const data: registSupportRequestDTO = {
+            title: addFormData.title,
+            uploadDate: addFormData.uploadDate,
+            supportLink: addFormData.supportLink,
+            content: addFormData.content,
+        }
+
+        if (!selectedFile) return
+
+        await registSupport(data, selectedFile)
+        toggleAddMode()
+    }
+
+    const handleUpdateSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const data: modifySupportRequestDTO = {
+            supportId: modifyFormData.supportId,
+            title: modifyFormData.title,
+            supportLink: modifyFormData.supportLink,
+            content: modifyFormData.content,
+        }
+
+        if (!selectedFile) return
+        await modifySupport(data, selectedFile)
+
+        toggleUpdateMode()
+    }
+
+    const handleRemoveSupport = async (supportId: number) => {
+        await deleteSupport(supportId)
+
+        toggleUpdateMode()
+    }
+
+    function getCurrentDate() {
+        const today = new Date()
+        const year = today.getFullYear()
+        const month = String(today.getMonth() + 1).padStart(2, '0')
+        const day = String(today.getDate()).padStart(2, '0')
+
+        return `${year}-${month}-${day}`
+    }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -233,16 +226,335 @@ const SupportPage: React.FC = () => {
                     items={supportData}
                     isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
+                    addTogle={toggleAddMode}
+                    updateTogle={toggleUpdateMode}
+                    setInitData={fetchFormData}
                 />
             </div>
 
             <Modal
                 isVisible={addMode}
                 toggleModal={toggleAddMode}
-                width="60vw"
-                height="60vh"
+                width="fit-content"
+                height="fit-content"
             >
-                <div></div>
+                <form
+                    onSubmit={handleAddSubmit}
+                    className={`${isDarkMode ? 'dark' : 'light'}`}
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(auto-fit, 250px, 1fr)`,
+                        gridGap: '20px',
+                        padding: '10px',
+                    }}
+                >
+                    <div className={styles.cardAddModal}>
+                        <div
+                            className={styles.cardAddModalHeader}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '60px 1fr',
+                            }}
+                        >
+                            <div
+                                className={styles.cardAddModalHeaderAddImage}
+                                onClick={() =>
+                                    document
+                                        .getElementById('fileInput')
+                                        ?.click()
+                                }
+                            >
+                                {imageURL ? (
+                                    <img src={imageURL} alt="Selected" />
+                                ) : isDarkMode ? (
+                                    <img
+                                        src="/svgs/image_plus_white.svg"
+                                        alt="Plus"
+                                    />
+                                ) : (
+                                    <img
+                                        src="/svgs/image_plus_black.svg"
+                                        alt="Plus"
+                                    />
+                                )}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '20px' }}>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={addFormData.title}
+                                        onChange={(e) =>
+                                            handleAddInputChange(e)
+                                        }
+                                        placeholder="제목"
+                                        style={{
+                                            color: isDarkMode
+                                                ? 'white'
+                                                : 'black',
+                                        }}
+                                        required
+                                    />
+                                </div>
+                                <hr></hr>
+                                <div className={styles.dateBox}>
+                                    <div>{getCurrentDate()}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.cardAddModalContent}>
+                            <textarea
+                                name="content"
+                                placeholder="내용을 입력해주세요.."
+                                value={addFormData.content}
+                                onChange={(e) => handleAddInputChange(e)}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    resize: 'none',
+                                }}
+                                required
+                            />
+                        </div>
+                        <div
+                            className={`${styles.cardAddModalLinkContainer} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                        >
+                            {addFormData.supportLink.map((link, index) => (
+                                <div
+                                    className={styles.cardAddModalLink}
+                                    key={index}
+                                >
+                                    <input
+                                        className={styles.cardAddModalLinkTitle}
+                                        type="text"
+                                        name="name"
+                                        value={link.name}
+                                        onChange={(e) =>
+                                            handleAddInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="후원링크 제목 입력"
+                                    />
+                                    <input
+                                        className={styles.cardAddModalLinkUrl}
+                                        type="url"
+                                        name="link"
+                                        value={link.link}
+                                        onChange={(e) =>
+                                            handleAddInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="링크 url 입력"
+                                    />
+                                    {index > 0 ? (
+                                        <img
+                                            onClick={() =>
+                                                handleAddModalRemoveSupportLink(
+                                                    index,
+                                                )
+                                            }
+                                            src="svgs/delete_red.svg"
+                                        />
+                                    ) : (
+                                        <img
+                                            onClick={
+                                                handleAddModalAddSupportLink
+                                            }
+                                            src="svgs/add_blue.svg"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.cardAddModalSubmit}>
+                            <button
+                                style={{ width: '100%' }}
+                                className={styles.blueButton}
+                                type="submit"
+                            >
+                                후원카드 등록
+                            </button>
+                        </div>
+                        <input
+                            id="fileInput"
+                            type="file"
+                            name="upfile"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+                        <input
+                            type="date"
+                            name="uploadDate"
+                            value={getCurrentDate()}
+                            onChange={(e) => handleAddInputChange(e)}
+                            style={{ display: 'none' }}
+                            required
+                        />
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal
+                isVisible={updateMode}
+                toggleModal={toggleUpdateMode}
+                width="fit-content"
+                height="fit-content"
+            >
+                <form onSubmit={handleUpdateSubmit}>
+                    <div className={styles.cardAddModal}>
+                        <div
+                            className={styles.cardAddModalHeader}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '60px 1fr',
+                            }}
+                        >
+                            <div
+                                className={styles.cardAddModalHeaderAddImage}
+                                onClick={() =>
+                                    document
+                                        .getElementById('fileInput')
+                                        ?.click()
+                                }
+                            >
+                                {imageURL ? (
+                                    <img src={imageURL} alt="Selected" />
+                                ) : isDarkMode ? (
+                                    <img
+                                        src="/svgs/image_plus_white.svg"
+                                        alt="Plus"
+                                    />
+                                ) : (
+                                    <img
+                                        src="/svgs/image_plus_black.svg"
+                                        alt="Plus"
+                                    />
+                                )}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '20px' }}>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={modifyFormData.title}
+                                        onChange={(e) =>
+                                            handleUpdateInputChange(e)
+                                        }
+                                        required
+                                        style={{
+                                            color: isDarkMode
+                                                ? 'white'
+                                                : 'black',
+                                        }}
+                                    />
+                                </div>
+                                <hr></hr>
+                                <div className={styles.dateBox}>
+                                    <div>{getCurrentDate()}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.cardAddModalContent}>
+                            <textarea
+                                placeholder="내용을 입력해주세요.."
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    resize: 'none',
+                                }}
+                                name="content"
+                                value={modifyFormData.content}
+                                onChange={(e) => handleUpdateInputChange(e)}
+                                required
+                            />
+                        </div>
+                        <div
+                            className={`${styles.cardAddModalLinkContainer} ${isDarkMode ? styles.linkBoxDark : styles.linkBoxLight}`}
+                        >
+                            {modifyFormData.supportLink.map((link, index) => (
+                                <div
+                                    className={styles.cardAddModalLink}
+                                    key={index}
+                                >
+                                    <input
+                                        className={styles.cardAddModalLinkTitle}
+                                        type="text"
+                                        name="name"
+                                        value={link.name}
+                                        onChange={(e) =>
+                                            handleUpdateInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="후원링크 제목 입력"
+                                    />
+                                    <input
+                                        className={styles.cardAddModalLinkUrl}
+                                        type="url"
+                                        name="link"
+                                        value={link.link}
+                                        onChange={(e) =>
+                                            handleUpdateInputChange(e, index)
+                                        }
+                                        required
+                                        placeholder="링크 url 입력"
+                                    />
+                                    {index > 0 ? (
+                                        <img
+                                            onClick={() =>
+                                                handleUpdateModalRemoveSupportLink(
+                                                    index,
+                                                )
+                                            }
+                                            src="svgs/delete_red.svg"
+                                        />
+                                    ) : (
+                                        <img
+                                            onClick={
+                                                handleUpdateModalAddSupportLink
+                                            }
+                                            src="svgs/add_blue.svg"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.cardAddModalSubmit}>
+                            <button className={styles.blueButton} type="submit">
+                                업데이트
+                            </button>
+                            <button
+                                className={styles.redButton}
+                                onClick={() =>
+                                    handleRemoveSupport(
+                                        modifyFormData.supportId,
+                                    )
+                                }
+                            >
+                                삭제
+                            </button>
+                        </div>
+                        <input
+                            id="fileInput"
+                            type="file"
+                            name="upfile"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+                        <input
+                            type="date"
+                            name="uploadDate"
+                            value={getCurrentDate()}
+                            onChange={(e) => handleUpdateInputChange(e)}
+                            style={{ display: 'none' }}
+                            required
+                        />
+                        <input
+                            type="hidden"
+                            name="supportId"
+                            value={modifyFormData.supportId}
+                        />
+                    </div>
+                </form>
             </Modal>
         </article>
     )

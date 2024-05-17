@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import styles from './BannerEditor.module.scss'
+
+// interfaces
 
 type PreviewImg = {
     name: string
@@ -6,47 +9,59 @@ type PreviewImg = {
     yindex: number
 }
 
-interface BannerEditorProps {}
+interface imageInfo {
+    coordinateX: number
+    coordinateY: number
+}
 
-const BannerEditor: React.FC<BannerEditorProps> = () => {
+export interface modifyBannerListRequestDTO {
+    images: Array<File>
+    infos: Array<imageInfo>
+}
+
+interface BannerEditorProps {
+    fetchImages: () => void
+    updateImages: (images: modifyBannerListRequestDTO) => void
+    toggleEditBanner: () => void
+    isDarkMode: boolean
+}
+
+const BannerEditor: React.FC<BannerEditorProps> = ({
+    fetchImages,
+    updateImages,
+    toggleEditBanner,
+    isDarkMode,
+}) => {
+    // 지역변수
     const [files, setFiles] = useState<File[]>([])
-    const [dragIndex, setDragIndex] = useState<number>(0)
-
     const [previewImgs, setPreviewImgs] = useState<PreviewImg[]>([])
-
+    const [defaultItem, setDefaultItem] = useState<boolean>(true)
+    const [dragIndex, setDragIndex] = useState<number | null>(null)
     const [startY, setStartY] = useState<number>(0)
     const [startTopOffset, setStartTopOffset] = useState<number>(0)
+    const [gridTemplateColumns, setGridTemplateColumns] = useState<string>(
+        'repeat(auto-fill, 150px)',
+    )
 
-    useEffect(() => {
-        if (!files.length) {
-            setPreviewImgs([])
-            return
-        }
-
-        const newPreviewImgs = files.map((file) => {
-            const fileReader = new FileReader()
-            fileReader.readAsDataURL(file)
-            return {
-                name: file.name,
-                url: '',
-                yindex: 0,
-            }
-        })
-        files.forEach((file, index) => {
-            const fileReader = new FileReader()
-            fileReader.onload = () => {
-                newPreviewImgs[index].url = fileReader.result as string
-                setPreviewImgs([...newPreviewImgs])
-            }
-            fileReader.readAsDataURL(file)
-        })
-    }, [files])
+    // 함수
 
     const filesChangedHandler = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         if (event.target.files) {
-            setFiles(Array.from(event.target.files))
+            const newFile = event.target.files[0]
+            if (newFile) {
+                setFiles((prevFiles) => [...prevFiles, newFile])
+                setDefaultItem(false) // 새로운 파일이 추가되면 기본 항목을 숨김
+            }
+        }
+    }
+
+    const removeFileHandler = (index: number) => {
+        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
+        setPreviewImgs((prevImgs) => prevImgs.filter((_, i) => i !== index))
+        if (files.length === 1) {
+            setDefaultItem(true) // 마지막 파일이 삭제되면 기본 항목을 표시
         }
     }
 
@@ -60,75 +75,153 @@ const BannerEditor: React.FC<BannerEditorProps> = () => {
         event.preventDefault()
     }
 
+    // 훅
     useEffect(() => {
-        const onMouseMove = (event: MouseEvent) => {
-            if (dragIndex !== null) {
-                const deltaY = event.clientY - startY
-                setPreviewImgs((prev) =>
-                    prev.map((preview, idx) => {
-                        if (idx === dragIndex) {
-                            return {
-                                ...preview,
-                                yindex: startTopOffset + deltaY,
-                            }
-                        }
-                        return preview
-                    }),
-                )
+        if (!files.length) {
+            setPreviewImgs([])
+            setGridTemplateColumns('repeat(auto-fill, 150px)')
+            return
+        }
+
+        const newPreviewImgs = files.map((file, index) => {
+            const fileReader = new FileReader()
+
+            fileReader.onload = () => {
+                newPreviewImgs[index].url = fileReader.result as string
+                setPreviewImgs([...newPreviewImgs])
             }
-        }
 
-        const onMouseUp = () => {
-            setDragIndex(0)
-            window.removeEventListener('mousemove', onMouseMove)
-            window.removeEventListener('mouseup', onMouseUp)
-        }
+            fileReader.readAsDataURL(file)
 
-        if (dragIndex !== null) {
-            window.addEventListener('mousemove', onMouseMove)
-            window.addEventListener('mouseup', onMouseUp)
-        }
+            return {
+                name: file.name,
+                url: '',
+                yindex: 0,
+            }
+        })
 
-        return () => {
-            window.removeEventListener('mousemove', onMouseMove)
-            window.removeEventListener('mouseup', onMouseUp)
+        const columns = `repeat(${files.length}, 1fr)`
+        setGridTemplateColumns(columns)
+    }, [files])
+
+    // useEffect(() => {
+    //     const onMouseMove = (event: MouseEvent) => {
+    //         if (dragIndex !== null) {
+    //             let deltaY = event.clientY - startY
+
+    //             deltaY = Math.max(-50, Math.min(50, deltaY))
+
+    //             setPreviewImgs((prev) =>
+    //                 prev.map((preview, idx) => {
+    //                     if (idx === dragIndex) {
+    //                         return {
+    //                             ...preview,
+    //                             yindex: startTopOffset + deltaY,
+    //                         }
+    //                     }
+    //                     return preview
+    //                 }),
+    //             )
+    //         }
+    //     }
+
+    //     const onMouseUp = () => {
+    //         setDragIndex(null)
+    //         window.removeEventListener('mousemove', onMouseMove)
+    //         window.removeEventListener('mouseup', onMouseUp)
+    //     }
+
+    //     if (dragIndex !== null) {
+    //         window.addEventListener('mousemove', onMouseMove)
+    //         window.addEventListener('mouseup', onMouseUp)
+    //     }
+
+    //     return () => {
+    //         window.removeEventListener('mousemove', onMouseMove)
+    //         window.removeEventListener('mouseup', onMouseUp)
+    //     }
+    // }, [dragIndex, startY, startTopOffset])
+
+    const convertPreviewImgsToRequestDTO = (
+        previews: PreviewImg[],
+        files: File[],
+    ): modifyBannerListRequestDTO => {
+        const infos: imageInfo[] = previews.map((preview) => ({
+            coordinateX: 0,
+            coordinateY: preview.yindex,
+        }))
+
+        return {
+            images: files,
+            infos: infos,
         }
-    }, [dragIndex, startY, startTopOffset])
+    }
+
+    const handleSubmit = () => {
+        const requestDTO = convertPreviewImgsToRequestDTO(previewImgs, files)
+        updateImages(requestDTO)
+        toggleEditBanner()
+    }
 
     return (
-        <div>
-            <input
-                type="file"
-                onChange={filesChangedHandler}
-                accept="image/*"
-                multiple
-            />
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: `repeat(${files.length}, 1fr)`,
-                    gap: 10,
-                    position: 'relative',
-                }}
-            >
-                {previewImgs.map((preview, index) => (
+        <div className={styles.bannerEditContainer}>
+            <div className={styles.bannerEditContent}>
+                {defaultItem ? (
                     <div
-                        key={preview.name}
-                        style={{ position: 'relative', cursor: 'ns-resize' }}
+                        className={styles.bannerEditItem}
+                        style={{
+                            backgroundColor: isDarkMode
+                                ? 'rgba(255,255,255,0.1)'
+                                : 'rgba(0,0,0,0.2)',
+                        }}
                     >
-                        <img
-                            src={preview.url}
-                            alt={`Preview of ${preview.name}`}
-                            style={{
-                                width: 100,
-                                height: 100,
-                                position: 'relative',
-                                top: `${preview.yindex}px`,
-                            }}
-                            onMouseDown={(e) => startDrag(index, e)}
-                        />
+                        버튼을 눌러 이미지를 추가해주세요
                     </div>
-                ))}
+                ) : (
+                    previewImgs.map((preview, index) => (
+                        <div
+                            key={preview.name}
+                            className={styles.bannerEditItem}
+                            style={{
+                                backgroundColor: isDarkMode
+                                    ? 'rgba(255,255,255,0.1)'
+                                    : 'rgba(0,0,0,0.2)',
+                            }}
+                        >
+                            {preview.name}
+                            <img
+                                onClick={() => removeFileHandler(index)}
+                                style={{ width: '30px' }}
+                                src={'/svgs/delete_red.svg'}
+                                alt="Delete"
+                            />
+                        </div>
+                    ))
+                )}
+            </div>
+            <div className={styles.bannerEditButton}>
+                <button
+                    className={styles.blueButton}
+                    onClick={() =>
+                        document.getElementById('fileInput')?.click()
+                    }
+                >
+                    <img
+                        style={{ width: '16px' }}
+                        src="/svgs/image_plus_white.svg"
+                    />
+                    추가
+                </button>
+                <input
+                    id="fileInput"
+                    type="file"
+                    onChange={filesChangedHandler}
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                />
+                <button className={styles.redButton} onClick={handleSubmit}>
+                    저장
+                </button>
             </div>
         </div>
     )

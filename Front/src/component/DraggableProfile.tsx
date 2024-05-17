@@ -4,22 +4,20 @@ import Profile from '@/component/Profile'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import styles from './DraggableProfile.module.scss'
 import { motion } from 'framer-motion'
-
-interface ProfileData {
-    type: number
-    link: string
-}
+import { embedLinkInfo } from '@/utils/api/DTO/embed'
 
 interface ProfileComponentProps {
-    item: ProfileData
+    item: embedLinkInfo
     index: number
     moveProfile: (dragIndex: number, hoverIndex: number) => void
+    modifyProfile: () => void
 }
 
 const DraggableProfile: React.FC<ProfileComponentProps> = ({
     item,
     index,
     moveProfile,
+    modifyProfile,
 }) => {
     const ref = useRef<HTMLDivElement>(null)
     const { isDarkMode } = useDarkModeStore()
@@ -93,6 +91,9 @@ const DraggableProfile: React.FC<ProfileComponentProps> = ({
                 moveProfile(dragIndex, hoverIndex)
                 item.index = hoverIndex
             }
+        },
+        drop(item: { id: string; index: number }, monitor) {
+            modifyProfile()
         },
     })
 

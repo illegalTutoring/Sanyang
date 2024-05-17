@@ -12,16 +12,11 @@ const useAuthStore = create(
     persist<AuthState>(
         (set, get) => ({
             isLoggedIn: false,
-            logIn: () => {
-                set({ isLoggedIn: true })
-
-                const { isEditMode, toggleEditMode } = useEditModeStore()
-
-                if (isEditMode) {
-                    toggleEditMode()
-                }
+            logIn: () => set({ isLoggedIn: true }),
+            logOut: () => {
+                set({ isLoggedIn: false })
+                useEditModeStore.getState().setEditMode(false)
             },
-            logOut: () => set({ isLoggedIn: false }),
         }),
         {
             name: 'AuthStorage',
