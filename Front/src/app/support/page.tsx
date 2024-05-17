@@ -12,7 +12,6 @@ import {
     supportDetailInfo,
 } from '@/utils/api/DTO/support'
 import { registSupport, modifySupport, deleteSupport } from '@/utils/api/admin'
-import { color } from 'framer-motion'
 
 export interface registSupportRequestDTO {
     title: string
@@ -22,9 +21,11 @@ export interface registSupportRequestDTO {
 }
 
 const SupportPage: React.FC = () => {
+    // 전역 변수
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
+    // 지역 변수
     const [addMode, setAddMode] = useState(false)
     const [updateMode, setUpdateMode] = useState(false)
     const [supportData, setSupportData] = useState<supportDetailInfo[]>([])
@@ -34,7 +35,6 @@ const SupportPage: React.FC = () => {
         supportLink: [{ link: '', name: '' }],
         content: '',
     })
-
     const [modifyFormData, setModifyFormData] =
         useState<modifySupportRequestDTO>({
             supportId: -1,
@@ -42,23 +42,29 @@ const SupportPage: React.FC = () => {
             supportLink: [{ link: '', name: '' }],
             content: '',
         })
-
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [imageURL, setImageURL] = useState<string | null>(null)
 
+    // 토글 함수
     const toggleAddMode = () => {
+        setAddFormData({
+            title: '',
+            uploadDate: '',
+            supportLink: [{ link: '', name: '' }],
+            content: '',
+        })
+        setSelectedFile(null)
         setAddMode((prev) => !prev)
     }
 
     const toggleUpdateMode = () => {
+        setSelectedFile(null)
         setUpdateMode((prev) => !prev)
     }
 
+    // fetch 함수
     const fetchSupport = async () => {
         const response = await getSupportList()
-
-        console.log(response.data)
-
         setSupportData(response.data)
     }
 
@@ -66,10 +72,12 @@ const SupportPage: React.FC = () => {
         setModifyFormData(item)
     }
 
+    // 훅
     useEffect(() => {
         fetchSupport()
     }, [addMode, updateMode])
 
+    // 이밴트 핸들러
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0]
@@ -83,7 +91,7 @@ const SupportPage: React.FC = () => {
         }
     }
 
-    const handleInputChange = (
+    const handleAddInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         index?: number,
     ) => {
@@ -100,7 +108,7 @@ const SupportPage: React.FC = () => {
         }
     }
 
-    const handleUpdateChange = (
+    const handleUpdateInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         index?: number,
     ) => {
@@ -120,18 +128,38 @@ const SupportPage: React.FC = () => {
         }
     }
 
-    const handleAddSupportLink = () => {
+    const handleAddModalAddSupportLink = () => {
         setAddFormData({
             ...addFormData,
             supportLink: [...addFormData.supportLink, { link: '', name: '' }],
         })
     }
 
-    const handleRemoveSupportLink = (index: number) => {
+    const handleAddModalRemoveSupportLink = (index: number) => {
         const updatedSupportLink = addFormData.supportLink.filter(
             (_, i) => i !== index,
         )
         setAddFormData({ ...addFormData, supportLink: updatedSupportLink })
+    }
+
+    const handleUpdateModalAddSupportLink = () => {
+        setModifyFormData({
+            ...modifyFormData,
+            supportLink: [
+                ...modifyFormData.supportLink,
+                { link: '', name: '' },
+            ],
+        })
+    }
+
+    const handleUpdateModalRemoveSupportLink = (index: number) => {
+        const updatedSupportLink = modifyFormData.supportLink.filter(
+            (_, i) => i !== index,
+        )
+        setModifyFormData({
+            ...modifyFormData,
+            supportLink: updatedSupportLink,
+        })
     }
 
     const handleAddSubmit = async (e: React.FormEvent) => {
@@ -161,7 +189,7 @@ const SupportPage: React.FC = () => {
         }
 
         if (!selectedFile) return
-        modifySupport(data, selectedFile)
+        await modifySupport(data, selectedFile)
 
         toggleUpdateMode()
     }
@@ -175,7 +203,7 @@ const SupportPage: React.FC = () => {
     function getCurrentDate() {
         const today = new Date()
         const year = today.getFullYear()
-        const month = String(today.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 +1 필요
+        const month = String(today.getMonth() + 1).padStart(2, '0')
         const day = String(today.getDate()).padStart(2, '0')
 
         return `${year}-${month}-${day}`
@@ -256,7 +284,9 @@ const SupportPage: React.FC = () => {
                                         type="text"
                                         name="title"
                                         value={addFormData.title}
-                                        onChange={handleInputChange}
+                                        onChange={(e) =>
+                                            handleAddInputChange(e)
+                                        }
                                         placeholder="제목"
                                         style={{
                                             color: isDarkMode
@@ -277,7 +307,7 @@ const SupportPage: React.FC = () => {
                                 name="content"
                                 placeholder="내용을 입력해주세요.."
                                 value={addFormData.content}
-                                onChange={handleInputChange}
+                                onChange={(e) => handleAddInputChange(e)}
                                 style={{
                                     width: '100%',
                                     padding: '8px',
@@ -300,7 +330,7 @@ const SupportPage: React.FC = () => {
                                         name="name"
                                         value={link.name}
                                         onChange={(e) =>
-                                            handleInputChange(e, index)
+                                            handleAddInputChange(e, index)
                                         }
                                         required
                                         placeholder="후원링크 제목 입력"
@@ -311,7 +341,7 @@ const SupportPage: React.FC = () => {
                                         name="link"
                                         value={link.link}
                                         onChange={(e) =>
-                                            handleInputChange(e, index)
+                                            handleAddInputChange(e, index)
                                         }
                                         required
                                         placeholder="링크 url 입력"
@@ -319,13 +349,17 @@ const SupportPage: React.FC = () => {
                                     {index > 0 ? (
                                         <img
                                             onClick={() =>
-                                                handleRemoveSupportLink(index)
+                                                handleAddModalRemoveSupportLink(
+                                                    index,
+                                                )
                                             }
                                             src="svgs/delete_red.svg"
                                         />
                                     ) : (
                                         <img
-                                            onClick={handleAddSupportLink}
+                                            onClick={
+                                                handleAddModalAddSupportLink
+                                            }
                                             src="svgs/add_blue.svg"
                                         />
                                     )}
@@ -340,7 +374,7 @@ const SupportPage: React.FC = () => {
                         <input
                             id="fileInput"
                             type="file"
-                            required
+                            name="upfile"
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
@@ -348,6 +382,7 @@ const SupportPage: React.FC = () => {
                             type="date"
                             name="uploadDate"
                             value={getCurrentDate()}
+                            onChange={(e) => handleAddInputChange(e)}
                             style={{ display: 'none' }}
                             required
                         />
@@ -398,7 +433,9 @@ const SupportPage: React.FC = () => {
                                         type="text"
                                         name="title"
                                         value={modifyFormData.title}
-                                        onChange={handleUpdateChange}
+                                        onChange={(e) =>
+                                            handleUpdateInputChange(e)
+                                        }
                                         required
                                         style={{
                                             color: isDarkMode
@@ -423,7 +460,7 @@ const SupportPage: React.FC = () => {
                                 }}
                                 name="content"
                                 value={modifyFormData.content}
-                                onChange={handleUpdateChange}
+                                onChange={(e) => handleUpdateInputChange(e)}
                                 required
                             />
                         </div>
@@ -441,7 +478,7 @@ const SupportPage: React.FC = () => {
                                         name="name"
                                         value={link.name}
                                         onChange={(e) =>
-                                            handleInputChange(e, index)
+                                            handleUpdateInputChange(e, index)
                                         }
                                         required
                                         placeholder="후원링크 제목 입력"
@@ -452,7 +489,7 @@ const SupportPage: React.FC = () => {
                                         name="link"
                                         value={link.link}
                                         onChange={(e) =>
-                                            handleInputChange(e, index)
+                                            handleUpdateInputChange(e, index)
                                         }
                                         required
                                         placeholder="링크 url 입력"
@@ -460,15 +497,17 @@ const SupportPage: React.FC = () => {
                                     {index > 0 ? (
                                         <img
                                             onClick={() =>
-                                                handleRemoveSupport(
-                                                    modifyFormData.supportId,
+                                                handleUpdateModalRemoveSupportLink(
+                                                    index,
                                                 )
                                             }
                                             src="svgs/delete_red.svg"
                                         />
                                     ) : (
                                         <img
-                                            onClick={handleAddSupportLink}
+                                            onClick={
+                                                handleUpdateModalAddSupportLink
+                                            }
                                             src="svgs/add_blue.svg"
                                         />
                                     )}
@@ -479,11 +518,21 @@ const SupportPage: React.FC = () => {
                             <button className={styles.blueButton} type="submit">
                                 후원카드 업데이트
                             </button>
+                            <button
+                                className={styles.redButton}
+                                onClick={() =>
+                                    handleRemoveSupport(
+                                        modifyFormData.supportId,
+                                    )
+                                }
+                            >
+                                후원카드 삭제
+                            </button>
                         </div>
                         <input
                             id="fileInput"
                             type="file"
-                            required
+                            name="upfile"
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
@@ -491,6 +540,7 @@ const SupportPage: React.FC = () => {
                             type="date"
                             name="uploadDate"
                             value={getCurrentDate()}
+                            onChange={(e) => handleUpdateInputChange(e)}
                             style={{ display: 'none' }}
                             required
                         />
