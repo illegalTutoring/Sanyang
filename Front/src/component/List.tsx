@@ -37,7 +37,7 @@ const List: React.FC<ListProps> = ({
     columnNames = [],
     columns,
     columnWidth = [],
-    currentPage = [],
+    currentPage,
     data = [],
     isDarkMode,
     isEditMode,
