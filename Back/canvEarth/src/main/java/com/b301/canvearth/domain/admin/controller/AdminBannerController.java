@@ -1,8 +1,10 @@
 package com.b301.canvearth.domain.admin.controller;
 
-import com.b301.canvearth.domain.admin.dto.BannerRequestPutDto;
+import com.b301.canvearth.domain.admin.dto.request.BannerRequestPutDto;
 import com.b301.canvearth.domain.banner.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,31 +20,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@Tag(name = "admin banner", description = "ADMIN BANNER API")
 @RequestMapping("/api/admin/banner")
+@Tag(name = "admin banner", description = "ADMIN BANNER API")
 public class AdminBannerController {
 
     private final BannerService bannerService;
 
-    @Operation(summary = "REQ-ADMIN-03", description = "배너 이미지 변경")
+    private final static String MESSAGE = "message";
+
+
     @PutMapping()
-    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "image")List<MultipartFile> image, @RequestPart(value = "info")  BannerRequestPutDto info){
-
-        log.info("=========================START AdminBannerController.modifyBannerList ==========================");
-        log.info("image1: {} ", image.get(0).getOriginalFilename());
-//        log.info("image2: {} ", image.get(1).getOriginalFilename());
-        log.info("info: {}", info.getImageInfo());
-
-
+    @Operation(summary = "REQ-ADMIN-03", description = "배너 이미지 변경")
+    @ApiResponse(responseCode = "200", description = "배너 변경 완료")
+    @ApiResponse(responseCode = "400" ,description = "파일이 없습니다.")
+    @ApiResponse(responseCode = "400" ,description = "용량이 너무 큽니다.")
+    @ApiResponse(responseCode = "415" ,description = "지원하지 않는 파일 형식입니다")
+    @ApiResponse(responseCode = "500" ,description = "서버에러")
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<Object> modifyBannerList(@RequestPart(value = "images", required = false)List<MultipartFile> images, @RequestPart(value = "infos", required = false)  List<BannerRequestPutDto> infos){
+        log.info("===== [AdminBannerController] modifyBannerList START =====");
+        log.info("[images]: {}", images);
+        log.info("[infos] : {}", infos);
 
         Map<String, Object> responseBody = new HashMap<>();
 
-        String message = bannerService.updateBanner(image, info);
+        String message = bannerService.updateBanner(images, infos);
 
-        responseBody.put("message", message);
+        responseBody.put(MESSAGE, message);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

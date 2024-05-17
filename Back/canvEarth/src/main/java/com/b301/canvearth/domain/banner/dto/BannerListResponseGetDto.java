@@ -1,18 +1,22 @@
 package com.b301.canvearth.domain.banner.dto;
 
-import com.b301.canvearth.domain.banner.entity.Banner;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter @ToString
 public class BannerListResponseGetDto {
-    List<Banner> bannerList;
+
+    private String imagePath;
+    private double coordinateX;
+    private double coordinateY;
+    private int order;
 
     @Builder
-    public BannerListResponseGetDto(List<Banner> bannerList) {
-        this.bannerList = bannerList;
+    public BannerListResponseGetDto(String imagePath, double coordinateX, double coordinateY, int order) {
+        this.imagePath = imagePath;
+        this.coordinateX = coordinateX;
+        this.coordinateY = coordinateY;
+        this.order = order;
     }
 }

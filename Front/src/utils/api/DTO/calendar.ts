@@ -1,9 +1,8 @@
 import { serverResponseDTO } from './common'
 
-interface calendarInfo {
+export interface calendarInfo {
     calendarId: number
-    userId: string
-    company: string
+    userId: String
     title: string
     startDate: string
     endDate: string
@@ -14,7 +13,6 @@ export interface getCalendarResponseDTO extends serverResponseDTO {
 }
 
 export interface registCalendarRequestDTO {
-    userId: string
     title: string
     startDate: string
     endDate: string
@@ -22,7 +20,6 @@ export interface registCalendarRequestDTO {
 
 export interface modifyCalendarRequestDTO {
     calendarId: number
-    userId: string
     title: string
     startDate: string
     endDate: string

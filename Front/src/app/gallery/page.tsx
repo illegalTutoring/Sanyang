@@ -1,190 +1,21 @@
-'use client'
+import React from 'react'
+import { getGalleryList } from '@/utils/api/gallery'
+import { galleryInfo } from '@/utils/api/DTO/gallery'
+import ClientPage from './clientPage'
 
-import React, { useState } from 'react'
-import styles from './gallery.module.scss'
-import Gallery from '@/component/Gallery'
-import TagInput from '@/component/TagInput'
-import Modal from '@/component/layout/Modal'
-import GridGallery from '@/component/GridGallery'
-import useDarkModeStore from '@/utils/store/useThemaStore'
+/**
+ * @todo Error Handling
+ */
 
-const GalleryPage = () => {
-    const { isDarkMode } = useDarkModeStore()
+const fetchGallery = async () => {
+    const response = await getGalleryList()
+    return response.data || []
+}
 
-    const defaultImages = [
-        {
-            galleryId: 1,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 2,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 3,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 4,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FhdMW1daAAEtiR8?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 5,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/GEh332ebYAAwJxD?format=png&name=900x900',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 6,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=large',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 7,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/Ff2H_LQaEAE5Pi_?format=jpg&name=4096x4096',
-            watermark: 's3 path watermark',
-        },
-        {
-            galleryId: 8,
-            userId: 'sanyang',
-            title: 'd&f 캐릭터 작업',
-            startDate: '2024-04-01',
-            endDate: '2024-04-30',
-            uploadDate: '2024-04-12 12:12:12',
-            tags: ['d&f', '캐릭터'],
-            original: 's3 path',
-            thumbnail:
-                'https://pbs.twimg.com/media/Fenjik9aMAA-oYi?format=jpg&name=small',
-            watermark: 's3 path watermark',
-        },
-    ]
+const GalleryPage = async () => {
+    let images: galleryInfo[] = (await fetchGallery()) || []
 
-    const defaultImages2 = defaultImages.slice(0, 4)
-
-    const tags = [
-        'apple',
-        'alalal',
-        'apricot',
-        'avocado',
-        'acai',
-        'acerola',
-        'anchovy',
-        'antelope',
-        'ant',
-        'anaconda',
-        'asteroid',
-        'aster',
-        'aspen',
-        'amethyst',
-        'amber',
-        'arrow',
-        'armor',
-        'amphibian',
-        'aluminum',
-        'arsenic',
-        'apartment',
-        'avenue',
-        'answer',
-        'astronomy',
-        'algebra',
-        'artifact',
-        'alchemy',
-        'angle',
-        'argyle',
-        'ascot',
-        'artifact',
-        'aviation',
-        'aviary',
-        'axis',
-    ]
-
-    return (
-        <div className={`${styles.container} ${isDarkMode ? 'dark' : 'light'}`}>
-            <div
-                className={`${isDarkMode ? styles.darkGalleryWrapper : styles.lightGalleryWrapper}`}
-            >
-                <div style={{ fontSize: '25px', marginBottom: '5px' }}>
-                    최신 업데이트
-                </div>
-                <GridGallery
-                    images={defaultImages2}
-                    width={'100%'}
-                    height={'300px'}
-                    colCount={defaultImages2.length}
-                />
-            </div>
-            <div>
-                <TagInput availableTags={tags} />
-            </div>
-            <div>
-                <Gallery
-                    images={defaultImages}
-                    width={'100%'}
-                    height={'400px'}
-                    colCount={4}
-                />
-            </div>
-        </div>
-    )
+    return <ClientPage propsImages={images}></ClientPage>
 }
 
 export default GalleryPage

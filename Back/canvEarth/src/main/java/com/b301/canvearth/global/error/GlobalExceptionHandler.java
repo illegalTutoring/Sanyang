@@ -1,25 +1,17 @@
 package com.b301.canvearth.global.error;
 
+import com.amazonaws.AmazonServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -31,11 +23,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.builder().message(errorCode.getErrorMessage()).build();
         return handleExceptionInternal(e, errorResponse, errorCode.getHttpStatus(), request);
+    }
 
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public ResponseEntity<Object> handleArgumentException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
+        return handleExceptionInternal(ex, errorResponse, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {AmazonServiceException.class})
+    public ResponseEntity<Object> handleAmazonException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder().message(ex.getMessage()).build();
+        return handleExceptionInternal(ex, errorResponse, HttpStatus.UNAUTHORIZED, request);
     }
 
 
-    @ExceptionHandler(value = {NullPointerException.class, Exception.class, ArrayIndexOutOfBoundsException.class})
+    @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder().message("서버에러").build();
@@ -58,7 +61,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             }
         }
 
-
         if (httpStatus.equals(HttpStatus.INTERNAL_SERVER_ERROR) && body == null) {
             request.setAttribute("jakarta.servlet.error.exception", ex, 0);
         }
@@ -78,10 +80,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.info("================================================================================");
 
-        return this.createResponseEntity(body, httpStatus, request);
+        return this.createResponseEntity(body, httpStatus);
     }
 
-    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus, WebRequest request) {
+    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpStatus httpStatus) {
         return ResponseEntity.status(httpStatus).body(body);
     }
 

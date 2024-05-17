@@ -1,0 +1,27 @@
+.banner {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    padding: 0 0 0 20px;
+    margin-bottom: 20px;
+}
+
+.darkBanner {
+    background: linear-gradient(
+        to right,
+        rgb(97, 44, 97),
+        rgb(196, 98, 152),
+        rgb(196, 98, 126)
+    );
+}
+
+.lightBanner {
+    background: linear-gradient(
+        to right,
+        rgb(246, 247, 202),
+        rgb(208, 204, 146),
+        rgb(143, 179, 92)
+    );
+}

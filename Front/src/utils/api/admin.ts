@@ -29,9 +29,20 @@ import {
     modifyEmbedLinkRequestDTO,
     modifyEmbedLinkResponseDTO,
 } from './DTO/embed'
-
-// TODO: redux에서 값을 가져오도록 수정할 것.
-let accessToken: string = 'TEST_ACCESS_TOKEN_IT_MUST_BE_CHANGED'
+import userStore from '../store/useUserStore'
+import {
+    deleteNoticeResponseDTO,
+    modifyNoticeRequestDTO,
+    modifyNoticeResponseDTO,
+    registNoticeRequestDTO,
+    registNoticeResponseDTO,
+} from './DTO/notice'
+import {
+    deleteSupportResponseDTO,
+    modifySupportRequestDTO,
+    modifySupportResponseDTO,
+    registSupportResponseDTO,
+} from './DTO/support'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
@@ -41,7 +52,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 export function registWork(
     data: registWorkRequestDTO,
     image: File,
-): reigstWorkResponseDTO {
+): Promise<reigstWorkResponseDTO> {
     /**
      * 외주 등록
      *
@@ -65,7 +76,7 @@ export function registWork(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -77,7 +88,7 @@ export function registWork(
 export function modifyWork(
     data: modifyWorkRequestDTO,
     image: File | null,
-): modifyWorkResponseDTO {
+): Promise<modifyWorkResponseDTO> {
     /**
      * 외주 수정
      *
@@ -101,7 +112,7 @@ export function modifyWork(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -110,7 +121,7 @@ export function modifyWork(
     )
 }
 
-export function deleteWork(workId: number): deleteWorkResponseDTO {
+export function deleteWork(workId: number): Promise<deleteWorkResponseDTO> {
     /**
      * 외주 삭제
      *
@@ -123,7 +134,7 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/work/${workId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -141,7 +152,7 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
 export function registGallery(
     data: registGalleryRequestDTO,
     image: File,
-): registGalleryResponseDTO {
+): Promise<registGalleryResponseDTO> {
     /**
      * 갤러리 등록
      *
@@ -164,7 +175,7 @@ export function registGallery(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -176,7 +187,7 @@ export function registGallery(
 export function modifyGallery(
     data: modifyGalleryRequestDTO,
     image: File | null,
-): modifyGalleryResponseDTO {
+): Promise<modifyGalleryResponseDTO> {
     /**
      * 갤러리 수정
      *
@@ -200,7 +211,7 @@ export function modifyGallery(
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -209,7 +220,9 @@ export function modifyGallery(
     )
 }
 
-export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
+export function deleteGallery(
+    galleryId: number,
+): Promise<deleteGalleryResponseDTO> {
     /**
      * 갤러리 삭제
      *
@@ -222,7 +235,7 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/gallery/${galleryId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -239,7 +252,7 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
 
 export function registCalendar(
     data: registCalendarRequestDTO,
-): registCalendarResponseDTO {
+): Promise<registCalendarResponseDTO> {
     /**
      * 일정 등록
      *
@@ -253,7 +266,7 @@ export function registCalendar(
                 url: `${SERVER_URL}/admin/calendar`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -264,7 +277,7 @@ export function registCalendar(
 
 export function modifyCalendar(
     data: modifyCalendarRequestDTO,
-): modifyCalendarResponseDTO {
+): Promise<modifyCalendarResponseDTO> {
     /**
      * 일정 수정
      *
@@ -278,7 +291,7 @@ export function modifyCalendar(
                 url: `${SERVER_URL}/admin/calendar/${data.calendarId}`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -287,7 +300,9 @@ export function modifyCalendar(
     )
 }
 
-export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
+export function deleteCalendar(
+    calendarId: number,
+): Promise<deleteCalendarResponseDTO> {
     /**
      * 일정 수정
      *
@@ -300,7 +315,7 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
                 method: 'DELETE',
                 url: `${SERVER_URL}/admin/calendar/${calendarId}`,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -317,7 +332,7 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
 
 export function modifyBannerList(
     data: modifyBannerListRequestDTO,
-): modifyBannerListResponseDTO {
+): Promise<modifyBannerListResponseDTO> {
     /**
      * 배너 수정
      *
@@ -326,12 +341,21 @@ export function modifyBannerList(
 
     return axiosRequestHandler(
         async (data: modifyBannerListRequestDTO) => {
+            const blobData = new Blob([JSON.stringify(data.infos)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('infos', blobData)
+            data.images.forEach((image) => {
+                formData.append('images', image)
+            })
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
                 url: `${SERVER_URL}/admin/banner`,
-                data: data,
+                data: formData,
                 headers: {
-                    Authorization: accessToken,
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -348,7 +372,7 @@ export function modifyBannerList(
 
 export function modifyEmbedLink(
     data: modifyEmbedLinkRequestDTO,
-): modifyEmbedLinkResponseDTO {
+): Promise<modifyEmbedLinkResponseDTO> {
     /**
      * 임베드 링크 수정
      *
@@ -362,7 +386,7 @@ export function modifyEmbedLink(
                 url: `${SERVER_URL}/admin/embed`,
                 data: data,
                 headers: {
-                    Authorization: accessToken,
+                    Authorization: userStore.getState().accessToken,
                 },
             })
             return { message: response.data.message }
@@ -372,4 +396,181 @@ export function modifyEmbedLink(
 }
 
 // End - Embed API
+// #########################################################
+
+// #########################################################
+// START - Notice API
+
+export function registNotice(
+    info: registNoticeRequestDTO,
+): Promise<registNoticeResponseDTO> {
+    /**
+     * 공지사항 등록
+     *
+     * @param info - 공지사항 정보
+     */
+
+    return axiosRequestHandler(
+        async (info: registNoticeRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/notice`,
+                data: info,
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [info],
+    )
+}
+
+export function modifyNotice(
+    info: modifyNoticeRequestDTO,
+): Promise<modifyNoticeResponseDTO> {
+    /**
+     * 공지사항 수정
+     *
+     * @param info - 공지사항 정보
+     */
+
+    return axiosRequestHandler(
+        async (info: modifyNoticeRequestDTO) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/notice/${info.noticeId}`,
+                data: {
+                    title: info.title,
+                    content: info.content,
+                },
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [info],
+    )
+}
+
+export function deleteNotice(
+    noticeId: number,
+): Promise<deleteNoticeResponseDTO> {
+    /**
+     * 공지사항 삭제
+     *
+     * @param noticeId - 공지 사항 id
+     */
+
+    return axiosRequestHandler(async (noticeId: number) => {
+        const response: AxiosResponse<any, any> = await axios({
+            method: 'DELETE',
+            url: `${SERVER_URL}/admin/notice/${noticeId}`,
+            headers: {
+                Authorization: userStore.getState().accessToken,
+            },
+        })
+        return { message: response.data.message }
+    }, [])
+}
+
+// End - Notice API
+// #########################################################
+
+// #########################################################
+// START - Support API
+
+export function registSupport(
+    info: registSupportResponseDTO,
+    image: File,
+): Promise<registSupportResponseDTO> {
+    /**
+     * 후원 등록
+     */
+    return axiosRequestHandler(
+        async (info: registSupportResponseDTO, image: File) => {
+            const blobData = new Blob([JSON.stringify(info)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+
+            if (image) formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'POST',
+                url: `${SERVER_URL}/admin/support`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [info, image],
+    )
+}
+
+export function modifySupport(
+    info: modifySupportResponseDTO,
+    image: File,
+): Promise<registSupportResponseDTO> {
+    /**
+     * 후원 수정
+     */
+    return axiosRequestHandler(
+        async (info: modifySupportRequestDTO, image: File) => {
+            const blobData = new Blob([JSON.stringify(info)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('data', blobData)
+
+            if (image) formData.append('image', image)
+
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'PUT',
+                url: `${SERVER_URL}/admin/support/${info.supportId}`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [info, image],
+    )
+}
+
+export function deleteSupport(
+    supportId: number,
+): Promise<deleteSupportResponseDTO> {
+    return axiosRequestHandler(
+        async (supportId: number) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/support/${supportId}`,
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+
+            return {
+                message: response.data.message,
+            }
+        },
+        [supportId],
+    )
+}
+
+// End - Support API
 // #########################################################

@@ -6,9 +6,43 @@
 
 .header {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: center;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    padding: 5px 0;
+}
+
+.darkHeader {
+    background-color: #f8f8f8;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.lightHeader {
+    background-color: #666;
+    color: #f8f8f8;
+    border-bottom: 1px solid #222;
+}
+
+.selectBox {
+    display: flex;
+    justify-content: space-between;
+
+    .selectDateBox {
+        display: flex;
+        height: 50px;
+    }
+
+    .selectButtonBox {
+        width: 70px;
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+
+        .selectButton {
+            width: 20px;
+            cursor: pointer;
+        }
+    }
 }
 
 .daysGrid {
@@ -16,6 +50,7 @@
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6, 1fr);
     border: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .day {
@@ -28,9 +63,107 @@
 }
 
 .schedule {
-    margin: -1px;
+    display: flex;
+    align-items: center;
+    padding-left: 3px;
+    color: black;
     height: 20px;
-    background-color: lightblue;
     font-size: 0.8rem;
     overflow: hidden;
+}
+
+.customSelect {
+    height: 100%;
+    width: 150px;
+    min-width: 150px;
+    color: black;
+}
+
+.disableClick {
+    pointer-events: none;
+}
+
+.calendarFormContainer {
+    padding: 10px;
+
+    .calendarFormTitle {
+        input {
+            border: none;
+            background-color: transparent;
+            font-size: 25px;
+            width: 100%;
+            border-bottom: 2px solid rgb(72, 72, 72);
+            transition: border-bottom 0.3s ease;
+
+            &:focus {
+                outline: none;
+                border-bottom: 2px solid rgb(135, 135, 238);
+            }
+        }
+    }
+
+    .calendarFormDate {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .date {
+            width: 100%;
+            display: flex;
+            justify-content: right;
+        }
+
+        img {
+            width: 20px;
+        }
+
+        input {
+            width: 46%;
+        }
+    }
+
+    .calendarFormButton {
+        display: flex;
+        justify-content: right;
+        margin-top: 5px;
+
+        .redButton {
+            background-color: rgb(231, 116, 116);
+            justify-content: center;
+            align-items: center;
+
+            margin-left: 3px;
+            width: 50px;
+            height: 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(188, 94, 94);
+                transition: 0.3s ease-in-out;
+            }
+        }
+
+        .blueButton {
+            background-color: rgb(109, 131, 255);
+            justify-content: center;
+            align-items: center;
+
+            margin-left: 3px;
+            width: 50px;
+            height: 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(51, 87, 157);
+                transition: 0.3s ease-in-out;
+            }
+        }
+    }
 }

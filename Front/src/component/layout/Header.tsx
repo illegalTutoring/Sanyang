@@ -5,7 +5,7 @@ import styles from './Header.module.scss'
 import Link from 'next/link'
 import useAuthStore from '@/utils/store/useAuthStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import useEditModeStore from '@/utils/store/useEditModeStore '
+import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login } from '@/utils/api/user'
@@ -18,28 +18,34 @@ const Header: React.FC = () => {
     // 전역 상태관리
     const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn, logOut } = useAuthStore()
-    const { isEditMode, toggleEditMode } = useEditModeStore()
+    const { isEditMode, setEditMode, toggleEditMode } = useEditModeStore()
 
     // 함수
     const toggleLoginModal = () => setLoginModalVisible(!loginModalVisible)
+
     const handleProfileClick = () => {
         setProfileMenuVisible(!profileMenuVisible)
     }
+
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const username = event.currentTarget.username.value
         const password = event.currentTarget.password.value
-        {
-            const { statusCode, message } = await login({ username, password })
 
-            if (statusCode == 200) {
-                logIn()
-            } else if (statusCode == 400) {
-                /**
-                 * @todo 입력값을 확인하세요. 등의 BAD_REQUEST 핸들링
-                 */
-            }
+        const { statusCode } = await login({ username, password })
+        if (statusCode == 200) {
+            toggleLoginModal()
+            logIn()
+        } else if (statusCode == 401) {
+            /**
+             * @todo 아이디, 비밀번호 입력 오류 시 화면 전환 등
+             */
         }
+    }
+
+    const handelLogout = () => {
+        logOut()
+        setEditMode(false)
     }
 
     return (
@@ -55,6 +61,7 @@ const Header: React.FC = () => {
                 src={
                     isDarkMode ? '/svgs/moon_white.svg' : '/svgs/sun_black.svg'
                 }
+                style={isDarkMode ? { width: '20px' } : { width: '25px' }}
                 alt={
                     isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
                 }
@@ -63,34 +70,82 @@ const Header: React.FC = () => {
             {isLoggedIn ? (
                 <>
                     <div
-                        className={styles.profile}
+                        className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
                         onClick={handleProfileClick}
                     >
                         <Profile
                             src="https://pbs.twimg.com/media/FxeXXAeaEAATIVE?format=jpg&name=900x900"
-                            size={40}
+                            size={35}
                             border="2px solid black"
                             alt="profile image"
                             radius={50}
                         />
-                        <h3>sanyamg</h3>
+                        <h3 style={{ marginLeft: '10px' }}>관리자</h3>
                     </div>
 
                     {profileMenuVisible && (
-                        <div className={styles.profileMenu}>
-                            <button onClick={logOut}>Log out</button>
+                        <div
+                            className={`${styles.profileMenu} ${isDarkMode ? 'dark' : 'light'}`}
+                        >
+                            <div
+                                className={styles.profileItem}
+                                onClick={handelLogout}
+                            >
+                                <img
+                                    className={styles.toggleLoginButton}
+                                    src={
+                                        isDarkMode
+                                            ? '/svgs/key_white.svg'
+                                            : '/svgs/key_black.svg'
+                                    }
+                                    alt="login"
+                                />
+                                <h3>로그아웃</h3>
+                            </div>
                             {isEditMode ? (
-                                <button onClick={toggleEditMode}>edit</button>
+                                <div
+                                    className={styles.profileItem}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/edit_white.svg'
+                                                : '/svgs/edit_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>수정모드</h3>
+                                </div>
                             ) : (
-                                <button onClick={toggleEditMode}>view</button>
+                                <div
+                                    className={styles.profileItem}
+                                    onClick={toggleEditMode}
+                                >
+                                    <img
+                                        className={styles.toggleLoginButton}
+                                        src={
+                                            isDarkMode
+                                                ? '/svgs/view_white.svg'
+                                                : '/svgs/view_black.svg'
+                                        }
+                                        alt="login"
+                                    />
+                                    <h3>일반모드</h3>
+                                </div>
                             )}
                         </div>
                     )}
                 </>
             ) : (
-                <div className={styles.profile} onClick={toggleLoginModal}>
+                <div
+                    className={`${styles.profile} ${isDarkMode ? styles.profileDark : styles.profileLight}`}
+                    onClick={toggleLoginModal}
+                >
                     <img
                         className={styles.toggleLoginButton}
+                        style={{ width: '25px' }}
                         src={
                             isDarkMode
                                 ? '/svgs/key_white.svg'
@@ -98,7 +153,7 @@ const Header: React.FC = () => {
                         }
                         alt="login"
                     />
-                    <h3>login</h3>
+                    <h3 style={{ marginLeft: '10px' }}>로그인</h3>
                 </div>
             )}
 
@@ -107,35 +162,53 @@ const Header: React.FC = () => {
                     <Modal
                         isVisible={loginModalVisible}
                         toggleModal={toggleLoginModal}
-                        width="40vw"
-                        height="60vh"
+                        width="400px"
+                        //height="320px" sign up 링크 존재 시
+                        height="300px"
                     >
                         <div className={styles.loginModal}>
-                            <h1>Login</h1>
+                            <h1 style={{ fontFamily: 'Pacifico-Regular' }}>
+                                CanvEarth
+                            </h1>
                             <form
                                 className={styles.loginForm}
                                 onSubmit={handleLogin}
                             >
-                                <label htmlFor="username">Username:</label>
+                                <label htmlFor="username">아이디</label>
                                 <input
                                     type="text"
                                     id="username"
                                     name="username"
                                     required
                                 />
-                                <label htmlFor="password">Password:</label>
+                                <label htmlFor="password">비밀번호</label>
                                 <input
                                     type="password"
                                     id="password"
                                     name="password"
                                     required
                                 />
-                                <button type="submit">Login</button>
+                                <button type="submit">로그인</button>
                             </form>
-                            <p>
-                                Need an account?{' '}
-                                <Link href="/signup">Sign up</Link>
-                            </p>
+                            <div
+                                style={{
+                                    marginTop: '5px',
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                {/* 계정 생성을 원한다면{' '}
+                                <Link
+                                    style={
+                                        isDarkMode
+                                            ? { color: '#40a1E8' }
+                                            : { color: '#0051b8' }
+                                    }
+                                    href="/signup"
+                                >
+                                    클릭하세요
+                                </Link> */}
+                            </div>
                         </div>
                     </Modal>
                 </>
