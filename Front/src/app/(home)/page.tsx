@@ -20,6 +20,7 @@ import { modifyBannerList, modifyEmbedLink } from '@/utils/api/admin'
 import { getNoticeList } from '@/utils/api/notice'
 import { getEmbedLink } from '@/utils/api/embed'
 import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
+import Modal from '@/component/layout/Modal'
 
 const HomePage = () => {
     // 전역 변수
@@ -32,6 +33,11 @@ const HomePage = () => {
     const [images, setImages] = useState<Images[]>([])
     const [notice, setNotice] = useState<string>()
     const [embedData, setEmbedData] = useState<embedLinkInfo[]>([])
+    const [isEmbedAddMode, setEmbedAddMode] = useState(false)
+    const [embedFormData, setEmbedFormData] = useState({
+        type: -1,
+        link: '',
+    })
 
     // 함수
     const fetchBanners = async () => {
@@ -103,6 +109,10 @@ const HomePage = () => {
         fetchEmbed()
     }, [])
 
+    useEffect(() => {
+        fetchEmbed()
+    }, [isEmbedAddMode])
+
     const getImageSource = (type: number) => {
         switch (type) {
             case 0:
@@ -159,6 +169,43 @@ const HomePage = () => {
         })
         modifyEmbedLink({ data: modifyEmbedLinkDTO })
     }, [embedData])
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>,
+    ): void => {
+        const { name, value } = e.target
+        setEmbedFormData({
+            ...embedFormData,
+            [name]: name === 'type' ? parseInt(value) : value,
+        })
+    }
+
+    const handleAddEmbed = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ): Promise<void> => {
+        event.preventDefault()
+
+        const newEmbedData: embedInfo = {
+            type: embedFormData.type,
+            link: embedFormData.link,
+        }
+
+        let modifyEmbedLinkDTO: embedInfo[] = []
+
+        embedData.forEach((data) => {
+            let dto: embedInfo = {
+                type: data.type,
+                link: data.link,
+            }
+            modifyEmbedLinkDTO.push(dto)
+        })
+
+        modifyEmbedLinkDTO.push(newEmbedData)
+
+        await modifyEmbedLink({ data: modifyEmbedLinkDTO })
+
+        setEmbedAddMode(false)
+    }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -239,6 +286,57 @@ const HomePage = () => {
                             Contact
                         </div>
 
+                        <Modal
+                            isVisible={isEmbedAddMode}
+                            toggleModal={() => {
+                                setEmbedAddMode(false)
+                            }}
+                            width="auto"
+                            height="auto"
+                        >
+                            <Modal
+                                isVisible={isEmbedAddMode}
+                                toggleModal={() => {
+                                    setEmbedAddMode(false)
+                                }}
+                                width="60vw"
+                                height="60vh"
+                            >
+                                <form onSubmit={handleAddEmbed}>
+                                    <label>
+                                        플랫폼:
+                                        <select
+                                            name="type"
+                                            onChange={handleInputChange}
+                                            required
+                                        >
+                                            <option value="">선택하세요</option>
+                                            <option value={1}>YouTube</option>
+                                            <option value={2}>Blog</option>
+                                            <option value={3}>Instagram</option>
+                                            <option value={4}>Twitter</option>
+                                            <option value={5}>
+                                                ArtStation
+                                            </option>
+                                            <option value={6}>Pixiv</option>
+                                        </select>
+                                    </label>
+                                    <br />
+                                    <label>
+                                        링크:
+                                        <input
+                                            type="url"
+                                            name="link"
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </label>
+                                    <br />
+                                    <button type="submit">추가</button>
+                                </form>
+                            </Modal>
+                        </Modal>
+
                         {isEditMode ? (
                             <DndProvider backend={HTML5Backend}>
                                 <div className={styles.link_container}>
@@ -274,9 +372,9 @@ const HomePage = () => {
                                     <div
                                         key={-1}
                                         className={styles.embedLink}
-                                        // onClick={
-                                        //      이곳에 임베드 추가 이벤트
-                                        // }
+                                        onClick={() => {
+                                            setEmbedAddMode(true)
+                                        }}
                                     >
                                         <Profile
                                             src={getImageSource(6)}
