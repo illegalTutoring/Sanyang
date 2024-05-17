@@ -367,7 +367,11 @@ const SupportPage: React.FC = () => {
                             ))}
                         </div>
                         <div className={styles.cardAddModalSubmit}>
-                            <button className={styles.blueButton} type="submit">
+                            <button
+                                style={{ width: '100%' }}
+                                className={styles.blueButton}
+                                type="submit"
+                            >
                                 후원카드 등록
                             </button>
                         </div>
