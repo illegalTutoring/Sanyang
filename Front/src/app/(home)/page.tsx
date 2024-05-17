@@ -16,13 +16,10 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 
 // API
 import { getBanner } from '@/utils/api/banner'
-import { modifyBannerList } from '@/utils/api/admin'
+import { modifyBannerList, modifyEmbedLink } from '@/utils/api/admin'
 import { getNoticeList } from '@/utils/api/notice'
-
-interface ProfileData {
-    type: number
-    link: string
-}
+import { getEmbedLink } from '@/utils/api/embed'
+import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
 
 const HomePage = () => {
     // 전역 변수
@@ -34,6 +31,7 @@ const HomePage = () => {
     const [showContent, setShowContent] = useState(false)
     const [images, setImages] = useState<Images[]>([])
     const [notice, setNotice] = useState<string>()
+    const [embedData, setEmbedData] = useState<embedLinkInfo[]>([])
 
     // 함수
     const fetchBanners = async () => {
@@ -63,6 +61,13 @@ const HomePage = () => {
         setNotice(result)
     }
 
+    const fetchEmbed = async () => {
+        const response = await getEmbedLink()
+
+        let result: embedLinkInfo[] = response.data
+        setEmbedData(result)
+    }
+
     // 핸들러
     const handleArrowClick = () => {
         setShowArrow(false)
@@ -73,21 +78,30 @@ const HomePage = () => {
         }, 100)
     }
 
+    const handleDelete = (event: React.MouseEvent, index: number) => {
+        event.stopPropagation()
+        setEmbedData(embedData.filter((data, idx) => idx !== index))
+
+        let modifyEmbedLinkDTO: embedInfo[] = []
+        // setter의 비동기 동작으로 인해 한번 더 필터 적용
+        embedData
+            .filter((data, idx) => idx !== index)
+            .forEach((data) => {
+                let dto: embedInfo = {
+                    type: data.type,
+                    link: data.link,
+                }
+                modifyEmbedLinkDTO.push(dto)
+            })
+        modifyEmbedLink({ data: modifyEmbedLinkDTO })
+    }
+
     //훅
     useEffect(() => {
         fetchBanners()
         fetchNotices(1, 1)
+        fetchEmbed()
     }, [])
-
-    // 더미 데이터
-    const [embedData, setEmbedData] = useState<ProfileData[]>([
-        { type: 0, link: 'https://example.com/link1' },
-        { type: 1, link: 'https://example.com/link2' },
-        { type: 2, link: 'https://example.com/link3' },
-        { type: 3, link: 'https://example.com/link3' },
-        { type: 4, link: 'https://example.com/link3' },
-        { type: 5, link: 'https://example.com/link3' },
-    ])
 
     const getImageSource = (type: number) => {
         switch (type) {
@@ -130,6 +144,16 @@ const HomePage = () => {
             const draggedItem = newEmbedData.splice(dragIndex, 1)[0]
             newEmbedData.splice(hoverIndex, 0, draggedItem)
             setEmbedData(newEmbedData)
+
+            let modifyEmbedLinkDTO: embedInfo[] = []
+            embedData.forEach((data) => {
+                let dto: embedInfo = {
+                    type: data.type,
+                    link: data.link,
+                }
+                modifyEmbedLinkDTO.push(dto)
+            })
+            modifyEmbedLink({ data: modifyEmbedLinkDTO })
         },
         [embedData],
     )
@@ -228,9 +252,12 @@ const HomePage = () => {
                                                     }
                                                     src={'/svgs/delete_red.svg'}
                                                     alt="Delete"
-                                                    // onClick={(event) =>
-                                                    //      이곳에 임베드 삭제 이벤트
-                                                    // }
+                                                    onClick={(event) =>
+                                                        handleDelete(
+                                                            event,
+                                                            index,
+                                                        )
+                                                    }
                                                 />
                                             )}
                                             <DraggableProfile
