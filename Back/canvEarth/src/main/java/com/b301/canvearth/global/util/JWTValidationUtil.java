@@ -11,6 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/*
+    JWTValidationUtil
+        1. isValidAccessToken : AccessToken 유효한지 검사
+        2. isValidRefreshToken : RefreshToken 유효한지 검사
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

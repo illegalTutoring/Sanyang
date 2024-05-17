@@ -8,7 +8,7 @@ import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
-import { login } from '@/utils/api/user'
+import { login, logout } from '@/utils/api/user'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -43,7 +43,8 @@ const Header: React.FC = () => {
         }
     }
 
-    const handelLogout = () => {
+    const handelLogout = async () => {
+        await logout()
         logOut()
         setEditMode(false)
     }

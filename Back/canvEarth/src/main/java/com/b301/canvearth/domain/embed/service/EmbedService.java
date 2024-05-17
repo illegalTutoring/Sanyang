@@ -30,7 +30,7 @@ public class EmbedService {
 
         for (int i = 0; i < embedList.size(); i++) {
             Embed e = embedList.get(i);
-            result.add(EmbedListResponseGetDto.builder().type(e.getType()).link(e.getLink()).build());
+            result.add(EmbedListResponseGetDto.builder().type(e.getType().getValue()).link(e.getLink()).build());
         }
 
         return result;

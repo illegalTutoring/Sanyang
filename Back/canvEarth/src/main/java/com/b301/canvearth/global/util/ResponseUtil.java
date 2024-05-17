@@ -12,6 +12,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    ResponseUtil
+        1. createResponseEntity : controller 계층에서 return 할 때 사용하는 ResponseEntity 생성
+        2. sendMessage : Filter Chain 계층에서 response 에 data 를 인코딩하여 추가
+        3. createCookie : JWT(RTK) 쿠키 생성
+        4. deleteCookie : JWT(RTK) 쿠키 삭제
+ */
 @Slf4j
 @Component
 public class ResponseUtil {

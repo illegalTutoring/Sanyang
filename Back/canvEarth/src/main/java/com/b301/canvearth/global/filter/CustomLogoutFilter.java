@@ -22,6 +22,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    (Custom)LogoutFilter
+        1. @Override doFilter : Servlet -> HttpServlet 으로 request, response 객체 타입 변경
+        2. doFilter : URL /api/user/logout 으로 들어온 요청을 로그아웃 로직 처리
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {

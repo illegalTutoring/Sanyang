@@ -11,6 +11,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/*
+    JWTUtil
+        1. JWTUtil : secretKey 를 통한 암호화
+        2. getUsername : return Username
+        3. getRole : return Role
+        4. getCategory : return Category
+        5. isExpired : return check token is Expired
+        6. createJwt : return create JWT(ATK,RTK)
+ */
 @Component
 public class JWTUtil {
 
