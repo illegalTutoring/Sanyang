@@ -88,7 +88,7 @@ const HomePage = () => {
     const fetchEmbed = async () => {
         const response = await getEmbedLink()
 
-        let result: embedLinkInfo[] = response.data
+        let result: embedLinkInfo[] = response.data || []
         setEmbedData(result)
     }
 

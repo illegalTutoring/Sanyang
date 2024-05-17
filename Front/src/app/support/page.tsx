@@ -68,8 +68,12 @@ const SupportPage: React.FC = () => {
         setSupportData(response.data)
     }
 
-    const fetchFormData = async (item: modifySupportRequestDTO) => {
+    const fetchFormData = async (
+        item: modifySupportRequestDTO,
+        imageURL: string,
+    ) => {
         setModifyFormData(item)
+        setImageURL(imageURL)
     }
 
     // 훅
@@ -188,7 +192,6 @@ const SupportPage: React.FC = () => {
             content: modifyFormData.content,
         }
 
-        if (!selectedFile) return
         await modifySupport(data, selectedFile)
 
         toggleUpdateMode()
