@@ -41,6 +41,7 @@ import {
     deleteSupportResponseDTO,
     modifySupportRequestDTO,
     modifySupportResponseDTO,
+    registSupportRequestDTO,
     registSupportResponseDTO,
 } from './DTO/support'
 
@@ -482,7 +483,7 @@ export function deleteNotice(
 // START - Support API
 
 export function registSupport(
-    info: registCalendarRequestDTO,
+    info: registSupportRequestDTO,
     image: File,
 ): Promise<registSupportResponseDTO> {
     /**
