@@ -13,7 +13,7 @@ const fetchGallery = async () => {
 }
 
 const GalleryPage = async () => {
-    let images: galleryInfo[] = (await fetchGallery()) || []
+    let images: galleryInfo[] = await fetchGallery()
 
     return <ClientPage propsImages={images}></ClientPage>
 }

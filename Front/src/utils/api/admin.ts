@@ -385,7 +385,7 @@ export function modifyEmbedLink(
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
                 url: `${SERVER_URL}/admin/embed`,
-                data: data,
+                data: data.data,
                 headers: {
                     Authorization: userStore.getState().accessToken,
                 },
@@ -464,16 +464,19 @@ export function deleteNotice(
      * @param noticeId - 공지 사항 id
      */
 
-    return axiosRequestHandler(async (noticeId: number) => {
-        const response: AxiosResponse<any, any> = await axios({
-            method: 'DELETE',
-            url: `${SERVER_URL}/admin/notice/${noticeId}`,
-            headers: {
-                Authorization: userStore.getState().accessToken,
-            },
-        })
-        return { message: response.data.message }
-    }, [])
+    return axiosRequestHandler(
+        async (noticeId: number) => {
+            const response: AxiosResponse<any, any> = await axios({
+                method: 'DELETE',
+                url: `${SERVER_URL}/admin/notice/${noticeId}`,
+                headers: {
+                    Authorization: userStore.getState().accessToken,
+                },
+            })
+            return { message: response.data.message }
+        },
+        [noticeId],
+    )
 }
 
 // End - Notice API

@@ -19,6 +19,13 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
+    /*
+        Swagger 설정
+            1. url 설정
+            2. 정보 수정
+            3. 컴포넌트(ATK, RTK) 헤더 설정
+            4. Path(API 테스트) 직접 추가
+     */
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()

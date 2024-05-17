@@ -34,11 +34,11 @@ const List: React.FC<ListProps> = ({
     width,
     height,
     pageSize,
-    columnNames,
+    columnNames = [],
     columns,
-    columnWidth,
+    columnWidth = [],
     currentPage,
-    data,
+    data = [],
     isDarkMode,
     isEditMode,
     fetchData,
@@ -98,15 +98,11 @@ const List: React.FC<ListProps> = ({
     const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        console.log(event.currentTarget.noticeId.value)
-
         const data: modifyNoticeRequestDTO = {
             noticeId: parseInt(event.currentTarget.noticeId.value, 10),
             title: event.currentTarget.title1.value,
             content: event.currentTarget.content.value,
         }
-
-        console.log(data)
 
         await updateNotice(data)
 

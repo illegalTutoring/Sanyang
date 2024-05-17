@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/*
+    UserController
+        1. signIn : 회원가입
+        2. reIssue : AccessToken 재발급(RefreshToken)
+ */
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor

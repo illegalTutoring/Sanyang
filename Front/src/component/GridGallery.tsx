@@ -7,7 +7,6 @@ import {
     registWorkRequestDTO,
 } from '@/utils/api/DTO/work'
 import Modal from './layout/Modal'
-import { style } from 'dynamic-import'
 
 export interface ImageData {
     workId?: number
@@ -93,7 +92,7 @@ const GridGallery: React.FC<GalleryProps> = ({
             endDate: data.endDate!,
             tags: '',
         })
-        console.log(data)
+
         setUpdateMode(true)
     }
 
@@ -159,6 +158,11 @@ const GridGallery: React.FC<GalleryProps> = ({
         setUpdateMode(false)
     }
 
+    const handleOpenImage = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+    }
+
     // 훅
 
     useEffect(() => {
@@ -179,7 +183,7 @@ const GridGallery: React.FC<GalleryProps> = ({
         >
             {isEditMode && (
                 <>
-                    <div key={-2} className={styles.workContainer}>
+                    <div className={styles.workContainer}>
                         <div
                             className={`${styles.titleContainer} ${isDarkMode ? styles.darkTitle : styles.lightTitle}`}
                         >
@@ -197,7 +201,6 @@ const GridGallery: React.FC<GalleryProps> = ({
                         </div>
                     </div>
                     <div
-                        key={-1}
                         style={{
                             overflow: 'hidden',
                             width: '100%',
@@ -219,7 +222,11 @@ const GridGallery: React.FC<GalleryProps> = ({
                 </>
             )}
             {images.map((image) => (
-                <div className={styles.workContainer} key={image.galleryId}>
+                <div
+                    onContextMenu={handleOpenImage}
+                    className={styles.workContainer}
+                    key={image.galleryId || image.workId}
+                >
                     {image.company && (
                         <div
                             className={`${styles.titleContainer} ${isDarkMode ? styles.darkTitle : styles.lightTitle}`}

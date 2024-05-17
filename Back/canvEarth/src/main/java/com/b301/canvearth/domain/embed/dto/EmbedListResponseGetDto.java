@@ -7,11 +7,11 @@ import lombok.ToString;
 
 @Getter @ToString
 public class EmbedListResponseGetDto {
-    private EmbedType type;
+    private int type;
     private String link;
 
     @Builder
-    public EmbedListResponseGetDto(EmbedType type, String link) {
+    public EmbedListResponseGetDto(int type, String link) {
         this.type = type;
         this.link = link;
     }

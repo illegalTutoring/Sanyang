@@ -79,6 +79,7 @@
     cursor: pointer;
 
     transition: width 0.2s ease;
+    z-index: 11;
 
     &:hover {
         background-color: rgb(51, 87, 157);
@@ -106,6 +107,7 @@
     transition: height 0.2s ease;
     transition-delay: 0.1s;
 
+    z-index: 11;
     overflow-y: auto;
 
     .modalContent {
