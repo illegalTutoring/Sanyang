@@ -177,13 +177,9 @@ const Gallery: React.FC<GalleryProps> = ({
         <div>
             {selectedImage && (
                 <div className={styles.galleryModalOverlay}>
-                    <div
-                        style={{ color: 'white' }}
-                        className={styles.closeButton}
-                        onClick={handleClose}
-                    >
+                    <div className={styles.closeButton} onClick={handleClose}>
                         닫기
-                        <img src="svgs/delete.svg" />
+                        <img src="svgs/delete.svg" alt="Close" />
                     </div>
                     <div className={styles.galleryModal}>
                         <img
@@ -198,7 +194,6 @@ const Gallery: React.FC<GalleryProps> = ({
                             style={{
                                 transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
                                 cursor: dragging ? 'grabbing' : 'grab',
-                                zIndex: '2000',
                             }}
                         />
                     </div>
