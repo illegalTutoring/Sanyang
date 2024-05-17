@@ -58,7 +58,11 @@ const Gallery: React.FC<GalleryProps> = ({
         setSelectedImage(image)
     }
 
-    const handleClose = () => {
+    const handleClose = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation()
+        setScale(1)
+        setPosition({ x: 0, y: 0 })
+        setStartPosition({ x: 0, y: 0 })
         setSelectedImage(null)
     }
 
@@ -81,6 +85,48 @@ const Gallery: React.FC<GalleryProps> = ({
             } else {
                 tagBox.scrollLeft += 200
             }
+        }
+    }
+
+    const [scale, setScale] = useState(1)
+    const [position, setPosition] = useState({ x: 0, y: 0 })
+    const [dragging, setDragging] = useState(false)
+    const [startPosition, setStartPosition] = useState({ x: 0, y: 0 })
+
+    const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        if (!dragging) {
+            setDragging(true)
+            setStartPosition({
+                x: event.clientX - position.x,
+                y: event.clientY - position.y,
+            })
+        } else {
+            setDragging(false)
+        }
+    }
+
+    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (dragging) {
+            event.preventDefault()
+            setPosition({
+                x: event.clientX - startPosition.x,
+                y: event.clientY - startPosition.y,
+            })
+        }
+    }
+
+    const handleMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        setDragging(false)
+    }
+
+    const handleImageWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        if (event.deltaY > 0) {
+            setScale((prevScale) => Math.max(prevScale - 0.1, 1))
+        } else {
+            setScale((prevScale) => Math.min(prevScale + 0.1, 3))
         }
     }
 
@@ -130,12 +176,32 @@ const Gallery: React.FC<GalleryProps> = ({
     return (
         <div>
             {selectedImage && (
-                <div
-                    className={styles.galleryModal}
-                    onClick={handleClose}
-                    onContextMenu={handleOpenImage}
-                >
-                    <img src={selectedImage} className={styles.expandedImg} />
+                <div className={styles.galleryModalOverlay}>
+                    <div
+                        style={{ color: 'white' }}
+                        className={styles.closeButton}
+                        onClick={handleClose}
+                    >
+                        닫기
+                        <img src="svgs/delete.svg" />
+                    </div>
+                    <div className={styles.galleryModal}>
+                        <img
+                            onContextMenu={handleOpenImage}
+                            onWheel={handleImageWheel}
+                            onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseMove}
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                            src={selectedImage}
+                            className={styles.expandedImg}
+                            style={{
+                                transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+                                cursor: dragging ? 'grabbing' : 'grab',
+                                zIndex: '2000',
+                            }}
+                        />
+                    </div>
                 </div>
             )}
             <Masonry

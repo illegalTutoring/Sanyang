@@ -35,17 +35,22 @@
             }
 
             .tag {
-                margin-right: 5px;
+                margin-right: 10px;
                 padding: 0 10px;
                 font-family: 'Pretendard-Regular';
                 border-radius: 20px;
                 white-space: nowrap;
                 cursor: pointer;
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
             }
 
             .tagDark {
                 color: #ccc;
-                background: rgb(141, 102, 141);
+                background: rgb(98, 71, 133);
             }
 
             .tagWhite {

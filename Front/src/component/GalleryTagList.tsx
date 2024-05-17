@@ -1,6 +1,5 @@
 import React from 'react'
 import styles from './GalleryTagList.module.scss'
-import { useRouter } from 'next/navigation'
 
 interface TagListProps {
     tags: string[]
@@ -23,7 +22,17 @@ const GalleryTagList: React.FC<TagListProps> = ({
     tempNumForTagsEffect,
     setTempNumForTagsEffect,
 }) => {
-    // const router = useRouter()
+    const toggleTag = (tag: string) => {
+        let updatedTags: string[]
+        if (selectedTags.includes(tag)) {
+            updatedTags = selectedTags.filter((t) => t !== tag)
+        } else {
+            updatedTags = [...selectedTags, tag]
+        }
+        setSelectedTags(updatedTags)
+        setTempNumForTagsEffect(tempNumForTagsEffect + 1)
+    }
+
     return (
         <div className={styles.tagList}>
             <div
@@ -42,14 +51,8 @@ const GalleryTagList: React.FC<TagListProps> = ({
                     {tags.map((tag, idx) => (
                         <div
                             key={idx}
-                            className={`${styles.tag} ${isDarkMode ? styles.tagDark : styles.tagWhite}`}
-                            onClick={() => {
-                                selectedTags.push(tag)
-                                setSelectedTags(selectedTags)
-                                setTempNumForTagsEffect(
-                                    tempNumForTagsEffect + 1,
-                                )
-                            }}
+                            className={`${styles.tag} ${isDarkMode ? styles.tagDark : styles.tagWhite} ${selectedTags.includes(tag) ? styles.tagSelected : ''}`}
+                            onClick={() => toggleTag(tag)}
                         >
                             #{tag}
                         </div>
