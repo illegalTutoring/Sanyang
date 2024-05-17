@@ -24,7 +24,7 @@ interface ListProps {
     isEditMode: boolean
     currentPage: number
     fetchData: (page: number) => void
-    getDetail: (noticeId: number) => getNoticeDetailResponseDTO
+    getDetail: (noticeId: number) => Promise<getNoticeDetailResponseDTO>
     addNotice: (data: registNoticeRequestDTO) => void
     updateNotice: (data: modifyNoticeRequestDTO) => void
     deleteNotice: (noticeId: number) => void
