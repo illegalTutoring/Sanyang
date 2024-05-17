@@ -38,7 +38,7 @@ export async function axiosRequestHandler(
             }
         } else {
             userStore.getState().destroyAll()
-            return await logout()
+            // return await logout()
         }
 
         /**
