@@ -9,6 +9,7 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 import Modal from '@/component/layout/Modal'
 import { getSupportList } from '@/utils/api/support'
 import { supportDetailInfo } from '@/utils/api/DTO/support'
+import { registSupport, modifySupport, deleteSupport } from '@/utils/api/admin'
 
 const components: { [key: string]: React.ComponentType<any> } = {
     artstation: dynamic(() => import('@/component/support/Artstation')),
@@ -21,7 +22,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
 
 interface Domain {
     key: string
-    url: string
+    link: string
     text: string
 }
 
@@ -29,46 +30,57 @@ const getDomains = (): Domain[] => {
     return [
         {
             key: 'artstation',
-            url: 'https://www.artstation.com/yourprofile',
+            link: 'https://www.artstation.com/yourprofile',
             text: 'ArtStation에서 제 작품들을 확인해보세요!',
         },
         {
             key: 'cafe',
-            url: 'https://cafe.naver.com/yourcommunity',
+            link: 'https://cafe.naver.com/yourcommunity',
             text: '네이버 카페에서 저와 함께 다양한 주제로 이야기해요!',
         },
         {
             key: 'instagram',
-            url: 'https://www.instagram.com/yourusername',
+            link: 'https://www.instagram.com/yourusername',
             text: 'Instagram에서 제 일상과 작품들을 만나보세요!',
         },
         {
             key: 'pixiv',
-            url: 'https://www.pixiv.net/users/yourid',
+            link: 'https://www.pixiv.net/users/yourid',
             text: 'Pixiv에서 제 그림들을 감상하실 수 있습니다!',
         },
         {
             key: 'x',
-            url: 'https://www.x.com/yourprofile',
+            link: 'https://www.x.com/yourprofile',
             text: 'X에서 실시간으로 저와 소통할 수 있어요!',
         },
         {
             key: 'youtube',
-            url: 'https://www.youtube.com/c/yourchannel',
+            link: 'https://www.youtube.com/c/yourchannel',
             text: 'YouTube에서 제 콘텐츠를 구독하고 최신 비디오를 확인하세요!',
         },
     ]
 }
 
+export interface registSupportRequestDTO {
+    title: string
+    uploadDate: string
+    supportLink: Array<{ link: string; name: string }>
+    content: string
+}
+
 const SupportPage: React.FC = () => {
-    const domains = getDomains()
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
     const [addMode, setAddMode] = useState(false)
     const [supportData, setSupportData] = useState<supportDetailInfo[]>([])
-    const [tempNumForSupportEffect, setTempNumForSupportEffect] =
-        useState<number>(0)
+    const [formData, setFormData] = useState<registSupportRequestDTO>({
+        title: '',
+        uploadDate: '',
+        supportLink: [{ link: '', name: '' }],
+        content: '',
+    })
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const toggleAddMode = () => {
         setAddMode((prev) => !prev)
@@ -76,14 +88,68 @@ const SupportPage: React.FC = () => {
 
     const fetchSupport = async () => {
         const response = await getSupportList()
-        return response.data
+
+        console.log(response.data)
+
+        setSupportData(response.data)
     }
 
     useEffect(() => {
-        fetchSupport().then((data) => {
-            setSupportData(data)
+        fetchSupport()
+    }, [addMode])
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0])
+        }
+    }
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        index?: number,
+    ) => {
+        const { name, value } = e.target
+        if (index !== undefined) {
+            const updatedSupportLink = [...formData.supportLink]
+            updatedSupportLink[index] = {
+                ...updatedSupportLink[index],
+                [name]: value,
+            }
+            setFormData({ ...formData, supportLink: updatedSupportLink })
+        } else {
+            setFormData({ ...formData, [name]: value })
+        }
+    }
+
+    const handleAddSupportLink = () => {
+        setFormData({
+            ...formData,
+            supportLink: [...formData.supportLink, { link: '', name: '' }],
         })
-    }, [tempNumForSupportEffect])
+    }
+
+    const handleRemoveSupportLink = (index: number) => {
+        const updatedSupportLink = formData.supportLink.filter(
+            (_, i) => i !== index,
+        )
+        setFormData({ ...formData, supportLink: updatedSupportLink })
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const data: registSupportRequestDTO = {
+            title: formData.title,
+            uploadDate: formData.uploadDate,
+            supportLink: formData.supportLink,
+            content: formData.content,
+        }
+
+        if (!selectedFile) return
+
+        await registSupport(data, selectedFile)
+        toggleAddMode()
+    }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -100,11 +166,9 @@ const SupportPage: React.FC = () => {
 
                 <SupportCard
                     items={supportData}
-                    addTogle={() => {}}
+                    addTogle={toggleAddMode}
                     isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
-                    tempNumForSupportEffect={tempNumForSupportEffect}
-                    setTempNumForSupportEffect={setTempNumForSupportEffect}
                 />
             </div>
 
@@ -114,7 +178,89 @@ const SupportPage: React.FC = () => {
                 width="60vw"
                 height="60vh"
             >
-                <div></div>
+                <form onSubmit={handleSubmit}>
+                    <input type="file" onChange={handleFileChange} required />
+                    <br></br>
+                    <label>
+                        제목:
+                        <input
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+                    <br></br>
+                    <label>
+                        업로드 날짜:
+                        <input
+                            type="date"
+                            name="uploadDate"
+                            value={formData.uploadDate}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+                    <br></br>
+                    {formData.supportLink.map((link, index) => (
+                        <div key={index}>
+                            <label>
+                                이름:
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={link.name}
+                                    onChange={(e) =>
+                                        handleInputChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            <label>
+                                지원 링크 link:
+                                <input
+                                    type="url"
+                                    name="link"
+                                    value={link.link}
+                                    onChange={(e) =>
+                                        handleInputChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            {index > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleRemoveSupportLink(index)
+                                    }
+                                >
+                                    링크 제거
+                                </button>
+                            )}
+                        </div>
+                    ))}
+
+                    <button type="button" onClick={handleAddSupportLink}>
+                        링크 추가
+                    </button>
+
+                    <br></br>
+                    <label>
+                        내용:
+                        <br></br>
+                        <textarea
+                            name="content"
+                            value={formData.content}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+
+                    <br></br>
+                    <button type="submit">제출</button>
+                </form>
             </Modal>
         </article>
     )

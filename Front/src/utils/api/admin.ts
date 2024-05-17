@@ -482,7 +482,7 @@ export function deleteNotice(
 // START - Support API
 
 export function registSupport(
-    info: registSupportResponseDTO,
+    info: registCalendarRequestDTO,
     image: File,
 ): Promise<registSupportResponseDTO> {
     /**
