@@ -127,3 +127,27 @@
     height: 0;
     opacity: 0;
 }
+
+.detailContainer {
+    padding: 15px;
+
+    .detailTitle {
+        font-size: 25px;
+        border-bottom: 1px solid black;
+        margin-bottom: 2px;
+    }
+
+    .detailInfo {
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .detailContent {
+        min-height: 100px;
+        margin-top: 10px;
+        border-radius: 5px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
