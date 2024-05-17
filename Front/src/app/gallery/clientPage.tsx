@@ -71,18 +71,6 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
      */
     useEffect(() => {
         fetchGallery()
-        setImages(
-            selectedTags.length > 0
-                ? propsImages.filter((image) => {
-                      let flag: boolean = true
-                      selectedTags.forEach((tag) => {
-                          if (!image.tags.includes(tag)) flag = false
-                      })
-                      return flag
-                  })
-                : propsImages,
-        )
-        setImages2(images.slice(0, 4))
     }, [tempNumForTagsEffect])
 
     // 토글 함수
@@ -103,8 +91,19 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
     // 함수
     const fetchGallery = async () => {
         const response = await getGalleryList()
-        setImages(response.data)
-        setImages2(response.data.slice(0, 4))
+
+        setImages(
+            selectedTags.length > 0
+                ? response.data.filter((image) => {
+                      let flag: boolean = true
+                      selectedTags.forEach((tag) => {
+                          if (!image.tags.includes(tag)) flag = false
+                      })
+                      return flag
+                  })
+                : response.data,
+        )
+        setImages2(images.slice(0, 4))
         setTagList(makeTagListByImages(response.data))
     }
 
