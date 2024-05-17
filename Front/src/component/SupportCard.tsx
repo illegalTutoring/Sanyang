@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './SupportCard.module.scss'
 
 interface SupportLink {
@@ -24,6 +24,8 @@ interface SupportProps {
     cardMinWidth?: string
     cardMaxWidth?: string
     addTogle: () => void
+    updateTogle: () => void
+    setInitData: (item: SupportItem) => void
 }
 
 const SupportCard: React.FC<SupportProps> = ({
@@ -35,8 +37,15 @@ const SupportCard: React.FC<SupportProps> = ({
     cardMinWidth = '315px',
     cardMaxWidth = '1fr',
     addTogle,
+    updateTogle,
+    setInitData,
 }) => {
     const currentDate = new Date().toISOString().slice(0, 7)
+
+    const updateHandler = async (item: SupportItem) => {
+        await setInitData(item)
+        await updateTogle()
+    }
 
     return (
         <div
@@ -57,6 +66,7 @@ const SupportCard: React.FC<SupportProps> = ({
                     key={-1}
                 >
                     <img
+                        onClick={addTogle}
                         src={'/svgs/add_card.svg'}
                         alt={'addButton'}
                         style={{
@@ -72,10 +82,9 @@ const SupportCard: React.FC<SupportProps> = ({
                     {isEditMode && (
                         <img
                             className={styles.deleteButton}
-                            src={'/svgs/delete_red.svg'}
+                            src={'/svgs/edit_black.svg'}
                             alt="Delete"
-                            // onClick={(event) =>
-                            // }
+                            onClick={(event) => updateHandler(item)}
                         />
                     )}
                     <div

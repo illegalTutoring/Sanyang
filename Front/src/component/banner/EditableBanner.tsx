@@ -69,13 +69,14 @@ const EditableBanner: React.FC<EditableBannerProps> = ({
                     <Modal
                         isVisible={editBanner}
                         toggleModal={toggleEditBanner}
-                        width="60vw"
-                        height="60vh"
+                        width="fit-content"
+                        height="fit-content"
                     >
                         <BannerEditor
                             fetchImages={fetchImages}
                             updateImages={updateImages}
                             toggleEditBanner={toggleEditBanner}
+                            isDarkMode={isDarkMode}
                         />
                     </Modal>
                 </>

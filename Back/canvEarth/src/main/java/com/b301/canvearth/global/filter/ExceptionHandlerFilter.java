@@ -34,11 +34,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException e) {
             handleExceptionInternal(e, HttpStatus.BAD_REQUEST, e.getMessage(), request, response);
         } catch (AuthenticationException e) {
-            handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "인증 실패", request, response);
+            handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "토큰 인증 실패", request, response);
         } catch (AccessDeniedException e) {
             handleExceptionInternal(e, HttpStatus.FORBIDDEN, "접근 거부", request, response);
         } catch (Exception e) {
-            handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR, "서버에러", request, response);
+            handleExceptionInternal(e, HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러", request, response);
         }
     }
 

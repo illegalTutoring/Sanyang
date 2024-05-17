@@ -2,219 +2,166 @@
 
 import SupportCard from '@/component/SupportCard'
 import useDarkModeStore from '@/utils/store/useThemaStore'
-import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './support.module.scss'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Modal from '@/component/layout/Modal'
+import { getSupportList } from '@/utils/api/support'
+import {
+    modifySupportRequestDTO,
+    supportDetailInfo,
+} from '@/utils/api/DTO/support'
+import { registSupport, modifySupport, deleteSupport } from '@/utils/api/admin'
 
-const components: { [key: string]: React.ComponentType<any> } = {
-    artstation: dynamic(() => import('@/component/support/Artstation')),
-    cafe: dynamic(() => import('@/component/support/Cafe')),
-    instagram: dynamic(() => import('@/component/support/Instagram')),
-    pixiv: dynamic(() => import('@/component/support/Pixiv')),
-    x: dynamic(() => import('@/component/support/X')),
-    youtube: dynamic(() => import('@/component/support/Youtube')),
-}
-
-interface Domain {
-    key: string
-    url: string
-    text: string
-}
-
-const getDomains = (): Domain[] => {
-    return [
-        {
-            key: 'artstation',
-            url: 'https://www.artstation.com/yourprofile',
-            text: 'ArtStation에서 제 작품들을 확인해보세요!',
-        },
-        {
-            key: 'cafe',
-            url: 'https://cafe.naver.com/yourcommunity',
-            text: '네이버 카페에서 저와 함께 다양한 주제로 이야기해요!',
-        },
-        {
-            key: 'instagram',
-            url: 'https://www.instagram.com/yourusername',
-            text: 'Instagram에서 제 일상과 작품들을 만나보세요!',
-        },
-        {
-            key: 'pixiv',
-            url: 'https://www.pixiv.net/users/yourid',
-            text: 'Pixiv에서 제 그림들을 감상하실 수 있습니다!',
-        },
-        {
-            key: 'x',
-            url: 'https://www.x.com/yourprofile',
-            text: 'X에서 실시간으로 저와 소통할 수 있어요!',
-        },
-        {
-            key: 'youtube',
-            url: 'https://www.youtube.com/c/yourchannel',
-            text: 'YouTube에서 제 콘텐츠를 구독하고 최신 비디오를 확인하세요!',
-        },
-    ]
+export interface registSupportRequestDTO {
+    title: string
+    uploadDate: string
+    supportLink: Array<{ link: string; name: string }>
+    content: string
 }
 
 const SupportPage: React.FC = () => {
-    const domains = getDomains()
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
     const [addMode, setAddMode] = useState(false)
+    const [updateMode, setUpdateMode] = useState(false)
+    const [supportData, setSupportData] = useState<supportDetailInfo[]>([])
+    const [addFormData, setAddFormData] = useState<registSupportRequestDTO>({
+        title: '',
+        uploadDate: '',
+        supportLink: [{ link: '', name: '' }],
+        content: '',
+    })
+
+    const [modifyFormData, setModifyFormData] =
+        useState<modifySupportRequestDTO>({
+            supportId: -1,
+            title: '',
+            supportLink: [{ link: '', name: '' }],
+            content: '',
+        })
+
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const toggleAddMode = () => {
         setAddMode((prev) => !prev)
     }
 
-    const supportData = [
-        {
-            supportId: 1,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-05',
-            supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
-            ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 2,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-05',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 7,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-04',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 0,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-        {
-            supportId: 3,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '수채화 기법 마스터하기',
-            uploadDate: '2024-03',
-            supportLink: [
-                {
-                    name: '아트스테이션',
-                    link: 'https://www.artstation.com/',
-                },
-                {
-                    name: '디바인트아트',
-                    link: 'https://www.deviantart.com/',
-                },
-            ],
-            content:
-                '수채화 그리기의 기초부터 고급 기법까지 단계별로 정리해 봤습니다. 이 가이드가 여러분의 그림 실력 향상에 도움이 되기를 바랍니다!',
-        },
-        {
-            supportId: 4,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '디지털 일러스트레이션 팁',
-            uploadDate: '2024-02',
-            supportLink: [
-                {
-                    name: '프로크리에이트',
-                    link: 'https://procreate.art/',
-                },
-                {
-                    name: '클립스튜디오',
-                    link: 'https://www.clipstudio.net/',
-                },
-            ],
-            content:
-                '효과적인 디지털 일러스트레이션 작업을 위한 기술적 팁과 트릭들을 공유합니다. 툴 사용법부터 창의적인 아이디어 발전까지!',
-        },
-        {
-            supportId: 5,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '캐릭터 디자인의 모든 것',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '픽시브',
-                    link: 'https://www.pixiv.net/',
-                },
-                {
-                    name: '베헨스',
-                    link: 'https://www.behance.net/',
-                },
-            ],
-            content:
-                '캐릭터 디자인의 기초부터 고급 전략까지, 다양한 스타일과 기술을 아우르는 포괄적인 안내서입니다.',
-        },
-        {
-            supportId: 6,
-            thumbnail: 'https://placehold.co/200X200',
-            title: '애니메이션 기초',
-            uploadDate: '2024-01',
-            supportLink: [
-                {
-                    name: '애니메이션 워크샵',
-                    link: 'https://www.animationworkshop.com/',
-                },
-                {
-                    name: '애니메이터스 리소스',
-                    link: 'https://www.animatorsresource.com/',
-                },
-            ],
-            content:
-                '애니메이션 제작의 기초부터 실제 애니메이션 프로젝트를 진행하는 데 필요한 팁까지 제공합니다.',
-        },
-    ]
+    const toggleUpdateMode = () => {
+        setUpdateMode((prev) => !prev)
+    }
+
+    const fetchSupport = async () => {
+        const response = await getSupportList()
+
+        console.log(response.data)
+
+        setSupportData(response.data)
+    }
+
+    const fetchFormData = async (item: modifySupportRequestDTO) => {
+        setModifyFormData(item)
+    }
+
+    useEffect(() => {
+        fetchSupport()
+    }, [addMode, updateMode])
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0])
+        }
+    }
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        index?: number,
+    ) => {
+        const { name, value } = e.target
+        if (index !== undefined) {
+            const updatedSupportLink = [...addFormData.supportLink]
+            updatedSupportLink[index] = {
+                ...updatedSupportLink[index],
+                [name]: value,
+            }
+            setAddFormData({ ...addFormData, supportLink: updatedSupportLink })
+        } else {
+            setAddFormData({ ...addFormData, [name]: value })
+        }
+    }
+
+    const handleUpdateChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        index?: number,
+    ) => {
+        const { name, value } = e.target
+        if (index !== undefined) {
+            const updatedSupportLink = [...modifyFormData.supportLink]
+            updatedSupportLink[index] = {
+                ...updatedSupportLink[index],
+                [name]: value,
+            }
+            setModifyFormData({
+                ...modifyFormData,
+                supportLink: updatedSupportLink,
+            })
+        } else {
+            setModifyFormData({ ...modifyFormData, [name]: value })
+        }
+    }
+
+    const handleAddSupportLink = () => {
+        setAddFormData({
+            ...addFormData,
+            supportLink: [...addFormData.supportLink, { link: '', name: '' }],
+        })
+    }
+
+    const handleRemoveSupportLink = (index: number) => {
+        const updatedSupportLink = addFormData.supportLink.filter(
+            (_, i) => i !== index,
+        )
+        setAddFormData({ ...addFormData, supportLink: updatedSupportLink })
+    }
+
+    const handleAddSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const data: registSupportRequestDTO = {
+            title: addFormData.title,
+            uploadDate: addFormData.uploadDate,
+            supportLink: addFormData.supportLink,
+            content: addFormData.content,
+        }
+
+        if (!selectedFile) return
+
+        await registSupport(data, selectedFile)
+        toggleAddMode()
+    }
+
+    const handleUpdateSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const data: modifySupportRequestDTO = {
+            supportId: modifyFormData.supportId,
+            title: modifyFormData.title,
+            supportLink: modifyFormData.supportLink,
+            content: modifyFormData.content,
+        }
+
+        if (!selectedFile) return
+        modifySupport(data, selectedFile)
+
+        toggleUpdateMode()
+    }
+
+    const handleRemoveSupport = async (supportId: number) => {
+        await deleteSupport(supportId)
+
+        toggleUpdateMode()
+    }
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -231,9 +178,11 @@ const SupportPage: React.FC = () => {
 
                 <SupportCard
                     items={supportData}
-                    addTogle={() => {}}
                     isEditMode={isEditMode}
                     isDarkMode={isDarkMode}
+                    addTogle={toggleAddMode}
+                    updateTogle={toggleUpdateMode}
+                    setInitData={fetchFormData}
                 />
             </div>
 
@@ -243,7 +192,183 @@ const SupportPage: React.FC = () => {
                 width="60vw"
                 height="60vh"
             >
-                <div></div>
+                <form onSubmit={handleAddSubmit}>
+                    <input type="file" onChange={handleFileChange} required />
+                    <br></br>
+                    <label>
+                        제목:
+                        <input
+                            type="text"
+                            name="title"
+                            value={addFormData.title}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+                    <br></br>
+                    <label>
+                        업로드 날짜:
+                        <input
+                            type="date"
+                            name="uploadDate"
+                            value={addFormData.uploadDate}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+                    <br></br>
+                    {addFormData.supportLink.map((link, index) => (
+                        <div key={index}>
+                            <label>
+                                이름:
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={link.name}
+                                    onChange={(e) =>
+                                        handleInputChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            <label>
+                                지원 링크 link:
+                                <input
+                                    type="url"
+                                    name="link"
+                                    value={link.link}
+                                    onChange={(e) =>
+                                        handleInputChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            {index > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleRemoveSupportLink(index)
+                                    }
+                                >
+                                    링크 제거
+                                </button>
+                            )}
+                        </div>
+                    ))}
+
+                    <button type="button" onClick={handleAddSupportLink}>
+                        링크 추가
+                    </button>
+
+                    <br></br>
+                    <label>
+                        내용:
+                        <br></br>
+                        <textarea
+                            name="content"
+                            value={addFormData.content}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </label>
+
+                    <br></br>
+                    <button type="submit">제출</button>
+                </form>
+            </Modal>
+
+            <Modal
+                isVisible={updateMode}
+                toggleModal={toggleUpdateMode}
+                width="60vw"
+                height="60vh"
+            >
+                <form onSubmit={handleUpdateSubmit}>
+                    <input
+                        type="hidden"
+                        name="supportId"
+                        value={modifyFormData.supportId}
+                    />
+                    <input type="file" onChange={handleFileChange} />
+                    <br></br>
+                    <label>
+                        제목:
+                        <input
+                            type="text"
+                            name="title"
+                            value={modifyFormData.title}
+                            onChange={handleUpdateChange}
+                            required
+                        />
+                    </label>
+                    <br></br>
+                    {modifyFormData.supportLink.map((link, index) => (
+                        <div key={index}>
+                            <label>
+                                이름:
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={link.name}
+                                    onChange={(e) =>
+                                        handleUpdateChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            <label>
+                                지원 링크 link:
+                                <input
+                                    type="url"
+                                    name="link"
+                                    value={link.link}
+                                    onChange={(e) =>
+                                        handleUpdateChange(e, index)
+                                    }
+                                    required
+                                />
+                            </label>
+                            {index > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleRemoveSupportLink(index)
+                                    }
+                                >
+                                    링크 제거
+                                </button>
+                            )}
+                        </div>
+                    ))}
+
+                    <button type="button" onClick={handleAddSupportLink}>
+                        링크 추가
+                    </button>
+
+                    <br></br>
+                    <label>
+                        내용:
+                        <br></br>
+                        <textarea
+                            name="content"
+                            value={modifyFormData.content}
+                            onChange={handleUpdateChange}
+                            required
+                        />
+                    </label>
+
+                    <br></br>
+                    <button type="submit">업데이트</button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleRemoveSupport(modifyFormData.supportId)
+                        }}
+                    >
+                        삭제
+                    </button>
+                </form>
             </Modal>
         </article>
     )

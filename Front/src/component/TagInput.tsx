@@ -161,9 +161,8 @@ const TagInput: React.FC<TagInputProps> = ({
          * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
          */
         setTempNumForTagsEffect(tempNumForTagsEffect + 1)
-
-        setSuggestions([])
         setInput('')
+        setSuggestions(availableTags)
     }
 
     const searchByTag = () => {}

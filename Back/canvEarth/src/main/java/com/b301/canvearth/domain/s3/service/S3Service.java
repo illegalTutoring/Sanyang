@@ -28,13 +28,18 @@ import java.util.*;
 public class S3Service {
 
     private final AmazonS3Client amazonS3Client;
-    private final int TARGET_HEIGHT = 500;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Value("${app.allow.extension}")
     private String[] allowedExtension;
+
+    @Value("${app.target.width}")
+    private int targetWidth;
+
+    @Value("${app.thumbnail.ratio}")
+    private double thumbnailRatio;
 
     /////////////////////////////////
     // 워터마크 관련 변수
@@ -119,14 +124,14 @@ public class S3Service {
     private BufferedImage resizeImage(MultipartFile image) throws IOException {
         BufferedImage sourceImage = ImageIO.read(image.getInputStream());
 
-        if(sourceImage.getHeight() <= TARGET_HEIGHT) {
+        if(sourceImage.getWidth() <= targetWidth) {
             return sourceImage;
         }
 
-        double sourceImageRatio = (double) sourceImage.getWidth() / sourceImage.getHeight();
-        int newWidth = (int) (TARGET_HEIGHT * sourceImageRatio);
+        int resizeWidth = (int)(sourceImage.getWidth() * thumbnailRatio);
+        int resizeHeghit = (int)(sourceImage.getHeight() * thumbnailRatio);
 
-        return Scalr.resize(sourceImage, newWidth, TARGET_HEIGHT);
+        return Scalr.resize(sourceImage, resizeWidth, resizeHeghit);
     }
 
     private ByteArrayInputStream convertImage(BufferedImage croppedImage, String contentType, String fileFormat,

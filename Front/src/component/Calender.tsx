@@ -200,6 +200,9 @@ const Calendar: React.FC<CalendarProps> = ({
     //훅
     const scheduleMap = useMemo(() => {
         const map = new Map()
+
+        //console.log(schedules)
+
         schedules.forEach((schedule) => {
             let currentLevel = 0
 
@@ -283,6 +286,15 @@ const Calendar: React.FC<CalendarProps> = ({
         value: idx + 1,
         label: idx + 1 + '월',
     }))
+
+    const hashStringToColor = (str: String) => {
+        let hash = 0
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash)
+        }
+        const hue = hash % 360
+        return `hsl(${hue}, 50%, 70%)`
+    }
 
     return (
         <>
@@ -374,7 +386,10 @@ const Calendar: React.FC<CalendarProps> = ({
                                             style={
                                                 schedule.visible == true
                                                     ? {
-                                                          backgroundColor: `hsl(${schedule.level * 30}, 50%, 70%)`,
+                                                          backgroundColor:
+                                                              hashStringToColor(
+                                                                  schedule.title,
+                                                              ),
                                                       }
                                                     : {
                                                           backgroundColor:

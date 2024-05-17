@@ -6,6 +6,7 @@ interface ModalProps {
     width?: string
     height?: string
     minWidth?: string
+    maxHeight?: string
     children: ReactNode
     isVisible: boolean
     toggleModal: () => void
@@ -15,6 +16,7 @@ const Modal: React.FC<ModalProps> = ({
     width = '80vw',
     height = '80vh',
     minWidth = '300px',
+    maxHeight = '600px',
     children,
     isVisible,
     toggleModal,
@@ -27,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({
                 <div className={styles.backdrop} onClick={toggleModal}>
                     <div
                         className={`${styles.modal} ${isDarkMode ? 'dark' : 'light'}`}
-                        style={{ width, height, minWidth }}
+                        style={{ width, height, minWidth, maxHeight }}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {children}
