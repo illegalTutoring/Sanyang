@@ -311,14 +311,14 @@ const HomePage = () => {
                                             required
                                         >
                                             <option value="">선택하세요</option>
-                                            <option value={1}>YouTube</option>
-                                            <option value={2}>Blog</option>
-                                            <option value={3}>Instagram</option>
-                                            <option value={4}>Twitter</option>
-                                            <option value={5}>
+                                            <option value={0}>YouTube</option>
+                                            <option value={1}>Blog</option>
+                                            <option value={2}>Instagram</option>
+                                            <option value={3}>Twitter</option>
+                                            <option value={4}>
                                                 ArtStation
                                             </option>
-                                            <option value={6}>Pixiv</option>
+                                            <option value={5}>Pixiv</option>
                                         </select>
                                     </label>
                                     <br />
