@@ -58,7 +58,6 @@ const PersonalPage: React.FC = () => {
 
             // 상태 업데이트
             setSchedules(uniqueSchedules)
-            //console.log(uniqueSchedules)
         } catch (error) {
             console.error('Error fetching schedules:', error)
         }
