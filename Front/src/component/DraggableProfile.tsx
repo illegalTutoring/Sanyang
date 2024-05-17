@@ -4,14 +4,10 @@ import Profile from '@/component/Profile'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import styles from './DraggableProfile.module.scss'
 import { motion } from 'framer-motion'
-
-interface ProfileData {
-    type: number
-    link: string
-}
+import { embedLinkInfo } from '@/utils/api/DTO/embed'
 
 interface ProfileComponentProps {
-    item: ProfileData
+    item: embedLinkInfo
     index: number
     moveProfile: (dragIndex: number, hoverIndex: number) => void
 }
