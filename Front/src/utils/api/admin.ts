@@ -518,7 +518,7 @@ export function registSupport(
 }
 
 export function modifySupport(
-    info: modifySupportResponseDTO,
+    info: modifySupportRequestDTO,
     image: File,
 ): Promise<registSupportResponseDTO> {
     /**
