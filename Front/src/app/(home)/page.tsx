@@ -17,9 +17,11 @@ import useEditModeStore from '@/utils/store/useEditModeStore'
 // API
 import { getBanner } from '@/utils/api/banner'
 import { modifyBannerList, modifyEmbedLink } from '@/utils/api/admin'
-import { getNoticeList } from '@/utils/api/notice'
+import { getNoticeList, getRecentNotice } from '@/utils/api/notice'
 import { getEmbedLink } from '@/utils/api/embed'
 import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
+import { noticeDetailInfo } from '@/utils/api/DTO/notice'
+import Modal from '@/component/layout/Modal'
 
 const HomePage = () => {
     // 전역 변수
@@ -27,10 +29,20 @@ const HomePage = () => {
     const { isEditMode } = useEditModeStore()
 
     //지역변수
+    const [isDetailModalVisible, setDetailModalVisible] = useState(false)
+    const toggleDetailModal = () => setDetailModalVisible(!isDetailModalVisible)
+
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
     const [images, setImages] = useState<Images[]>([])
-    const [notice, setNotice] = useState<string>()
+    const [notice, setNotice] = useState<noticeDetailInfo>({
+        content: '',
+        id: 0,
+        registDate: '',
+        title: '공지사항이 존재하지 않습니다.',
+        username: '',
+        views: 0,
+    })
     const [embedData, setEmbedData] = useState<embedLinkInfo[]>([])
 
     // 함수
@@ -48,17 +60,18 @@ const HomePage = () => {
         setImages(result)
     }
 
-    const fetchNotices = async (page: number, size: number) => {
-        const response = await getNoticeList(page, size)
-
-        let result: string = ''
-        if (response.data) {
-            result = response.data[0].title
-        } else {
-            result = '공지사항이 없습니다.'
-        }
-
-        setNotice(result)
+    const fetchNotices = async () => {
+        const response = await getRecentNotice()
+        setNotice(
+            response.data || {
+                content: '',
+                id: 0,
+                registDate: '',
+                title: '공지사항이 존재하지 않습니다.',
+                username: '',
+                views: 0,
+            },
+        )
     }
 
     const fetchEmbed = async () => {
@@ -99,7 +112,7 @@ const HomePage = () => {
     //훅
     useEffect(() => {
         fetchBanners()
-        fetchNotices(1, 1)
+        fetchNotices()
         fetchEmbed()
     }, [])
 
@@ -161,150 +174,186 @@ const HomePage = () => {
     }, [embedData])
 
     return (
-        <article className={`${isDarkMode ? 'dark' : 'light'}`}>
-            <EditableBanner
-                width="100%"
-                height="80vh"
-                images={images}
-                interval={5000}
-                isEditMode={isEditMode}
-                isDarkMode={isDarkMode}
-                fetchImages={fetchBanners}
-                updateImages={modifyBannerList}
-            />
-
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
+        <>
+            <Modal
+                width="50%"
+                height="fit-content"
+                isVisible={isDetailModalVisible}
+                toggleModal={toggleDetailModal}
             >
-                {showArrow && (
-                    <div
-                        onClick={handleArrowClick}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        <img
-                            className={styles.shake}
-                            style={{ width: '30px', margin: '30px 0 30px 0' }}
-                            src={
-                                isDarkMode
-                                    ? '/svgs/double_down_white.svg'
-                                    : '/svgs/double_down_black.svg'
-                            }
-                        />
+                <div className={styles.detailContainer}>
+                    <h3 className={styles.detailTitle}>
+                        {notice && notice.title}
+                    </h3>
+                    <div className={styles.detailInfo}>
+                        <div>{notice && notice.registDate}</div>
+                        <div>조회수: {notice && notice.views}</div>
                     </div>
-                )}
+                    <div className={styles.detailContent}>
+                        {notice && notice.content}
+                    </div>
+                </div>
+            </Modal>
 
-                {showContent && (
-                    <div id="contentDiv" style={{ width: '100%' }}>
-                        <div>
+            <article className={`${isDarkMode ? 'dark' : 'light'}`}>
+                <EditableBanner
+                    width="100%"
+                    height="80vh"
+                    images={images}
+                    interval={5000}
+                    isEditMode={isEditMode}
+                    isDarkMode={isDarkMode}
+                    fetchImages={fetchBanners}
+                    updateImages={modifyBannerList}
+                />
+
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    {showArrow && (
+                        <div
+                            onClick={handleArrowClick}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <img
+                                className={styles.shake}
+                                style={{
+                                    width: '30px',
+                                    margin: '30px 0 30px 0',
+                                }}
+                                src={
+                                    isDarkMode
+                                        ? '/svgs/double_down_white.svg'
+                                        : '/svgs/double_down_black.svg'
+                                }
+                            />
+                        </div>
+                    )}
+
+                    {showContent && (
+                        <div id="contentDiv" style={{ width: '100%' }}>
+                            <div>
+                                <div
+                                    className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
+                                ></div>
+                            </div>
+
                             <div
-                                className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
-                            ></div>
-                        </div>
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: '70px',
+                                    marginBottom: '30px',
+                                    fontFamily: 'Stalemate-Regular',
+                                }}
+                            >
+                                Notice
+                            </div>
 
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                fontSize: '70px',
-                                marginBottom: '30px',
-                                fontFamily: 'Stalemate-Regular',
-                            }}
-                        >
-                            Notice
-                        </div>
-
-                        <div
-                            className={`${styles.notice} ${isDarkMode ? styles.noticeDark : styles.noticeLight}`}
-                        >
-                            {notice}
-                        </div>
-
-                        <div>
                             <div
-                                className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
-                            ></div>
-                        </div>
+                                style={{
+                                    cursor: 'pointer',
+                                    fontSize: '25px',
+                                }}
+                                className={`${styles.notice} ${isDarkMode ? styles.noticeDark : styles.noticeLight}`}
+                                onClick={() => toggleDetailModal()}
+                            >
+                                {notice.title}
+                            </div>
 
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                fontSize: '70px',
-                                marginBottom: '30px',
-                                fontFamily: 'Stalemate-Regular',
-                            }}
-                        >
-                            Contact
-                        </div>
+                            <div>
+                                <div
+                                    className={`${styles.colLine} ${isDarkMode ? styles.colLineDark : styles.colLineLight}`}
+                                ></div>
+                            </div>
 
-                        {isEditMode ? (
-                            <DndProvider backend={HTML5Backend}>
+                            <div
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: '70px',
+                                    marginBottom: '30px',
+                                    fontFamily: 'Stalemate-Regular',
+                                }}
+                            >
+                                Contact
+                            </div>
+
+                            {isEditMode ? (
+                                <DndProvider backend={HTML5Backend}>
+                                    <div className={styles.link_container}>
+                                        {embedData.map((data, index) => (
+                                            <div
+                                                key={index}
+                                                className={styles.embedLink}
+                                            >
+                                                {isEditMode && (
+                                                    <img
+                                                        className={
+                                                            styles.deleteButton
+                                                        }
+                                                        src={
+                                                            '/svgs/delete_red.svg'
+                                                        }
+                                                        alt="Delete"
+                                                        onClick={(event) =>
+                                                            handleDelete(
+                                                                event,
+                                                                index,
+                                                            )
+                                                        }
+                                                    />
+                                                )}
+                                                <DraggableProfile
+                                                    key={data.type}
+                                                    item={data}
+                                                    index={index}
+                                                    moveProfile={moveProfile}
+                                                    modifyProfile={
+                                                        modifyProfile
+                                                    }
+                                                />
+                                            </div>
+                                        ))}
+                                        <div
+                                            key={-1}
+                                            className={styles.embedLink}
+                                            // onClick={
+                                            //      이곳에 임베드 추가 이벤트
+                                            // }
+                                        >
+                                            <Profile
+                                                src={getImageSource(6)}
+                                                size={70}
+                                            />
+                                        </div>
+                                    </div>
+                                </DndProvider>
+                            ) : (
                                 <div className={styles.link_container}>
                                     {embedData.map((data, index) => (
                                         <div
                                             key={index}
                                             className={styles.embedLink}
+                                            onClick={() =>
+                                                window.open(data.link)
+                                            }
                                         >
-                                            {isEditMode && (
-                                                <img
-                                                    className={
-                                                        styles.deleteButton
-                                                    }
-                                                    src={'/svgs/delete_red.svg'}
-                                                    alt="Delete"
-                                                    onClick={(event) =>
-                                                        handleDelete(
-                                                            event,
-                                                            index,
-                                                        )
-                                                    }
-                                                />
-                                            )}
-                                            <DraggableProfile
-                                                key={data.type}
-                                                item={data}
-                                                index={index}
-                                                moveProfile={moveProfile}
-                                                modifyProfile={modifyProfile}
+                                            <Profile
+                                                src={getImageSource(data.type)}
+                                                size={70}
                                             />
                                         </div>
                                     ))}
-                                    <div
-                                        key={-1}
-                                        className={styles.embedLink}
-                                        // onClick={
-                                        //      이곳에 임베드 추가 이벤트
-                                        // }
-                                    >
-                                        <Profile
-                                            src={getImageSource(6)}
-                                            size={70}
-                                        />
-                                    </div>
                                 </div>
-                            </DndProvider>
-                        ) : (
-                            <div className={styles.link_container}>
-                                {embedData.map((data, index) => (
-                                    <div
-                                        key={index}
-                                        className={styles.embedLink}
-                                        onClick={() => window.open(data.link)}
-                                    >
-                                        <Profile
-                                            src={getImageSource(data.type)}
-                                            size={70}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        </article>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </article>
+        </>
     )
 }
 
