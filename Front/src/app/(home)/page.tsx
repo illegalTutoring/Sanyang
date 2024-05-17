@@ -1,6 +1,7 @@
 'use client'
 
 import styles from './home.module.scss'
+import Select, { SingleValue, StylesConfig } from 'react-select'
 import { useCallback, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -22,12 +23,18 @@ import { getEmbedLink } from '@/utils/api/embed'
 import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
 import Modal from '@/component/layout/Modal'
 
+interface OptionType {
+    value: number
+    label: string
+}
+
 const HomePage = () => {
     // 전역 변수
     const { isDarkMode } = useDarkModeStore()
     const { isEditMode } = useEditModeStore()
 
     //지역변수
+    const [isFocused, setIsFocused] = useState(false)
     const [showArrow, setShowArrow] = useState(true)
     const [showContent, setShowContent] = useState(false)
     const [images, setImages] = useState<Images[]>([])
@@ -113,6 +120,15 @@ const HomePage = () => {
         fetchEmbed()
     }, [isEmbedAddMode])
 
+    const options: OptionType[] = [
+        { value: 0, label: 'YouTube' },
+        { value: 1, label: 'Blog' },
+        { value: 2, label: 'Instagram' },
+        { value: 3, label: 'Twitter' },
+        { value: 4, label: 'ArtStation' },
+        { value: 5, label: 'Pixiv' },
+    ]
+
     const getImageSource = (type: number) => {
         switch (type) {
             case 0:
@@ -171,12 +187,23 @@ const HomePage = () => {
     }, [embedData])
 
     const handleInputChange = (
-        e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>,
+        e:
+            | React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+            | { target: { name: string; value: string | number } },
     ): void => {
         const { name, value } = e.target
         setEmbedFormData({
             ...embedFormData,
-            [name]: name === 'type' ? parseInt(value) : value,
+            [name]: name === 'type' ? parseInt(value as string) : value,
+        })
+    }
+
+    const handleSelectChange = (selectedOption: SingleValue<OptionType>) => {
+        handleInputChange({
+            target: {
+                name: 'type',
+                value: selectedOption ? selectedOption.value : -1,
+            },
         })
     }
 
@@ -205,6 +232,22 @@ const HomePage = () => {
         await modifyEmbedLink({ data: modifyEmbedLinkDTO })
 
         setEmbedAddMode(false)
+    }
+
+    const customStyles: StylesConfig<OptionType, false> = {
+        control: (provided) => ({
+            ...provided,
+        }),
+        menu: (provided) => ({
+            ...provided,
+            overflowY: 'auto',
+        }),
+        option: (provided) => ({
+            ...provided,
+            height: '30px',
+            display: 'flex',
+            alignItems: 'center',
+        }),
     }
 
     return (
@@ -294,47 +337,52 @@ const HomePage = () => {
                             width="auto"
                             height="auto"
                         >
-                            <Modal
-                                isVisible={isEmbedAddMode}
-                                toggleModal={() => {
-                                    setEmbedAddMode(false)
-                                }}
-                                width="60vw"
-                                height="60vh"
-                            >
-                                <form onSubmit={handleAddEmbed}>
-                                    <label>
-                                        플랫폼:
-                                        <select
+                            <form onSubmit={handleAddEmbed}>
+                                <div className={styles.platformModalContainer}>
+                                    <div className={styles.platformModalHeader}>
+                                        <div>플랫폼</div>
+                                        <Select
                                             name="type"
-                                            onChange={handleInputChange}
+                                            options={options}
+                                            onChange={handleSelectChange}
+                                            placeholder="선택하세요"
+                                            isSearchable={false}
+                                            className={styles.customSelect}
+                                            styles={customStyles}
+                                            onMenuOpen={() => {
+                                                setIsFocused(true)
+                                            }}
+                                            onMenuClose={() =>
+                                                setIsFocused(false)
+                                            }
                                             required
-                                        >
-                                            <option value="">선택하세요</option>
-                                            <option value={0}>YouTube</option>
-                                            <option value={1}>Blog</option>
-                                            <option value={2}>Instagram</option>
-                                            <option value={3}>Twitter</option>
-                                            <option value={4}>
-                                                ArtStation
-                                            </option>
-                                            <option value={5}>Pixiv</option>
-                                        </select>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        링크:
+                                        />
+                                    </div>
+                                    <div
+                                        className={`${styles.transitionContainer} ${
+                                            !isFocused &&
+                                            styles.transitionContainerHidden
+                                        }`}
+                                    ></div>
+                                    <div className={styles.platformModalLink}>
+                                        <div>링크</div>
                                         <input
                                             type="url"
                                             name="link"
                                             onChange={handleInputChange}
                                             required
                                         />
-                                    </label>
-                                    <br />
-                                    <button type="submit">추가</button>
-                                </form>
-                            </Modal>
+                                    </div>
+                                    <div className={styles.platformModalButton}>
+                                        <button
+                                            className={styles.blueButton}
+                                            type="submit"
+                                        >
+                                            추가
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </Modal>
 
                         {isEditMode ? (
