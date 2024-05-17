@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import styles from './Header.module.scss'
 import Link from 'next/link'
-import useAuthStore from '@/utils/store/useAuthStore'
+import userStore from '@/utils/store/useUserStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login, logout } from '@/utils/api/user'
 import useSidebrarOpenStore from '@/utils/store/useSidebarOpenStore'
+import useAuthStore from '@/utils/store/useAuthStore'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -100,7 +101,7 @@ const Header: React.FC = () => {
                                 whiteSpace: 'nowrap',
                             }}
                         >
-                            관리자
+                            {userStore.getState().username || '관리자'}
                         </h3>
                     </div>
 
