@@ -522,7 +522,7 @@ export function registSupport(
 
 export function modifySupport(
     info: modifySupportRequestDTO,
-    image: File,
+    image: File | null,
 ): Promise<registSupportResponseDTO> {
     /**
      * 후원 수정
