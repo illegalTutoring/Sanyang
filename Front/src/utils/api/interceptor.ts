@@ -36,6 +36,12 @@ export async function axiosRequestHandler(
                 statusText: statusText,
                 message: message,
             }
+        } else if (userStore.getState().accessToken === '') {
+            return {
+                statusCode: statusCode,
+                statusText: statusText,
+                message: message,
+            }
         } else {
             userStore.getState().destroyAll()
             return await logout()

@@ -144,19 +144,21 @@ const HomePage = () => {
             const draggedItem = newEmbedData.splice(dragIndex, 1)[0]
             newEmbedData.splice(hoverIndex, 0, draggedItem)
             setEmbedData(newEmbedData)
-
-            let modifyEmbedLinkDTO: embedInfo[] = []
-            embedData.forEach((data) => {
-                let dto: embedInfo = {
-                    type: data.type,
-                    link: data.link,
-                }
-                modifyEmbedLinkDTO.push(dto)
-            })
-            modifyEmbedLink({ data: modifyEmbedLinkDTO })
         },
         [embedData],
     )
+
+    const modifyProfile = useCallback(() => {
+        let modifyEmbedLinkDTO: embedInfo[] = []
+        embedData.forEach((data) => {
+            let dto: embedInfo = {
+                type: data.type,
+                link: data.link,
+            }
+            modifyEmbedLinkDTO.push(dto)
+        })
+        modifyEmbedLink({ data: modifyEmbedLinkDTO })
+    }, [embedData])
 
     return (
         <article className={`${isDarkMode ? 'dark' : 'light'}`}>
@@ -265,6 +267,7 @@ const HomePage = () => {
                                                 item={data}
                                                 index={index}
                                                 moveProfile={moveProfile}
+                                                modifyProfile={modifyProfile}
                                             />
                                         </div>
                                     ))}
@@ -288,9 +291,7 @@ const HomePage = () => {
                                     <div
                                         key={index}
                                         className={styles.embedLink}
-                                        // onClick={
-                                        //     이곳에 링크 이동 이벤트
-                                        // }
+                                        onClick={() => window.open(data.link)}
                                     >
                                         <Profile
                                             src={getImageSource(data.type)}
