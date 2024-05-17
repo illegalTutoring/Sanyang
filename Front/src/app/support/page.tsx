@@ -157,10 +157,7 @@ const SupportPage: React.FC = () => {
         toggleUpdateMode()
     }
 
-    const handleRemoveSupport = async (
-        e: React.FormEvent,
-        supportId: number,
-    ) => {
+    const handleRemoveSupport = async (supportId: number) => {
         await deleteSupport(supportId)
 
         toggleUpdateMode()
@@ -363,7 +360,12 @@ const SupportPage: React.FC = () => {
                     <br></br>
                     <button type="submit">업데이트</button>
 
-                    <button type="button" onClick={handleRemoveSupport}>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleRemoveSupport(modifyFormData.supportId)
+                        }}
+                    >
                         삭제
                     </button>
                 </form>
