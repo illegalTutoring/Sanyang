@@ -8,10 +8,12 @@ import {
     signinResponseDTO,
 } from './DTO/user'
 import userStore from '../store/useUserStore'
+import { serverResponseDTO } from './DTO/common'
+import useAuthStore from '../store/useAuthStore'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function login(data: loginRequestDTO): loginResponseDTO {
+export function login(data: loginRequestDTO): Promise<loginResponseDTO> {
     /**
      * 로그인
      *
@@ -46,7 +48,7 @@ export function login(data: loginRequestDTO): loginResponseDTO {
     )
 }
 
-export function logout() {
+export function logout(): Promise<serverResponseDTO> {
     /**
      * 로그아웃
      *
@@ -55,14 +57,11 @@ export function logout() {
 
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
-            method: 'GET',
+            method: 'POST',
             url: `${SERVER_URL}/user/logout`,
-            headers: {
-                Authorization: userStore.getState().accessToken,
-            },
         })
 
-        userStore.getState().destroyAll()
+        useAuthStore.getState().logOut()
 
         return {
             statusCode: response.status,
@@ -71,7 +70,7 @@ export function logout() {
     }, [])
 }
 
-export function signin(data: signinRequestDTO): signinResponseDTO {
+export function signin(data: signinRequestDTO): Promise<signinResponseDTO> {
     /**
      * 회원 가입
      *
@@ -95,14 +94,11 @@ export function signin(data: signinRequestDTO): signinResponseDTO {
     )
 }
 
-export function reIssue(accessToken: string): reIssueResponseDTO {
+export function reIssue(): Promise<reIssueResponseDTO> {
     return axiosRequestHandler(async () => {
         const response: AxiosResponse<any, any> = await axios({
             method: 'POST',
             url: `${SERVER_URL}/user/reissue`,
-            headers: {
-                accessToken,
-            },
         })
 
         userStore.getState().setAccessToken(response.headers.authorization)

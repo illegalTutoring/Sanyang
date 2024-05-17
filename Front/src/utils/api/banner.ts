@@ -4,7 +4,7 @@ import { getBannerResponseDTO } from './DTO/banner'
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export function getBanner(): getBannerResponseDTO {
+export function getBanner(): Promise<getBannerResponseDTO> {
     /**
      * 배너 이미지 목록 정보를 반환한다.
      */

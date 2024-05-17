@@ -76,8 +76,6 @@ const Calendar: React.FC<CalendarProps> = ({
             endDate: format(day, 'yyyy-MM-dd'),
         })
         setAddMode(true)
-
-        //console.log(day)
     }
 
     const handleScheduleClick = (
@@ -140,8 +138,8 @@ const Calendar: React.FC<CalendarProps> = ({
         setUpdateMode(false)
     }
 
-    const handleDelete = (calendarId: number) => {
-        deleteSchedule(calendarId)
+    const handleDelete = async (calendarId: number) => {
+        await deleteSchedule(calendarId)
 
         console.log('스케쥴 삭제:', { calendarId })
         setUpdateMode(false)
@@ -202,6 +200,9 @@ const Calendar: React.FC<CalendarProps> = ({
     //훅
     const scheduleMap = useMemo(() => {
         const map = new Map()
+
+        //console.log(schedules)
+
         schedules.forEach((schedule) => {
             let currentLevel = 0
 
@@ -392,13 +393,15 @@ const Calendar: React.FC<CalendarProps> = ({
                     ))}
                 </div>
             </div>
+
             <Modal
-                height="50%"
-                width="40%"
+                height="fit-content"
+                width="fit-content"
                 isVisible={isAddMode || isUpdateMode}
                 toggleModal={isAddMode ? toggleAddMode : toggleUpdateMode}
             >
                 <form
+                    className={styles.calendarFormContainer}
                     onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
                 >
                     <input
@@ -406,48 +409,58 @@ const Calendar: React.FC<CalendarProps> = ({
                         name="calendarId"
                         value={insertData.calendarId}
                     />
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={insertData.title}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        value={insertData.startDate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <label htmlFor="endDate">End Date</label>
-                    <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={insertData.endDate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <br></br>
-                    <button type="submit">
-                        {isAddMode ? 'Save' : 'Update'}
-                    </button>
-                    <br></br>
-                    {isUpdateMode && (
-                        <button
-                            type="button"
-                            onClick={() => handleDelete(insertData.calendarId)}
-                        >
-                            Delete
+                    <div className={styles.calendarFormTitle}>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={insertData.title}
+                            style={{ color: isDarkMode ? 'white' : 'black' }}
+                            onChange={handleInputChange}
+                            placeholder="제목"
+                            required
+                        />
+                    </div>
+                    <div className={styles.calendarFormDate}>
+                        <img
+                            src={`${isDarkMode ? '/svgs/clock_white.svg' : '/svgs/clock_black.svg'}`}
+                        />
+                        <div className={styles.date}>
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                value={insertData.startDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                            <label htmlFor="endDate">~</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                value={insertData.endDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.calendarFormButton}>
+                        <button className={styles.blueButton} type="submit">
+                            {isAddMode ? '저장' : '수정'}
                         </button>
-                    )}
+                        {isUpdateMode && (
+                            <button
+                                className={styles.redButton}
+                                type="button"
+                                onClick={() =>
+                                    handleDelete(insertData.calendarId)
+                                }
+                            >
+                                삭제
+                            </button>
+                        )}
+                    </div>
                 </form>
             </Modal>
         </>

@@ -64,7 +64,7 @@ const NotificationPage = () => {
                         pageSize={10}
                         columnNames={['No', '제목', '등록일자']}
                         columns={['id', 'title', 'registDate']}
-                        columnWidth={['1%', '70%', '30%']}
+                        columnWidth={['1%', '54%', '30%']}
                         data={data}
                         isEditMode={isEditMode}
                     />

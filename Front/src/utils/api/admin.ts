@@ -52,7 +52,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 export function registWork(
     data: registWorkRequestDTO,
     image: File,
-): reigstWorkResponseDTO {
+): Promise<reigstWorkResponseDTO> {
     /**
      * 외주 등록
      *
@@ -88,7 +88,7 @@ export function registWork(
 export function modifyWork(
     data: modifyWorkRequestDTO,
     image: File | null,
-): modifyWorkResponseDTO {
+): Promise<modifyWorkResponseDTO> {
     /**
      * 외주 수정
      *
@@ -121,7 +121,7 @@ export function modifyWork(
     )
 }
 
-export function deleteWork(workId: number): deleteWorkResponseDTO {
+export function deleteWork(workId: number): Promise<deleteWorkResponseDTO> {
     /**
      * 외주 삭제
      *
@@ -152,7 +152,7 @@ export function deleteWork(workId: number): deleteWorkResponseDTO {
 export function registGallery(
     data: registGalleryRequestDTO,
     image: File,
-): registGalleryResponseDTO {
+): Promise<registGalleryResponseDTO> {
     /**
      * 갤러리 등록
      *
@@ -187,7 +187,7 @@ export function registGallery(
 export function modifyGallery(
     data: modifyGalleryRequestDTO,
     image: File | null,
-): modifyGalleryResponseDTO {
+): Promise<modifyGalleryResponseDTO> {
     /**
      * 갤러리 수정
      *
@@ -220,7 +220,9 @@ export function modifyGallery(
     )
 }
 
-export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
+export function deleteGallery(
+    galleryId: number,
+): Promise<deleteGalleryResponseDTO> {
     /**
      * 갤러리 삭제
      *
@@ -250,7 +252,7 @@ export function deleteGallery(galleryId: number): deleteGalleryResponseDTO {
 
 export function registCalendar(
     data: registCalendarRequestDTO,
-): registCalendarResponseDTO {
+): Promise<registCalendarResponseDTO> {
     /**
      * 일정 등록
      *
@@ -275,7 +277,7 @@ export function registCalendar(
 
 export function modifyCalendar(
     data: modifyCalendarRequestDTO,
-): modifyCalendarResponseDTO {
+): Promise<modifyCalendarResponseDTO> {
     /**
      * 일정 수정
      *
@@ -298,7 +300,9 @@ export function modifyCalendar(
     )
 }
 
-export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
+export function deleteCalendar(
+    calendarId: number,
+): Promise<deleteCalendarResponseDTO> {
     /**
      * 일정 수정
      *
@@ -328,7 +332,7 @@ export function deleteCalendar(calendarId: number): deleteCalendarResponseDTO {
 
 export function modifyBannerList(
     data: modifyBannerListRequestDTO,
-): modifyBannerListResponseDTO {
+): Promise<modifyBannerListResponseDTO> {
     /**
      * 배너 수정
      *
@@ -337,11 +341,20 @@ export function modifyBannerList(
 
     return axiosRequestHandler(
         async (data: modifyBannerListRequestDTO) => {
+            const blobData = new Blob([JSON.stringify(data.infos)], {
+                type: 'application/json',
+            })
+            const formData = new FormData()
+            formData.append('infos', blobData)
+            data.images.forEach((image) => {
+                formData.append('images', image)
+            })
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
                 url: `${SERVER_URL}/admin/banner`,
-                data: data,
+                data: formData,
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     Authorization: userStore.getState().accessToken,
                 },
             })
@@ -359,7 +372,7 @@ export function modifyBannerList(
 
 export function modifyEmbedLink(
     data: modifyEmbedLinkRequestDTO,
-): modifyEmbedLinkResponseDTO {
+): Promise<modifyEmbedLinkResponseDTO> {
     /**
      * 임베드 링크 수정
      *
@@ -390,7 +403,7 @@ export function modifyEmbedLink(
 
 export function registNotice(
     info: registNoticeRequestDTO,
-): registNoticeResponseDTO {
+): Promise<registNoticeResponseDTO> {
     /**
      * 공지사항 등록
      *
@@ -415,7 +428,7 @@ export function registNotice(
 
 export function modifyNotice(
     info: modifyNoticeRequestDTO,
-): modifyNoticeResponseDTO {
+): Promise<modifyNoticeResponseDTO> {
     /**
      * 공지사항 수정
      *
@@ -441,7 +454,9 @@ export function modifyNotice(
     )
 }
 
-export function deleteNotice(noticeId: number): deleteNoticeResponseDTO {
+export function deleteNotice(
+    noticeId: number,
+): Promise<deleteNoticeResponseDTO> {
     /**
      * 공지사항 삭제
      *
@@ -469,7 +484,7 @@ export function deleteNotice(noticeId: number): deleteNoticeResponseDTO {
 export function registSupport(
     info: registSupportResponseDTO,
     image: File,
-): registSupportResponseDTO {
+): Promise<registSupportResponseDTO> {
     /**
      * 후원 등록
      */
@@ -504,7 +519,7 @@ export function registSupport(
 export function modifySupport(
     info: modifySupportResponseDTO,
     image: File,
-): registSupportResponseDTO {
+): Promise<registSupportResponseDTO> {
     /**
      * 후원 수정
      */
@@ -536,7 +551,9 @@ export function modifySupport(
     )
 }
 
-export function deleteSupport(supportId: number): deleteSupportResponseDTO {
+export function deleteSupport(
+    supportId: number,
+): Promise<deleteSupportResponseDTO> {
     return axiosRequestHandler(
         async (supportId: number) => {
             const response: AxiosResponse<any, any> = await axios({

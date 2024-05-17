@@ -24,7 +24,6 @@ const PersonalPage: React.FC = () => {
     const [schedules, setSchedules] = useState<calendarInfo[]>([])
 
     // 함수
-
     const fetchSchedules = async (year: number, month: number) => {
         // 현재, 전달, 후달의 Date 객체 생성
         const currentDate = new Date(year, month)
@@ -50,9 +49,16 @@ const PersonalPage: React.FC = () => {
                 ...nextMonthData.data,
             ]
 
+            // 중복된 calendarId를 제거
+            const uniqueSchedules = Array.from(
+                new Map(
+                    combinedData.map((item) => [item.calendarId, item]),
+                ).values(),
+            )
+
             // 상태 업데이트
-            setSchedules(combinedData)
-            //console.log(combinedData)
+            setSchedules(uniqueSchedules)
+            //console.log(uniqueSchedules)
         } catch (error) {
             console.error('Error fetching schedules:', error)
         }
