@@ -126,7 +126,7 @@
             align-items: center;
             font-size: 16px;
 
-            width: 100%;
+            width: 100px;
             height: 30px;
             color: white;
             border: none;
@@ -140,12 +140,13 @@
         }
 
         .redButton {
-            background-color: rgb(255, 109, 109);
+            background-color: rgb(231, 116, 116);
             justify-content: center;
             align-items: center;
             font-size: 16px;
+            margin-left: 3px;
 
-            width: 100%;
+            width: 100px;
             height: 30px;
             color: white;
             border: none;
@@ -153,7 +154,7 @@
             cursor: pointer;
 
             &:hover {
-                background-color: rgb(51, 87, 157);
+                background-color: rgb(188, 94, 94);
                 transition: 0.3s ease-in-out;
             }
         }

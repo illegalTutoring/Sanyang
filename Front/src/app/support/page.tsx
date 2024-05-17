@@ -516,7 +516,7 @@ const SupportPage: React.FC = () => {
                         </div>
                         <div className={styles.cardAddModalSubmit}>
                             <button className={styles.blueButton} type="submit">
-                                후원카드 업데이트
+                                업데이트
                             </button>
                             <button
                                 className={styles.redButton}
@@ -526,7 +526,7 @@ const SupportPage: React.FC = () => {
                                     )
                                 }
                             >
-                                후원카드 삭제
+                                삭제
                             </button>
                         </div>
                         <input
