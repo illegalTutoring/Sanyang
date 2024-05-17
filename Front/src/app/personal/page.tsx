@@ -70,7 +70,7 @@ const PersonalPage: React.FC = () => {
         >
             <Calendar
                 width="100%"
-                height="auto"
+                height="100%"
                 year={new Date().getFullYear()}
                 month={new Date().getMonth()}
                 schedules={schedules}
