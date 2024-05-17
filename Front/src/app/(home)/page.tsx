@@ -1,6 +1,7 @@
 'use client'
 
 import styles from './home.module.scss'
+import Select, { SingleValue, StylesConfig } from 'react-select'
 import { useCallback, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -20,6 +21,10 @@ import { modifyBannerList, modifyEmbedLink } from '@/utils/api/admin'
 import { getNoticeList, getRecentNotice } from '@/utils/api/notice'
 import { getEmbedLink } from '@/utils/api/embed'
 import { embedInfo, embedLinkInfo } from '@/utils/api/DTO/embed'
+interface OptionType {
+    value: number
+    label: string
+}
 import { noticeDetailInfo } from '@/utils/api/DTO/notice'
 import Modal from '@/component/layout/Modal'
 
@@ -29,6 +34,7 @@ const HomePage = () => {
     const { isEditMode } = useEditModeStore()
 
     //지역변수
+    const [isFocused, setIsFocused] = useState(false)
     const [isDetailModalVisible, setDetailModalVisible] = useState(false)
     const toggleDetailModal = () => setDetailModalVisible(!isDetailModalVisible)
 
@@ -44,6 +50,11 @@ const HomePage = () => {
         views: 0,
     })
     const [embedData, setEmbedData] = useState<embedLinkInfo[]>([])
+    const [isEmbedAddMode, setEmbedAddMode] = useState(false)
+    const [embedFormData, setEmbedFormData] = useState({
+        type: -1,
+        link: '',
+    })
 
     // 함수
     const fetchBanners = async () => {
@@ -116,6 +127,19 @@ const HomePage = () => {
         fetchEmbed()
     }, [])
 
+    useEffect(() => {
+        fetchEmbed()
+    }, [isEmbedAddMode])
+
+    const options: OptionType[] = [
+        { value: 0, label: 'YouTube' },
+        { value: 1, label: 'Blog' },
+        { value: 2, label: 'Instagram' },
+        { value: 3, label: 'Twitter' },
+        { value: 4, label: 'ArtStation' },
+        { value: 5, label: 'Pixiv' },
+    ]
+
     const getImageSource = (type: number) => {
         switch (type) {
             case 0:
@@ -172,6 +196,70 @@ const HomePage = () => {
         })
         modifyEmbedLink({ data: modifyEmbedLinkDTO })
     }, [embedData])
+
+    const handleInputChange = (
+        e:
+            | React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+            | { target: { name: string; value: string | number } },
+    ): void => {
+        const { name, value } = e.target
+        setEmbedFormData({
+            ...embedFormData,
+            [name]: name === 'type' ? parseInt(value as string) : value,
+        })
+    }
+
+    const handleSelectChange = (selectedOption: SingleValue<OptionType>) => {
+        handleInputChange({
+            target: {
+                name: 'type',
+                value: selectedOption ? selectedOption.value : -1,
+            },
+        })
+    }
+
+    const handleAddEmbed = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ): Promise<void> => {
+        event.preventDefault()
+
+        const newEmbedData: embedInfo = {
+            type: embedFormData.type,
+            link: embedFormData.link,
+        }
+
+        let modifyEmbedLinkDTO: embedInfo[] = []
+
+        embedData.forEach((data) => {
+            let dto: embedInfo = {
+                type: data.type,
+                link: data.link,
+            }
+            modifyEmbedLinkDTO.push(dto)
+        })
+
+        modifyEmbedLinkDTO.push(newEmbedData)
+
+        await modifyEmbedLink({ data: modifyEmbedLinkDTO })
+
+        setEmbedAddMode(false)
+    }
+
+    const customStyles: StylesConfig<OptionType, false> = {
+        control: (provided) => ({
+            ...provided,
+        }),
+        menu: (provided) => ({
+            ...provided,
+            overflowY: 'auto',
+        }),
+        option: (provided) => ({
+            ...provided,
+            height: '30px',
+            display: 'flex',
+            alignItems: 'center',
+        }),
+    }
 
     return (
         <>
@@ -280,6 +368,76 @@ const HomePage = () => {
                             >
                                 Contact
                             </div>
+
+                            <Modal
+                                isVisible={isEmbedAddMode}
+                                toggleModal={() => {
+                                    setEmbedAddMode(false)
+                                }}
+                                width="auto"
+                                height="auto"
+                            >
+                                <form onSubmit={handleAddEmbed}>
+                                    <div
+                                        className={
+                                            styles.platformModalContainer
+                                        }
+                                    >
+                                        <div
+                                            className={
+                                                styles.platformModalHeader
+                                            }
+                                        >
+                                            <div>플랫폼</div>
+                                            <Select
+                                                name="type"
+                                                options={options}
+                                                onChange={handleSelectChange}
+                                                placeholder="선택하세요"
+                                                isSearchable={false}
+                                                className={styles.customSelect}
+                                                styles={customStyles}
+                                                onMenuOpen={() => {
+                                                    setIsFocused(true)
+                                                }}
+                                                onMenuClose={() =>
+                                                    setIsFocused(false)
+                                                }
+                                                required
+                                            />
+                                        </div>
+                                        <div
+                                            className={`${styles.transitionContainer} ${
+                                                !isFocused &&
+                                                styles.transitionContainerHidden
+                                            }`}
+                                        ></div>
+                                        <div
+                                            className={styles.platformModalLink}
+                                        >
+                                            <div>링크</div>
+                                            <input
+                                                type="url"
+                                                name="link"
+                                                onChange={handleInputChange}
+                                                required
+                                            />
+                                        </div>
+                                        <div
+                                            className={
+                                                styles.platformModalButton
+                                            }
+                                        >
+                                            <button
+                                                className={styles.blueButton}
+                                                type="submit"
+                                            >
+                                                추가
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </Modal>
 
                             {isEditMode ? (
                                 <DndProvider backend={HTML5Backend}>

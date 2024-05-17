@@ -54,6 +54,11 @@ const SupportCard: React.FC<SupportProps> = ({
         await updateTogle()
     }
 
+    const handleOpenImage = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+    }
+
     return (
         <div
             className={`${isDarkMode ? 'dark' : 'light'}`}
@@ -105,6 +110,7 @@ const SupportCard: React.FC<SupportProps> = ({
                         }}
                     >
                         <img
+                            onContextMenu={handleOpenImage}
                             src={item.thumbnail}
                             alt={''}
                             style={{ width: '50px', height: '50px' }}
