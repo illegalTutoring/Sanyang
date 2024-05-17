@@ -31,7 +31,7 @@ const NotificationPage = () => {
 
     // 함수
     const fetchData = async (page: number) => {
-        const response = await getNoticeList(page, itemsPerPage)
+        const response = (await getNoticeList(page, itemsPerPage)) || []
         setTotalPage(response.page)
         setData(response.data)
     }

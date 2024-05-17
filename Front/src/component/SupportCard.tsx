@@ -29,7 +29,7 @@ interface SupportProps {
 }
 
 const SupportCard: React.FC<SupportProps> = ({
-    items,
+    items = [],
     isEditMode,
     isDarkMode,
     width = '100%',
