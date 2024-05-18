@@ -40,7 +40,12 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException e) {
             handleExceptionInternal(e, HttpStatus.BAD_REQUEST, e.getMessage(), request, response);
         } catch (AuthenticationException e) {
-            handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "토큰 인증 실패", request, response);
+            String requestUri = request.getRequestURI();
+            if (requestUri.matches("^/api/user/logout$") || requestUri.matches("^/api/user/reissue$")) {
+                handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "refresh 토큰 인증 실패", request, response);
+            }else{
+                handleExceptionInternal(e, HttpStatus.UNAUTHORIZED, "access 토큰 인증 실패", request, response);
+            }
         } catch (AccessDeniedException e) {
             handleExceptionInternal(e, HttpStatus.FORBIDDEN, "접근 거부", request, response);
         } catch (Exception e) {
