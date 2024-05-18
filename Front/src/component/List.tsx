@@ -311,7 +311,7 @@ const List: React.FC<ListProps> = ({
                                 </th>
                             ))}
                             {isEditMode && (
-                                <th style={{ width: '15%' }}>수정</th>
+                                <th style={{ width: '50px' }}>수정</th>
                             )}
                         </tr>
                     </thead>

@@ -168,7 +168,6 @@ const SupportPage: React.FC = () => {
 
     const handleAddSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
         const data: registSupportRequestDTO = {
             title: addFormData.title,
             uploadDate: addFormData.uploadDate,
@@ -179,7 +178,9 @@ const SupportPage: React.FC = () => {
         if (!selectedFile) return
 
         await registSupport(data, selectedFile)
+
         toggleAddMode()
+        setImageURL(null)
     }
 
     const handleUpdateSubmit = async (e: React.FormEvent) => {
@@ -263,7 +264,7 @@ const SupportPage: React.FC = () => {
                                 className={styles.cardAddModalHeaderAddImage}
                                 onClick={() =>
                                     document
-                                        .getElementById('fileInput')
+                                        .getElementById('addFileInput')
                                         ?.click()
                                 }
                             >
@@ -379,7 +380,7 @@ const SupportPage: React.FC = () => {
                             </button>
                         </div>
                         <input
-                            id="fileInput"
+                            id="addFileInput"
                             type="file"
                             name="upfile"
                             style={{ display: 'none' }}
@@ -416,7 +417,7 @@ const SupportPage: React.FC = () => {
                                 className={styles.cardAddModalHeaderAddImage}
                                 onClick={() =>
                                     document
-                                        .getElementById('fileInput')
+                                        .getElementById('updateFileInput')
                                         ?.click()
                                 }
                             >
@@ -527,17 +528,18 @@ const SupportPage: React.FC = () => {
                             </button>
                             <button
                                 className={styles.redButton}
-                                onClick={() =>
+                                onClick={(e) => {
+                                    e.preventDefault()
                                     handleRemoveSupport(
                                         modifyFormData.supportId,
                                     )
-                                }
+                                }}
                             >
                                 삭제
                             </button>
                         </div>
                         <input
-                            id="fileInput"
+                            id="updateFileInput"
                             type="file"
                             name="upfile"
                             style={{ display: 'none' }}

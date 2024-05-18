@@ -177,7 +177,11 @@ const Gallery: React.FC<GalleryProps> = ({
         <div>
             {selectedImage && (
                 <div className={styles.galleryModalOverlay}>
-                    <div className={styles.closeButton} onClick={handleClose}>
+                    <div
+                        style={{ color: 'white' }}
+                        className={styles.closeButton}
+                        onClick={handleClose}
+                    >
                         닫기
                         <img src="svgs/delete.svg" alt="Close" />
                     </div>

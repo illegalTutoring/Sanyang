@@ -170,7 +170,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     <div onClick={toggleGallery}>
                         <img
                             className={`${isGalleryVisible ? styles.rotate180 : styles.rotate360}`}
-                            style={{ width: '25px' }}
+                            style={{ width: '25px', cursor: 'pointer' }}
                             src={`${isDarkMode ? '/svgs/double_down_white.svg' : '/svgs/double_down_black.svg'}`}
                             alt=""
                         />

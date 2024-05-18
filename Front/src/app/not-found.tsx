@@ -26,9 +26,12 @@ export default function NotFound() {
                 <img
                     style={{
                         width: '200px',
+                        marginBottom: '10px',
                     }}
                     src={
-                        isDarkMode ? 'svgs/404_white.svg' : 'svgs/404_black.svg'
+                        isDarkMode
+                            ? '/svgs/404_white.svg'
+                            : '/svgs/404_black.svg'
                     }
                 />
             </div>
