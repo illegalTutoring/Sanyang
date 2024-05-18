@@ -1,5 +1,6 @@
 import useAuthStore from '../store/useAuthStore'
 import userStore from '../store/useUserStore'
+import useEditModeStore from '../store/useEditModeStore'
 import { logout, reIssue } from './user'
 
 type RequestFunction = (...params: any[]) => any
@@ -34,6 +35,7 @@ export async function axiosRequestHandler(
         ) {
             userStore.getState().destroyAll()
             useAuthStore.getState().logOut()
+            useEditModeStore.getState().setEditMode(false)
 
             return await logout()
         }
@@ -48,6 +50,7 @@ export async function axiosRequestHandler(
         ) {
             userStore.getState().destroyAll()
             useAuthStore.getState().logOut()
+            useEditModeStore.getState().setEditMode(false)
         }
         
         else {
