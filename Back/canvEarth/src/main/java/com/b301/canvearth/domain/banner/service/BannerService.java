@@ -80,9 +80,7 @@ public class BannerService {
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
 
-            if (!(Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "png")
-                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "jpg")
-                    || Objects.equals(StringUtils.getFilenameExtension(image.getOriginalFilename()), "jpeg"))) {
+            if(!s3Service.checkExtension(image)){
                 throw new CustomException(ErrorCode.UNSUPPORTED_IMAGE_TYPE);
             }
         }
