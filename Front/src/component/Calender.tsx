@@ -90,8 +90,6 @@ const Calendar: React.FC<CalendarProps> = ({
             endDate: schedule.endDate,
         })
         setUpdateMode(true)
-
-        //console.log(schedule)
     }
 
     const handleAddSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -108,7 +106,6 @@ const Calendar: React.FC<CalendarProps> = ({
             endDate: endDate as string,
         })
 
-        console.log('스케쥴 추가: ', { title, startDate, endDate })
         setAddMode(false)
     }
 
@@ -129,19 +126,12 @@ const Calendar: React.FC<CalendarProps> = ({
             endDate: endDate as string,
         })
 
-        console.log('스케쥴 업데이트: ', {
-            calendarId,
-            title,
-            startDate,
-            endDate,
-        })
         setUpdateMode(false)
     }
 
     const handleDelete = async (calendarId: number) => {
         await deleteSchedule(calendarId)
 
-        console.log('스케쥴 삭제:', { calendarId })
         setUpdateMode(false)
     }
 
@@ -200,8 +190,6 @@ const Calendar: React.FC<CalendarProps> = ({
     //훅
     const scheduleMap = useMemo(() => {
         const map = new Map()
-
-        //console.log(schedules)
 
         schedules.forEach((schedule) => {
             let currentLevel = 0
@@ -263,8 +251,6 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
             }
         })
-
-        //console.log(map)
 
         return map
     }, [schedules])

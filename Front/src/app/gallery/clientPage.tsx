@@ -70,18 +70,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
      * tags의 deep compare를 통해 useEffect를 Trigger할 수 있게 수정 후 삭제 요망
      */
     useEffect(() => {
-        setImages(
-            selectedTags.length > 0
-                ? propsImages.filter((image) => {
-                      let flag: boolean = true
-                      selectedTags.forEach((tag) => {
-                          if (!image.tags.includes(tag)) flag = false
-                      })
-                      return flag
-                  })
-                : propsImages,
-        )
-        setImages2(images.slice(0, 4))
+        fetchGallery()
     }, [tempNumForTagsEffect])
 
     // 토글 함수
@@ -101,10 +90,21 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
 
     // 함수
     const fetchGallery = async () => {
-        const response = await getGalleryList()
-        setImages(response.data)
-        setImages2(response.data.slice(0, 4))
-        setTagList(makeTagListByImages(response.data))
+        const response = (await getGalleryList()).data || []
+
+        setImages(
+            selectedTags.length > 0
+                ? response.filter((image) => {
+                      let flag: boolean = true
+                      selectedTags.forEach((tag) => {
+                          if (!image.tags.includes(tag)) flag = false
+                      })
+                      return flag
+                  })
+                : response,
+        )
+        setImages2(images.slice(0, 4))
+        setTagList(makeTagListByImages(response))
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +170,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     <div onClick={toggleGallery}>
                         <img
                             className={`${isGalleryVisible ? styles.rotate180 : styles.rotate360}`}
-                            style={{ width: '25px' }}
+                            style={{ width: '25px', cursor: 'pointer' }}
                             src={`${isDarkMode ? '/svgs/double_down_white.svg' : '/svgs/double_down_black.svg'}`}
                             alt=""
                         />

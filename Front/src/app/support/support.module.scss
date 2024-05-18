@@ -25,3 +25,138 @@
         rgb(143, 179, 92)
     );
 }
+
+.cardAddModal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+
+    .cardAddModalHeader {
+        .cardAddModalHeaderAddImage {
+            margin-right: 5px;
+            cursor: pointer;
+
+            img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+            }
+        }
+
+        input {
+            border: none;
+            font-size: 25px;
+            background-color: transparent;
+            transition: border-bottom 0.3s ease;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .dateBox {
+            margin-top: 2px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Pretendard-Regular';
+        }
+    }
+
+    .cardAddModalContent {
+        font-family: 'Pretendard-Regular';
+        margin-top: 5px;
+        font-size: 16px;
+    }
+
+    .cardAddModalLinkContainer {
+        .cardAddModalLink {
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            font-family: 'Pretendard-Regular';
+            font-size: 16px;
+
+            button {
+                cursor: pointer;
+            }
+
+            .cardAddModalLinkTitle {
+                margin-right: 5px;
+                padding: 3px 3px 3px 5px;
+                border-radius: 5px;
+                background-color: white;
+            }
+
+            .cardAddModalLinkUrl {
+                margin-right: 5px;
+                padding: 3px 3px 3px 5px;
+                border-radius: 5px;
+                background-color: white;
+            }
+        }
+
+        input {
+            border: none;
+            background-color: transparent;
+            transition: border-bottom 0.3s ease;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        img {
+            cursor: pointer;
+            width: 25px;
+        }
+    }
+
+    .cardAddModalSubmit {
+        display: flex;
+        justify-content: right;
+        margin-top: 8px;
+
+        .blueButton {
+            background-color: rgb(109, 131, 255);
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+
+            width: 100px;
+            height: 30px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(51, 87, 157);
+                transition: 0.3s ease-in-out;
+            }
+        }
+
+        .redButton {
+            background-color: rgb(231, 116, 116);
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-left: 3px;
+
+            width: 100px;
+            height: 30px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(188, 94, 94);
+                transition: 0.3s ease-in-out;
+            }
+        }
+    }
+}

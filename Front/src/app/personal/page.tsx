@@ -58,7 +58,6 @@ const PersonalPage: React.FC = () => {
 
             // 상태 업데이트
             setSchedules(uniqueSchedules)
-            //console.log(uniqueSchedules)
         } catch (error) {
             console.error('Error fetching schedules:', error)
         }
@@ -70,7 +69,7 @@ const PersonalPage: React.FC = () => {
         >
             <Calendar
                 width="100%"
-                height="90vh"
+                height="100%"
                 year={new Date().getFullYear()}
                 month={new Date().getMonth()}
                 schedules={schedules}

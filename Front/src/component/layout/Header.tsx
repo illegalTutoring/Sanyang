@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import styles from './Header.module.scss'
 import Link from 'next/link'
-import useAuthStore from '@/utils/store/useAuthStore'
+import userStore from '@/utils/store/useUserStore'
 import useDarkModeStore from '@/utils/store/useThemaStore'
 import useEditModeStore from '@/utils/store/useEditModeStore'
 import Profile from '@/component/Profile'
 import Modal from '@/component/layout/Modal'
 import { login, logout } from '@/utils/api/user'
+import useSidebrarOpenStore from '@/utils/store/useSidebarOpenStore'
+import useAuthStore from '@/utils/store/useAuthStore'
 
 const Header: React.FC = () => {
     // 상태관리
@@ -16,6 +18,7 @@ const Header: React.FC = () => {
     const [profileMenuVisible, setProfileMenuVisible] = useState(false)
 
     // 전역 상태관리
+    const { isSidebarOpen, toggleSidebarOpen } = useSidebrarOpenStore()
     const { isDarkMode, toggleDarkMode } = useDarkModeStore()
     const { isLoggedIn, logIn, logOut } = useAuthStore()
     const { isEditMode, setEditMode, toggleEditMode } = useEditModeStore()
@@ -54,6 +57,17 @@ const Header: React.FC = () => {
             <h2 style={{ fontFamily: 'Pacifico-Regular' }}>
                 <Link href="/">CanvEarth</Link>
             </h2>
+
+            <img
+                onClick={toggleSidebarOpen}
+                className={styles.toggleButton}
+                style={{ cursor: 'pointer', width: '30px', height: '30px' }}
+                src={
+                    isDarkMode ? '/svgs/menu_white.svg' : '/svgs/menu_black.svg'
+                }
+                alt={`${isSidebarOpen ? 'Close Menu' : 'Open Menu'}`}
+            />
+
             <div></div>
 
             <img
@@ -81,7 +95,14 @@ const Header: React.FC = () => {
                             alt="profile image"
                             radius={50}
                         />
-                        <h3 style={{ marginLeft: '10px' }}>관리자</h3>
+                        <h3
+                            style={{
+                                marginLeft: '10px',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {userStore.getState().username || '관리자'}
+                        </h3>
                     </div>
 
                     {profileMenuVisible && (

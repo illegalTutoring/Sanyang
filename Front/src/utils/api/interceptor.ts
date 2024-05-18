@@ -15,7 +15,6 @@ export async function axiosRequestHandler(
         const statusText = error.response?.statusText
         const message = error.response?.data?.message
 
-        console.error('Custom Error: ', statusCode, statusText, message)
         if (
             statusCode === 401 &&
             message === '만료된 access 토큰입니다' &&
@@ -44,7 +43,7 @@ export async function axiosRequestHandler(
             }
         } else {
             userStore.getState().destroyAll()
-            return await logout()
+            // return await logout()
         }
 
         /**

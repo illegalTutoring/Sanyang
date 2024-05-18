@@ -5,24 +5,16 @@ import { usePathname } from 'next/navigation'
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
 import useDarkModeStore from '@/utils/store/useThemaStore'
+import useSidebrarOpenStore from '@/utils/store/useSidebarOpenStore'
 
 const Sidebar: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false)
+    const { isSidebarOpen } = useSidebrarOpenStore()
     const { isDarkMode } = useDarkModeStore()
 
     return (
         <>
-            <img
-                onClick={() => setIsOpen(!isOpen)}
-                className={styles.toggleButton}
-                style={{ cursor: 'pointer', width: '30px', height: '30px' }}
-                src={
-                    isDarkMode ? '/svgs/menu_white.svg' : '/svgs/menu_black.svg'
-                }
-                alt={`${isOpen ? 'Close Menu' : 'Open Menu'}`}
-            />
             <aside
-                className={`${styles.sidebar} ${isOpen ? styles.open : ''} ${isDarkMode ? 'dark' : 'light'}`}
+                className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''} ${isDarkMode ? 'dark' : 'light'}`}
             >
                 <nav>
                     <ul>

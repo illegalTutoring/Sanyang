@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styles from './SupportCard.module.scss'
-import { deleteSupport } from '@/utils/api/admin'
 
 interface SupportLink {
     name: string
@@ -25,10 +24,12 @@ interface SupportProps {
     cardMinWidth?: string
     cardMaxWidth?: string
     addTogle: () => void
+    updateTogle: () => void
+    setInitData: (item: SupportItem, imageURL: string) => void
 }
 
 const SupportCard: React.FC<SupportProps> = ({
-    items,
+    items = [],
     isEditMode,
     isDarkMode,
     width = '100%',
@@ -36,11 +37,26 @@ const SupportCard: React.FC<SupportProps> = ({
     cardMinWidth = '315px',
     cardMaxWidth = '1fr',
     addTogle,
+    updateTogle,
+    setInitData,
 }) => {
-    const currentDate = new Date().toISOString().slice(0, 7)
+    const currentDate = new Date()
 
-    const deleteHandler = async (supportId: number) => {
-        await deleteSupport(supportId)
+    const isNew = (uploadDate: string) => {
+        const upload = new Date(uploadDate)
+        const oneMonthAgo = new Date()
+        oneMonthAgo.setMonth(currentDate.getMonth() - 1)
+        return upload > oneMonthAgo
+    }
+
+    const updateHandler = async (item: SupportItem) => {
+        await setInitData(item, item.thumbnail)
+        await updateTogle()
+    }
+
+    const handleOpenImage = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
     }
 
     return (
@@ -78,9 +94,13 @@ const SupportCard: React.FC<SupportProps> = ({
                     {isEditMode && (
                         <img
                             className={styles.deleteButton}
-                            src={'/svgs/delete_red.svg'}
+                            src={
+                                isDarkMode
+                                    ? '/svgs/edit_white.svg'
+                                    : '/svgs/edit_black.svg'
+                            }
                             alt="Delete"
-                            onClick={(event) => deleteHandler(item.supportId)}
+                            onClick={(event) => updateHandler(item)}
                         />
                     )}
                     <div
@@ -90,6 +110,7 @@ const SupportCard: React.FC<SupportProps> = ({
                         }}
                     >
                         <img
+                            onContextMenu={handleOpenImage}
                             src={item.thumbnail}
                             alt={''}
                             style={{ width: '50px', height: '50px' }}
@@ -98,8 +119,8 @@ const SupportCard: React.FC<SupportProps> = ({
                             <div style={{ fontSize: '20px' }}>{item.title}</div>
                             <hr></hr>
                             <div className={styles.dateBox}>
-                                <div>{item.uploadDate}</div>
-                                {item.uploadDate === currentDate && (
+                                <div>Updated: {item.uploadDate}</div>
+                                {isNew(item.uploadDate) && (
                                     <div
                                         className={`${styles.supportTag} ${isDarkMode ? styles.supportTagDark : styles.supportTagLight}`}
                                     >

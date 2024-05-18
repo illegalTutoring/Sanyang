@@ -5,6 +5,7 @@ import Footer from '@/component/layout/Footer' // 푸터 컴포넌트
 import { Metadata } from 'next'
 import Head from 'next/head'
 import Analytics from '../component/Analytics'
+import GoogleAnalytics from '@/component/GoogleAnalytics'
 
 // 메타데이터 설정
 export const metadata: Metadata = {
@@ -22,10 +23,10 @@ export default function RootLayout({
 }) {
     return (
         <html lang="ko">
-            <Head>
-                <Analytics />
-            </Head>
             <body>
+                {process.env.NEXT_PUBLIC_GA_ID ? (
+					<GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+				) : null}
                 <Header />
                 <Sidebar />
                 <main>
