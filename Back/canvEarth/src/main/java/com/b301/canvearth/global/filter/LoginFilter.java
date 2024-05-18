@@ -84,8 +84,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
-        logUtil.resultLogging("Login Success");
-
         // 로그인 성공 후 정보 조회를 위한 CustomUserDetails
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -117,6 +115,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         data.put(ROLE, role);
 
         responseUtil.sendMessage(response, data, HttpStatus.OK);
+
+        logUtil.resultLogging("Login Success");
     }
 
     // 로그인 실패
