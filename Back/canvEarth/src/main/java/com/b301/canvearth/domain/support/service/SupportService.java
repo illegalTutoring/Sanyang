@@ -4,7 +4,10 @@ import com.b301.canvearth.domain.admin.dto.request.SupportRequestPostDto;
 import com.b301.canvearth.domain.admin.dto.request.SupportRequestPutDto;
 import com.b301.canvearth.domain.s3.service.S3Service;
 import com.b301.canvearth.domain.support.entity.Support;
+import com.b301.canvearth.domain.support.entity.SupportLink;
 import com.b301.canvearth.domain.support.repository.SupportRepository;
+import com.b301.canvearth.global.error.CustomException;
+import com.b301.canvearth.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -31,6 +34,14 @@ public class SupportService {
 
         UUID uuid = UUID.randomUUID();
         String supportThumbnailPath = s3Service.uploadImage(image, uuid, "support");
+
+        List<SupportLink> supportLink = requestPostDto.getSupportLink();
+        for(SupportLink s: supportLink) {
+            if(!isValidLink(s.getLink())) {
+                log.error("[{}] is invalid link", s.getLink());
+                throw new CustomException(ErrorCode.INVALID_LINK_FORMAT);
+            }
+        }
 
         Support support = Support.builder().supportThumbnail(supportThumbnailPath).title(requestPostDto.getTitle())
                 .supportLink(requestPostDto.getSupportLink())
@@ -76,5 +87,10 @@ public class SupportService {
 
         s3Service.deleteImage(support.getSupportThumbnail());
         supportRepository.delete(support);
+    }
+
+    public Boolean isValidLink(String link){
+        String expr = "https?://[\\w\\-.]+/?([\\w\\-./@#]+)?";
+        return link.matches(expr);
     }
 }
