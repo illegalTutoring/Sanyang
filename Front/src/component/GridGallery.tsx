@@ -7,6 +7,7 @@ import {
     registWorkRequestDTO,
 } from '@/utils/api/DTO/work'
 import Modal from './layout/Modal'
+import { id } from 'date-fns/locale'
 
 export interface ImageData {
     workId?: number
@@ -31,7 +32,7 @@ export interface GalleryProps {
     isDarkMode?: boolean
     fetchGallery?: () => void
     addGallery?: (data: registWorkRequestDTO, image: File) => void
-    updateGallery?: (data: modifyWorkRequestDTO, image: File | null) => void
+    updateGallery?: (id: number, data: modifyWorkRequestDTO, image: File | null) => void
     deleteGallery?: (workId: number) => void
 }
 
@@ -42,7 +43,7 @@ const GridGallery: React.FC<GalleryProps> = ({
     height,
     isEditMode = false,
     isDarkMode = false,
-    fetchGallery,
+    fetchGallery = () => {},
     addGallery,
     updateGallery,
     deleteGallery,
@@ -126,7 +127,6 @@ const GridGallery: React.FC<GalleryProps> = ({
         }
 
         await addGallery(data, selectedImage)
-        fetchGallery && fetchGallery()
         setAddMode(false)
     }
 
@@ -136,7 +136,7 @@ const GridGallery: React.FC<GalleryProps> = ({
         event.preventDefault()
         if (!updateGallery) return
 
-        const { title, company, startDate, endDate, tags } = insertData
+        const { WorkId, title, company, startDate, endDate, tags } = insertData
         const tagsArray = tags.split(',').map((tag) => tag.trim())
 
         const data: modifyWorkRequestDTO = {
@@ -147,7 +147,7 @@ const GridGallery: React.FC<GalleryProps> = ({
             tags: tagsArray,
         }
 
-        await updateGallery(data, selectedImage)
+        await updateGallery(WorkId, data, selectedImage)
         setUpdateMode(false)
     }
 
@@ -166,7 +166,7 @@ const GridGallery: React.FC<GalleryProps> = ({
     // 훅
 
     useEffect(() => {
-        fetchGallery
+        fetchGallery()
     }, [isAddMode, isUpdateMode])
 
     const gridTemplateColumns = `repeat(${colCount}, 1fr)`
@@ -271,7 +271,7 @@ const GridGallery: React.FC<GalleryProps> = ({
             >
                 <form
                     className={styles.outsourcingFormContainer}
-                    onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit}
+                    onSubmit={isAddMode ? handleAddSubmit : handleUpdateSubmit }
                 >
                     <div className={styles.outsourcingFormTitle}>
                         <input

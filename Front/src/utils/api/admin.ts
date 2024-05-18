@@ -87,6 +87,7 @@ export function registWork(
 }
 
 export function modifyWork(
+    workId: number,
     data: modifyWorkRequestDTO,
     image: File | null,
 ): Promise<modifyWorkResponseDTO> {
@@ -109,7 +110,7 @@ export function modifyWork(
 
             const response: AxiosResponse<any, any> = await axios({
                 method: 'PUT',
-                url: `${SERVER_URL}/admin/work/${data.workId}`,
+                url: `${SERVER_URL}/admin/work/${workId}`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
