@@ -79,7 +79,7 @@ public class EmbedService {
      * @return Boolean
      */
     public Boolean isValidLink(String link){
-        String expr = "https?://[\\w\\-.]+/?([\\w\\-./@]+)?";
+        String expr = "https?://[\\w\\-.]+/?([\\w\\-./@#]+)?";
         return link.matches(expr);
     }
 
