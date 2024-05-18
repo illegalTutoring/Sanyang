@@ -21,29 +21,37 @@ export async function axiosRequestHandler(
             userStore.getState().accessToken !== ''
         ) {
             userStore.getState().destroyAccessToken()
-            reIssue()
+            await reIssue()
+
             return await request(...params)
-        } else if (
+        } 
+
+        else if (
             statusCode === 401 &&
-            (message === '잘못된 refresh 토큰 입니다' ||
-                message === '잘못된 access 토큰 입니다')
+            (
+                message === '잘못된 access 토큰 입니다' ||
+                message === 'access 토큰 인증 실패')
         ) {
             userStore.getState().destroyAll()
             useAuthStore.getState().logOut()
-            return {
-                statusCode: statusCode,
-                statusText: statusText,
-                message: message,
-            }
-        } else if (userStore.getState().accessToken === '') {
-            return {
-                statusCode: statusCode,
-                statusText: statusText,
-                message: message,
-            }
-        } else {
+
+            return await logout()
+        }
+
+        else if (
+            statusCode === 401 &&
+            (
+                message === '만료된 refresh 토큰 입니다' ||
+                message === '잘못된 refresh 토큰 입니다' ||
+                message === 'refresh 토큰이 존재하지 않습니다' ||
+                message === 'refresh 토큰 인증 실패')
+        ) {
             userStore.getState().destroyAll()
-            // return await logout()
+            useAuthStore.getState().logOut()
+        }
+        
+        else {
+            alert(message)
         }
 
         /**
