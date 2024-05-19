@@ -10,10 +10,13 @@ import GoogleAnalytics from '@/component/GoogleAnalytics'
 // 메타데이터 설정
 export const metadata: Metadata = {
     title: {
-        default: 'Sanyang Portfolio - Illustrator & Artist',
-        template: '%s | Sanyang Portfolio',
+        default: 'Sanyang Portfolio - Illustrator & Artist | 산양 포트폴리오 - 일러스트레이터 & 아티스트',
+        template: '%s | Sanyang Portfolio | 산양 포트폴리오',
     },
-    description: 'Sanyang’s illustrations portfolio.',
+    description: 'Sanyang’s illustrations portfolio. 산양의 일러스트 포트폴리오입니다.',
+    icons: {
+        icon: './favicon.svg',
+    },
 }
 
 export default function RootLayout({
