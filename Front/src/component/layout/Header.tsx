@@ -55,7 +55,7 @@ const Header: React.FC = () => {
     return (
         <header className={`${styles.header} ${isDarkMode ? 'dark' : 'light'}`}>
             <h2 style={{ fontFamily: 'Pacifico-Regular' }}>
-                <Link href="/">CanvEarth</Link>
+                <Link href="/">San-Yang</Link>
             </h2>
 
             <img
