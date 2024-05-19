@@ -4,8 +4,8 @@ import ClientPage from './clientPage'
 
 const fetchWorks = async () => {
     try {
-        const { data } = await getWorkList()
-        return splitData(data)
+        const { data } = await getWorkList() 
+        return splitData(data || [])
     } catch (error) {
         console.error('Error fetching works:', error)
     }
