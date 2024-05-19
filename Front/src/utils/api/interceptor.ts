@@ -54,7 +54,11 @@ export async function axiosRequestHandler(
         }
         
         else {
-            alert(message)
+            if (typeof window !== 'undefined') {
+                alert(message)
+            } else {
+                console.log('Some message')
+            }
         }
 
         /**
