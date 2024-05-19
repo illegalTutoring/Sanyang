@@ -178,13 +178,14 @@ const List: React.FC<ListProps> = ({
                         <hr></hr>
                         <div className={styles.postTitle}>
                             <label htmlFor="title1">제목</label>
-                            <input
+                            <textarea
                                 id="title1"
                                 name="title1"
-                                type="text"
+                                rows={1}
                                 style={{
                                     width: '100%',
                                     padding: '8px',
+                                    resize: 'none',
                                 }}
                             />
                         </div>
@@ -247,15 +248,16 @@ const List: React.FC<ListProps> = ({
                             value={editableItem.id}
                         />
                         <div className={styles.modifyTitle}>
-                            <input
+                            <textarea
                                 id="title1"
                                 name="title"
-                                type="text"
                                 value={editableItem.title}
+                                rows={1}
                                 style={{
                                     width: '100%',
                                     padding: '8px',
                                     margin: '10px 0',
+                                    resize: 'none',
                                 }}
                                 onChange={handleInputChange}
                             />
