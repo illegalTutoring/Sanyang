@@ -43,6 +43,11 @@ const TagInput: React.FC<TagInputProps> = ({
         }
     }, [])
 
+    useEffect(() => {
+        if (tags.length > 0)
+            setSuggestions(availableTags.filter((tag) => !tags.includes(tag)))
+    }, [tempNumForTagsEffect])
+
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value
         setInput(inputValue)
