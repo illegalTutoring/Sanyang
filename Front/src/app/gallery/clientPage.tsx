@@ -181,10 +181,10 @@ const ClientPage: React.FC<ClientPageProps> = ({ propsImages }) => {
                     className={styles.galleryContainer}
                 >
                     <GridGallery
-                        images={propsImages.slice(0, 4)}
+                        images={images2}
                         width={'100%'}
                         height={'300px'}
-                        colCount={propsImages.slice(0, 4).length}
+                        colCount={images2.length}
                         isDarkMode={isDarkMode}
                     />
                 </div>
